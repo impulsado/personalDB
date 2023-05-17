@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/detail/detail.dart';
 import 'package:personaldb/models/my_category.dart';
 
 class Categories extends StatelessWidget {
@@ -22,7 +23,11 @@ class Categories extends StatelessWidget {
   }
 
   Widget _buildCategory(BuildContext context, MyCategory myCategory) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailPage(myCategory)));
+      },
+      child: Container (
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(color: myCategory.bgColor, borderRadius: BorderRadius.circular(20)),
         child: Column(
@@ -33,6 +38,7 @@ class Categories extends StatelessWidget {
             Text(myCategory.title!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: myCategory.iconColor), )
           ],
         )
+      )  
     );
   }
 }
