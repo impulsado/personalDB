@@ -22,7 +22,7 @@ class DetailPage extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       leading: GestureDetector(
-          child: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),);}
       ),
     );

@@ -70,9 +70,7 @@ class HomePage extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      actions: const [
-        Icon(Icons.more_vert, color: Colors.black, size: 40,)
-      ],
+      leading: const Icon(Icons.menu_rounded, color: Colors.black, size: 40,)
     );
   }
 }
