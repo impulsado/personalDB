@@ -29,3 +29,6 @@ const Color kBlueDark = Color(0xFF85C1E9);
 const Color kGrayLight = Color(0xFFEAECEE);
 const Color kGray = Color(0xFFD5D8DC);
 const Color kGrayDark = Color(0xFFAEB6BF);
+
+// Dark Mode
+const Color kDark = Color(0xFF121212);

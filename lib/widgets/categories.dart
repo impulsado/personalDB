@@ -17,8 +17,7 @@ class Categories extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10
           ),
-          itemBuilder: (context, index) =>
-              _buildCategory(context, categoryList[index])),
+          itemBuilder: (context, index) => _buildCategory(context, categoryList[index])),
     );
   }
 

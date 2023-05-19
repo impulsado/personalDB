@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/constants/theme.dart'; // ensure this is the correct import for your Themes class
 import 'package:personaldb/widgets/categories.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: Themes.light,
+      home: HomePage(),
+    );
+  }
+}
+
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: _buildBody(),
       bottomNavigationBar: _buildBottomNavigationBar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
@@ -33,16 +46,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  FloatingActionButton _buildFloatingActionButton() {
-    return FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 0,
-        backgroundColor: Colors.black,
-        onPressed: () {},
-        child: const Icon(Icons.add, size: 35,)
-    );
-  }
-
   Widget _buildBottomNavigationBar() {
     return Container(
       decoration: BoxDecoration(
@@ -60,6 +63,7 @@ class HomePage extends StatelessWidget {
           items: const [
             BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home_rounded, size: 30)),
             BottomNavigationBarItem(label: 'Contacts', icon: Icon(Icons.contacts_outlined, size: 30)),
+            BottomNavigationBarItem(label: 'Finance', icon: Icon(Icons.lock_clock_outlined, size: 30)),
           ],
         ),
       ),
@@ -68,9 +72,9 @@ class HomePage extends StatelessWidget {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: const Icon(Icons.menu_rounded, color: Colors.black, size: 40,)
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: const Icon(Icons.menu_rounded, color: Colors.black, size: 40,)
     );
   }
 }
