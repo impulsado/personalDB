@@ -31,15 +31,15 @@ class HomePage extends StatelessWidget {
 
   Widget _buildBody() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 25, left: 15),
               child: Text('Categories', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(child: Categories(),)
           ]
       ),

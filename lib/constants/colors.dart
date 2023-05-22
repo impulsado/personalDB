@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // Ideas
-const Color kYellowLight = Color(0xFFFFF9E6);
-const Color kYellow = Color(0xFFFFF3B0);
-const Color kYellowDark = Color(0xFFFFDA67);
+const Color kYellowLight = Color(0xFFFFF0B2);
+const Color kYellow = Color(0xFFFFE946);
+const Color kYellowDark = Color(0xFFFFD016);
 
 // Cooking
 const Color kPinkLight = Color(0xFFFFDBEC);

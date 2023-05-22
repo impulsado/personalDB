@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: Themes.light,
-      home: CategoryList(MyCategory()), // ensure you pass an instance of MyCategory to DetailPage
+      home: CategoryList(MyCategory()),
     );
   }
 }
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 class CategoryList extends StatelessWidget {
   final MyCategory myCategory;
 
-  CategoryList(this.myCategory);
+  const CategoryList(this.myCategory);
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +33,18 @@ class CategoryList extends StatelessWidget {
         child: Text('This is the ${myCategory.title} category'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: MyButton(label: "+ Add Note", onTap: (){
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(myCategory),
-          ),
-        );
+      floatingActionButton: MyButton(
+        label: "+ Add Note",
+        bgColor: myCategory.bgColor ?? Colors.black,
+        iconColor: myCategory.iconColor ?? Colors.white,
+        onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(myCategory),),);
       },),
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: myCategory.bgColor,
       elevation: 0,
       leading: GestureDetector(
         child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),

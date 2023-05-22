@@ -4,7 +4,9 @@ import 'package:personaldb/constants/theme.dart';
 class MyButton extends StatelessWidget {
   final String label;
   final Function()? onTap;
-  const MyButton({Key? key, required this.label, required this.onTap}) : super(key: key);
+  final Color bgColor;
+  final Color iconColor;
+  const MyButton({Key? key, required this.label, required this.onTap, required this.bgColor, required this.iconColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +16,8 @@ class MyButton extends StatelessWidget {
         width: 120,
         height: 60,
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.black),
-        child: Text(label, style: subHeadingStyle(color: Colors.white),),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: bgColor),
+        child: Text(label, style: subHeadingStyle(color: iconColor),),
       ),
     );
   }

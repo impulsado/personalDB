@@ -5,7 +5,7 @@ class Themes {
   static final light = ThemeData(
     primaryColor: Colors.white,
     brightness: Brightness.light,
-    colorScheme: ColorScheme.light(background: Colors.white, surface: Colors.white,),
+    colorScheme: const ColorScheme.light(background: Colors.white, surface: Colors.white,),
   );
 }
 
@@ -19,12 +19,12 @@ TextStyle subHeadingStyle({required Color color}) {
   );
 }
 
-TextStyle get headingStyle {
+TextStyle headingStyle({required Color color}) {
   return GoogleFonts.lato(
       textStyle: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: color,
       )
   );
 }

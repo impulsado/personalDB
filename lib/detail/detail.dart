@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
 class DetailPage extends StatelessWidget {
   final MyCategory myCategory;
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   DetailPage(this.myCategory);
 
@@ -31,7 +32,7 @@ class DetailPage extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Padding(
-        padding: const EdgeInsets.only(left:25, right:25),
+        padding: const EdgeInsets.only(left:25, right:25, top: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -40,9 +41,9 @@ class DetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(myCategory.title ?? "Add Note", style: headingStyle,),
-                    MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController),
-                    MyInputField(title: "Note", hint: "Enter note here.", controller: _titleController),
+                    Text(myCategory.title ?? "Add Note", style: headingStyle(color: Colors.black),),
+                    MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController, height: 50),
+                    MyInputField(title: "Note", hint: "Enter note here.", controller: _noteController, height: 200),
                   ],
                 ),
               ),
@@ -51,13 +52,13 @@ class DetailPage extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: MyButton(label: "Submit", onTap: ()=>null,),
+      floatingActionButton: MyButton(label: "Submit", onTap: ()=>null, bgColor: myCategory.bgColor ?? Colors.black, iconColor: myCategory.iconColor ?? Colors.white,),
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: myCategory.bgColor,
       elevation: 0,
       leading: GestureDetector(
         child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
