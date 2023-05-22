@@ -9,13 +9,13 @@ class Themes {
   );
 }
 
-TextStyle get subHeadingStyle {
+TextStyle subHeadingStyle({required Color color}) {
   return GoogleFonts.lato(
-    textStyle: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      color: Colors.black,
-    )
+      textStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: color,
+      )
   );
 }
 

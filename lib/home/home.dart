@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:personaldb/constants/theme.dart'; // ensure this is the correct import for your Themes class
+import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/categories.dart';
 
 void main() {

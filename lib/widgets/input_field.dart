@@ -1,4 +1,3 @@
-// input_filed.dart
 import 'package:personaldb/constants/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +14,7 @@ class MyInputField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: subHeadingStyle,),
+          Text(title, style: subHeadingStyle(color: Colors.black),),
           Container(
             height: 52,
             margin: EdgeInsets.only(top:8.0),
@@ -25,10 +24,10 @@ class MyInputField extends StatelessWidget {
               autofocus: false,
               cursorColor: Colors.grey,
               controller: controller,
-              style: subHeadingStyle,
+              style: subHeadingStyle(color: Colors.black),
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: subHeadingStyle,
+                hintStyle: subHeadingStyle(color: Colors.black),
                 focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),

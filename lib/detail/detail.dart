@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:personaldb/constants/theme.dart'; // ensure this is the correct import for your Themes class
-import 'package:personaldb/models/my_category.dart';
-import 'package:personaldb/home/home.dart';
+import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
+import 'package:personaldb/widgets/button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: Themes.light,
-      home: DetailPage(MyCategory()), // ensure you pass an instance of MyCategory to DetailPage
+      home: DetailPage(MyCategory()),
     );
   }
 }
@@ -30,30 +30,28 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.only(left:25, right:25),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(myCategory.title ?? "Add Note", style: headingStyle,),
-              MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController),
-              MyInputField(title: "Note", hint: "Enter note here.", controller: _titleController),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(myCategory.title ?? "Add Note", style: headingStyle,),
+                    MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController),
+                    MyInputField(title: "Note", hint: "Enter note here.", controller: _titleController),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: _buildFloatingActionButton(),
-    );
-  }
-
-  FloatingActionButton _buildFloatingActionButton() {
-    return FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 0,
-        backgroundColor: Colors.black,
-        onPressed: () {},
-        child: const Icon(Icons.add, size: 35,)
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: MyButton(label: "Submit", onTap: ()=>null,),
     );
   }
 
@@ -62,8 +60,8 @@ class DetailPage extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       leading: GestureDetector(
-          child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),);}
+        child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        onTap: () {Navigator.pop(context);},
       ),
     );
   }

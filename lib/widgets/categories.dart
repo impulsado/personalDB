@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:personaldb/detail/detail.dart';
-import 'package:personaldb/models/my_category.dart';
+import 'package:personaldb/categories/category_list.dart';
+import 'package:personaldb/models/categories.dart';
 
 class Categories extends StatelessWidget {
   final categoryList = MyCategory.generateCategory();
@@ -24,7 +24,7 @@ class Categories extends StatelessWidget {
   Widget _buildCategory(BuildContext context, MyCategory myCategory) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailPage(myCategory)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CategoryList(myCategory))); // AQUI
       },
       child: Container (
         padding: const EdgeInsets.all(20),
