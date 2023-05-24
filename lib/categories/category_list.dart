@@ -33,6 +33,7 @@ class CategoryList extends StatefulWidget {
 class _CategoryListState extends State<CategoryList> {
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
+  final _scrollController = ScrollController();
 
   void _refreshNotes() async {
     final data = await SQLHelper.getItemsByCategory(widget.myCategory.title ?? "Error");
@@ -50,6 +51,7 @@ class _CategoryListState extends State<CategoryList> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: widget.myCategory.bgColor,  // color de fondo igual al del AppBar
       appBar: _buildAppBar(),
       body: _isLoading ? _buildLoading() : _buildNoteList(),
       floatingActionButton: _buildFloatingActionButton(),
@@ -72,35 +74,64 @@ class _CategoryListState extends State<CategoryList> {
   }
 
   Widget _buildNoteList() {
-    return ListView.builder(
-      itemCount: _notes.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () async {
-            String? action = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory, id: _notes[index]['id'])),
-            );
-            if (action == 'refresh') {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+      ),
+      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+      child: ListView.builder(
+        itemCount: _notes.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () async {
+              String? action = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory, id: _notes[index]['id'])),
+              );
+              if (action == 'refresh') {
+                _refreshNotes();
+              }
+            },
+            onDoubleTap: () async {
+              await SQLHelper.deleteItem(_notes[index]['id']);
               _refreshNotes();
-            }
-          },
-          onDoubleTap: () async {
-            await SQLHelper.deleteItem(_notes[index]['id']);
-            _refreshNotes();
-          },
-          child: Container(
-            padding: EdgeInsets.all(8.0),
-            margin: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,  // Color del InkWell
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.grey),
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              height: 90.0,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,  // Color del InkWell
+                borderRadius: BorderRadius.circular(30.0),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _notes[index]['title'] ?? 'No Title',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 5.0),
+                  Expanded(
+                    child: Text(
+                      _notes[index]['description'] ?? '',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Text(_notes[index]['title'] ?? 'No Title'),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

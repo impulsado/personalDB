@@ -59,27 +59,37 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: widget.myCategory.bgColor,
       appBar: _buildAppBar(context),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.only(left:25, right:25, top: 25),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.myCategory.title ?? "Add Note", style: headingStyle(color: Colors.black),),
-                    MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController, height: 50),
-                    MyInputField(title: "Note", hint: "Enter note here.", controller: _noteController, height: 200),
-                  ],
+          ? const Center(child: CircularProgressIndicator())
+          : Container(
+        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left:25, right:25, top: 25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyInputField(title: "Title", hint: "Enter title here.", controller: _titleController, height: 50),
+                      MyInputField(title: "Note", hint: "Enter note here.", controller: _noteController, height: 200),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
