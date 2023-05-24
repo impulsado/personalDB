@@ -23,6 +23,7 @@ class SQLHelper{
       'personal.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
+        print("... creating a table..."); //DEBUG
         await createTables(database);
       },
     );
@@ -49,6 +50,12 @@ class SQLHelper{
   static Future<List<Map<String, dynamic>>> getItem(int id) async {
     final db = await SQLHelper.db();
     return db.query('items', where: "id = ?", whereArgs: [id], limit: 1);
+  }
+
+  // Read all items (journals) of a specific category
+  static Future<List<Map<String, dynamic>>> getItemsByCategory(String category) async {
+    final db = await SQLHelper.db();
+    return db.query('items', where: "category = ?", whereArgs: [category], orderBy: "id");
   }
 
   // Update an item by id
