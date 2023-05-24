@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
+      backgroundColor: Colors.white,
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
