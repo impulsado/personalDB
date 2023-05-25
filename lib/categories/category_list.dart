@@ -3,7 +3,7 @@ import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/detail/detail.dart';
-import 'package:personaldb/database/database_helper.dart';
+import 'package:personaldb/database/database_helper_factory.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,11 +36,23 @@ class _CategoryListState extends State<CategoryList> {
   final _scrollController = ScrollController();
 
   void _refreshNotes() async {
-    final data = await SQLHelper.getItemsByCategory(widget.myCategory.title ?? "Error");
-    setState(() {
-      _notes = data;
-      _isLoading = false;
-    });
+    try {
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      final data = await dbHelper.getItems();
+      setState(() {
+        if (data.isEmpty) {
+          print('No items found in the database');
+        } else {
+          _notes = data;
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error occurred while refreshing notes: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -51,7 +63,7 @@ class _CategoryListState extends State<CategoryList> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.myCategory.bgColor,  // color de fondo igual al del AppBar
+      backgroundColor: widget.myCategory.bgColor,
       appBar: _buildAppBar(),
       body: _isLoading ? _buildLoading() : _buildNoteList(),
       floatingActionButton: _buildFloatingActionButton(),
@@ -70,7 +82,7 @@ class _CategoryListState extends State<CategoryList> {
   }
 
   Widget _buildLoading() {
-    return Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildNoteList() {
@@ -97,7 +109,8 @@ class _CategoryListState extends State<CategoryList> {
               }
             },
             onDoubleTap: () async {
-              await SQLHelper.deleteItem(_notes[index]['id']);
+              final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+              await dbHelper.deleteItem(_notes[index]['id']);
               _refreshNotes();
             },
             child: Container(
@@ -112,6 +125,7 @@ class _CategoryListState extends State<CategoryList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 5.0),
                   Text(
                     _notes[index]['title'] ?? 'No Title',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

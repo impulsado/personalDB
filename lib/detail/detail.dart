@@ -3,7 +3,7 @@ import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
-import 'package:personaldb/database/database_helper.dart';
+import 'package:personaldb/database/database_helper_factory.dart';
 
 class DetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -23,10 +23,11 @@ class _DetailPageState extends State<DetailPage> {
 
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       if (widget.id != null) {
-        await SQLHelper.updateItem(widget.id!, _titleController.text, _noteController.text);
+        await dbHelper.updateItem(widget.id!, _titleController.text, _noteController.text);
       } else {
-        await SQLHelper.createItem(widget.myCategory.title ?? "Error", _titleController.text, _noteController.text);
+        await dbHelper.createItem(_titleController.text, _noteController.text);
       }
       _titleController.clear();
       _noteController.clear();
@@ -36,7 +37,8 @@ class _DetailPageState extends State<DetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
-      List<Map<String, dynamic>> items = await SQLHelper.getItem(widget.id!);
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
       if (items.length > 0) {
         setState(() {
           _titleController.text = items[0]['title'] ?? '';
