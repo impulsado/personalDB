@@ -3,11 +3,11 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/database/database_helper_common.dart';
 
-class IdeasDatabaseHelper implements DatabaseHelperCommon {
+class RestaurantDatabaseHelper implements DatabaseHelperCommon {
   @override
   Future<int> createItem(Map<String, dynamic> data) async {
     final db = await DatabaseHelper.db();
-    final id = await db.insert("ideas", data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+    final id = await db.insert("restaurant", data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
 
@@ -15,27 +15,27 @@ class IdeasDatabaseHelper implements DatabaseHelperCommon {
   @override
   Future<int> updateItem(int id, Map<String, dynamic> data) async {
     final db = await DatabaseHelper.db();
-    final result = await db.update("ideas", data, where: "id = ?", whereArgs: [id]);
+    final result = await db.update("restaurant", data, where: "id = ?", whereArgs: [id]);
     return result;
   }
 
   @override
   Future<List<Map<String, dynamic>>> getItems() async {
     final db = await DatabaseHelper.db();
-    return db.query("ideas", orderBy: "id");
+    return db.query("restaurant", orderBy: "id");
   }
 
   @override
   Future<List<Map<String, dynamic>>> getItem(int id) async {
     final db = await DatabaseHelper.db();
-    return db.query("ideas", where: "id = ?", whereArgs: [id], limit: 1);
+    return db.query("restaurant", where: "id = ?", whereArgs: [id], limit: 1);
   }
 
   @override
   Future<void> deleteItem(int id) async {
     final db = await DatabaseHelper.db();
     try {
-      await db.delete("ideas", where: "id = ?", whereArgs: [id]);
+      await db.delete("restaurant", where: "id = ?", whereArgs: [id]);
     } catch (err) {
       debugPrint("Something went wrong when deleting an item: $err");
     }

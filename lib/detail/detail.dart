@@ -24,14 +24,15 @@ class _DetailPageState extends State<DetailPage> {
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      final data = {"title": _titleController.text, "description": _noteController.text};
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, _titleController.text, _noteController.text);
+        await dbHelper.updateItem(widget.id!, data);
       } else {
-        await dbHelper.createItem(_titleController.text, _noteController.text);
+        await dbHelper.createItem(data);
       }
       _titleController.clear();
       _noteController.clear();
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context, "refresh");
     }
   }
 
@@ -39,10 +40,10 @@ class _DetailPageState extends State<DetailPage> {
     if (widget.id != null) {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
-      if (items.length > 0) {
+      if (items.isNotEmpty) {
         setState(() {
-          _titleController.text = items[0]['title'] ?? '';
-          _noteController.text = items[0]['description'] ?? '';
+          _titleController.text = items[0]["title"] ?? "";
+          _noteController.text = items[0]["description"] ?? "";
           _isLoading = false;
         });
       }

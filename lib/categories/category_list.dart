@@ -41,14 +41,14 @@ class _CategoryListState extends State<CategoryList> {
       final data = await dbHelper.getItems();
       setState(() {
         if (data.isEmpty) {
-          print('No items found in the database');
+          print("No items found in the database");
         } else {
           _notes = data;
         }
         _isLoading = false;
       });
     } catch (e) {
-      print('Error occurred while refreshing notes: $e');
+      print("Error occurred while refreshing notes: $e");
       setState(() {
         _isLoading = false;
       });
@@ -104,7 +104,7 @@ class _CategoryListState extends State<CategoryList> {
                 context,
                 MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory, id: _notes[index]['id'])),
               );
-              if (action == 'refresh') {
+              if (action == "refresh") {
                 _refreshNotes();
               }
             },
@@ -127,7 +127,7 @@ class _CategoryListState extends State<CategoryList> {
                 children: [
                   const SizedBox(height: 5.0),
                   Text(
-                    _notes[index]['title'] ?? 'No Title',
+                    _notes[index]["title"] ?? "No Title",
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -135,7 +135,7 @@ class _CategoryListState extends State<CategoryList> {
                   const SizedBox(height: 5.0),
                   Expanded(
                     child: Text(
-                      _notes[index]['description'] ?? '',
+                      _notes[index]["description"] ?? "",
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -156,7 +156,7 @@ class _CategoryListState extends State<CategoryList> {
       iconColor: widget.myCategory.iconColor ?? Colors.white,
       onTap: () async {
         final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory),),);
-        if (result == 'refresh') {
+        if (result == "refresh") {
           _refreshNotes();
         }
       },

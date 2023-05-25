@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 25, left: 15),
-              child: Text('Categories', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              child: Text("Categories", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 10),
             Expanded(child: Categories(),)
@@ -62,9 +62,9 @@ class HomePage extends StatelessWidget {
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: Colors.grey.withOpacity(0.5),
           items: const [
-            BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home_rounded, size: 30)),
-            BottomNavigationBarItem(label: 'Contacts', icon: Icon(Icons.contacts_outlined, size: 30)),
-            BottomNavigationBarItem(label: 'Finance', icon: Icon(Icons.lock_clock_outlined, size: 30)),
+            BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_rounded, size: 30)),
+            BottomNavigationBarItem(label: "Contacts", icon: Icon(Icons.contacts_outlined, size: 30)),
+            BottomNavigationBarItem(label: "Finance", icon: Icon(Icons.lock_clock_outlined, size: 30)),
           ],
         ),
       ),

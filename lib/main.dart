@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'personalDB',
+      title: "personalDB",
       theme: Themes.light,
       darkTheme: Themes.light,
       themeMode: ThemeMode.light,
