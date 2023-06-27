@@ -6,9 +6,14 @@ import 'package:personaldb/database/database_helper_common.dart';
 class CookingDatabaseHelper implements DatabaseHelperCommon {
   @override
   Future<int> createItem(Map<String, dynamic> data) async {
-    final db = await DatabaseHelper.db();
-    final id = await db.insert("cooking", data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
-    return id;
+    try {
+      final db = await DatabaseHelper.db();
+      final id = await db.insert("cooking", data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+      return id;
+    } catch (e) {
+      print('Error al crear el item en la base de datos: $e');
+      throw e;  // re-throw the error to be able to catch it outside
+    }
   }
 
   // Similar for updateItem

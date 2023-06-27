@@ -14,18 +14,24 @@ class DatabaseHelper {
   static Future<void> createTables(sql.Database database) async {
     Map<String, String> categories = {
       "Ideas": """
-        CREATE TABLE ideas(
-          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-          title TEXT,
-          description TEXT,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )
+      CREATE TABLE ideas(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        title TEXT,
+        date DATE,
+        category TEXT,
+        description TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
       """,
       "Cooking": """
         CREATE TABLE cooking(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT,
+          duration TEXT,
+          difficulty TEXT,
+          ingredients TEXT,
+          recipe TEXT,
+          rate TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
@@ -33,16 +39,15 @@ class DatabaseHelper {
         CREATE TABLE health(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          type TEXT,
+          description TEXT
         )
       """,
       "Personal": """
         CREATE TABLE personal(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          description TEXT
         )
       """,
       "Restaurant": """
@@ -50,16 +55,14 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
           description TEXT,
-          rating INTEGER,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          rating INTEGER
         )
       """,
       "Others": """
         CREATE TABLE others(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          description TEXT
         )
       """
     };

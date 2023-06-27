@@ -2,8 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/button.dart';
-import 'package:personaldb/detail/detail.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
+import 'package:personaldb/detail/detail_factory.dart';
+import 'package:personaldb/widgets/star_rating.dart';
+
+class DifficultyRating extends StatelessWidget {
+  final double initialValue;
+  final ValueChanged<double> onChanged;
+  final double itemSize;
+
+  DifficultyRating({
+    required this.onChanged,
+    this.initialValue = 0.0,
+    this.itemSize = 40.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return index < initialValue
+            ? Icon(Icons.local_fire_department, size: itemSize, color: Colors.red)
+            : Icon(Icons.local_fire_department, size: itemSize, color: Colors.grey);
+      }),
+    );
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -16,21 +41,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: Themes.light,
-      home: CategoryList(MyCategory()),
+      home: CategoryCooking(MyCategory()),
     );
   }
 }
 
-class CategoryList extends StatefulWidget {
+class CategoryCooking extends StatefulWidget {
   final MyCategory myCategory;
 
-  const CategoryList(this.myCategory);
+  const CategoryCooking(this.myCategory);
 
   @override
-  _CategoryListState createState() => _CategoryListState();
+  _CategoryCookingState createState() => _CategoryCookingState();
 }
 
-class _CategoryListState extends State<CategoryList> {
+class _CategoryCookingState extends State<CategoryCooking> {
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
   final _scrollController = ScrollController();
@@ -74,6 +99,7 @@ class _CategoryListState extends State<CategoryList> {
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
+      title: Text(widget.myCategory.title ?? "Error", style: const TextStyle(color: Colors.black),),
       leading: GestureDetector(
         child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onTap: () {Navigator.pop(context);},
@@ -102,7 +128,7 @@ class _CategoryListState extends State<CategoryList> {
             onTap: () async {
               String? action = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory, id: _notes[index]['id'])),
+                MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
               );
               if (action == "refresh") {
                 _refreshNotes();
@@ -111,6 +137,7 @@ class _CategoryListState extends State<CategoryList> {
             onDoubleTap: () async {
               final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
               await dbHelper.deleteItem(_notes[index]['id']);
+              await Future.delayed(const Duration(milliseconds: 50));
               _refreshNotes();
             },
             child: Container(
@@ -135,9 +162,27 @@ class _CategoryListState extends State<CategoryList> {
                   const SizedBox(height: 5.0),
                   Expanded(
                     child: Text(
-                      _notes[index]["description"] ?? "",
+                      _notes[index]["duration"] ?? "",
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 5.0),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        DifficultyRating(
+                          initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
+                          onChanged: (value) {},
+                          itemSize: 20,
+                        ),
+                        SizedBox(width: 5),
+                        StarRating(
+                          initialValue: double.parse(_notes[index]["rate"] ?? "0"),
+                          onChanged: (value) {},
+                          itemSize: 20,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -155,11 +200,13 @@ class _CategoryListState extends State<CategoryList> {
       bgColor: widget.myCategory.bgColor ?? Colors.black,
       iconColor: widget.myCategory.iconColor ?? Colors.white,
       onTap: () async {
-        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(widget.myCategory),),);
+        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory),),);
         if (result == "refresh") {
           _refreshNotes();
         }
       },
     );
   }
+
 }
+

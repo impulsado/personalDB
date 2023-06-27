@@ -32,6 +32,13 @@ class IdeasDatabaseHelper implements DatabaseHelperCommon {
   }
 
   @override
+  Future<List<String>> getCategories() async {
+    final db = await DatabaseHelper.db();
+    final result = await db.rawQuery('SELECT DISTINCT category FROM ideas WHERE category IS NOT NULL');
+    return List<String>.from(result.map((item) => item['category']));
+  }
+
+  @override
   Future<void> deleteItem(int id) async {
     final db = await DatabaseHelper.db();
     try {

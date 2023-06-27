@@ -6,8 +6,18 @@ class MyInputField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final int minLines;
+  final Widget? child;
   final double? height;
-  const MyInputField({Key? key,required this.title,required this.hint, required this.controller, this.minLines = 1, this.height}) : super(key: key);
+
+  const MyInputField({
+    Key? key,
+    required this.title,
+    required this.hint,
+    required this.controller,
+    this.minLines = 1,
+    this.child,
+    this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +32,7 @@ class MyInputField extends StatelessWidget {
             margin: const EdgeInsets.only(top:8.0),
             padding: const EdgeInsets.only(left:14),
             decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1.0), borderRadius: BorderRadius.circular(12)),
-            child: TextFormField(
+            child: child ?? TextFormField(
               autofocus: false,
               cursorColor: Colors.grey,
               controller: controller,
@@ -37,7 +47,7 @@ class MyInputField extends StatelessWidget {
                 focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
