@@ -33,7 +33,6 @@ class CategoryIdeas extends StatefulWidget {
 class _CategoryIdeasState extends State<CategoryIdeas> {
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
-  final _scrollController = ScrollController();
 
   void _refreshNotes() async {
     try {
@@ -109,12 +108,6 @@ class _CategoryIdeasState extends State<CategoryIdeas> {
                 _refreshNotes();
               }
             },
-            onDoubleTap: () async {
-              final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-              await dbHelper.deleteItem(_notes[index]['id']);
-              await Future.delayed(const Duration(milliseconds: 50));
-              _refreshNotes();
-            },
             child: Container(
               padding: const EdgeInsets.all(8.0),
               margin: const EdgeInsets.all(8.0),
@@ -124,22 +117,42 @@ class _CategoryIdeasState extends State<CategoryIdeas> {
                 borderRadius: BorderRadius.circular(30.0),
                 border: Border.all(color: Colors.grey),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  const SizedBox(height: 5.0),
-                  Text(
-                    _notes[index]["title"] ?? "No Title",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 5.0),
+                      Text(
+                        _notes[index]["title"] ?? "No Title",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 5.0),
+                      Expanded(
+                        child: Text(
+                          _notes[index]["description"] ?? "",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 5.0),
-                  Expanded(
-                    child: Text(
-                      _notes[index]["description"] ?? "",
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () async {
+                          final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+                          await dbHelper.deleteItem(_notes[index]['id']);
+                          await Future.delayed(const Duration(milliseconds: 50));
+                          _refreshNotes();
+                        },
+                      ),
                     ),
                   ),
                 ],
