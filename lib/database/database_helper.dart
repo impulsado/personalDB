@@ -47,7 +47,10 @@ class DatabaseHelper {
         CREATE TABLE personal(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT
+          type TEXT,
+          date DATE,
+          description TEXT,
+          trust TEXT
         )
       """,
       "Restaurant": """

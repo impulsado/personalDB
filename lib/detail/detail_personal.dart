@@ -3,47 +3,47 @@ import 'package:intl/intl.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
+import 'package:personaldb/widgets/trust_counter.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
-import 'package:personaldb/database/database_helper_ideas.dart';
+import 'package:personaldb/database/database_helper_personal.dart';
 
-class IdeasDetailPage extends StatefulWidget {
+class PersonalDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  IdeasDetailPage(this.myCategory, {this.id});
+  PersonalDetailPage(this.myCategory, {this.id});
 
   @override
-  _IdeasDetailPageState createState() => _IdeasDetailPageState();
+  _PersonalDetailPageState createState() => _PersonalDetailPageState();
 }
 
-class CategoryAutocomplete extends StatefulWidget {
-  final TextEditingController categoryController;
+class TypeAutocomplete extends StatefulWidget {
+  final TextEditingController typeController;
 
-  CategoryAutocomplete({required this.categoryController});
+  TypeAutocomplete({required this.typeController});
 
   @override
-  _CategoryAutocompleteState createState() => _CategoryAutocompleteState();
+  _TypeAutocompleteState createState() => _TypeAutocompleteState();
 }
 
-class _CategoryAutocompleteState extends State<CategoryAutocomplete> {
-  List<String> _categories = [];
+class _TypeAutocompleteState extends State<TypeAutocomplete> {
+  List<String> _types = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadCategories();
+    _loadTypes();
   }
 
-  _loadCategories() async {
-    final dbHelper = IdeasDatabaseHelper();
-    List<String> items = await dbHelper.getCategories();
+  _loadTypes() async {
+    final dbHelper = PersonalDatabaseHelper();
+    List<String> items = await dbHelper.getTypes();
 
-    // Imprimir categorías existentes
-    print('Existing Categories: $items');
+    print('Existing Types: $items');
 
     setState(() {
-      _categories = items;
+      _types = items;
       _isLoading = false;
     });
   }
@@ -57,34 +57,34 @@ class _CategoryAutocompleteState extends State<CategoryAutocomplete> {
         if (textEditingValue.text == '') {
           return const Iterable<String>.empty();
         }
-        return _categories.where((String category) {
-          return category
+        return _types.where((String type) {
+          return type
               .toLowerCase()
               .contains(textEditingValue.text.toLowerCase());
         });
       },
       onSelected: (String selection) {
-        widget.categoryController.text = selection;
+        widget.typeController.text = selection;
       },
       fieldViewBuilder: (BuildContext context,
           TextEditingController fieldTextController,
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
-        fieldTextController.text = widget.categoryController.text;
-        fieldTextController.selection = widget.categoryController.selection;
+        fieldTextController.text = widget.typeController.text;
+        fieldTextController.selection = widget.typeController.selection;
         return MyInputField(
-          title: 'Category',
-          hint: 'Enter category here.',
+          title: 'Type',
+          hint: 'Enter type here.',
           controller: fieldTextController,
           height: 50,
           child: TextFormField(
             controller: fieldTextController,
             onChanged: (value) {
-              widget.categoryController.text = value;
+              widget.typeController.text = value;
             },
             focusNode: focusNode,
             decoration: const InputDecoration(
-              hintText: 'Enter category here.',
+              hintText: 'Enter type here.',
             ),
           ),
         );
@@ -93,12 +93,14 @@ class _CategoryAutocompleteState extends State<CategoryAutocomplete> {
   }
 }
 
-class _IdeasDetailPageState extends State<IdeasDetailPage> {
+class _PersonalDetailPageState extends State<PersonalDetailPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd');
+  final TextEditingController _trustController = TextEditingController();
+
 
   bool _isLoading = true;
 
@@ -119,16 +121,17 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
   _submitNote(BuildContext context) async {
     print("submit");
     if (_titleController.text.isNotEmpty) {
-      print(_categoryController.text);
+      print(_typeController.text);
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
           widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "description": _descriptionController.text,
         "date": _dateController.text,
-        "category": _categoryController.text
+        "type": _typeController.text,
+        "trust": _trustController.text  // Añade esta línea
       };
-      print("Data to save: $data");  // Añade esta línea
+      print("Data to save: $data");
       if (widget.id != null) {
         await dbHelper.updateItem(widget.id!, data);
       } else {
@@ -137,7 +140,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
       _titleController.clear();
       _descriptionController.clear();
       _dateController.clear();
-      _categoryController.clear();
+      _typeController.clear();
+      _trustController.clear();  // Añade esta línea
       Navigator.pop(context, "refresh");
     } else {
       print("No entro");
@@ -150,12 +154,13 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
           widget.myCategory.title ?? "Error");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
       if (items.isNotEmpty) {
-        print("Loaded item: ${items[0]}");  // Añade esta línea
+        print("Loaded item: ${items[0]}");
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _dateController.text = items[0]["date"] ?? "";
-          _categoryController.text = items[0]["category"] ?? "";
+          _typeController.text = items[0]["type"] ?? "";
+          _trustController.text = items[0]["trust"] ?? "";
           _isLoading = false;
         });
       }
@@ -180,8 +185,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Container(
-          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-          decoration: const BoxDecoration(
+        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30.0),
@@ -208,8 +213,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
                         children: [
                           Expanded(
                             flex: 5,
-                            child: CategoryAutocomplete(
-                              categoryController: _categoryController,
+                            child: TypeAutocomplete(
+                              typeController: _typeController,
                             ),
                           ),
                           const SizedBox(width: 10),  // Añade espacio entre los dos campos
@@ -224,7 +229,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
                                   controller: _dateController,
                                   height: 50,
                                 ),
-                              ),
+                                ),
                             ),
                           ),
                         ],
@@ -236,6 +241,9 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
                           controller: _descriptionController,
                           height: 200
                       ),
+                      const SizedBox(height: 10),
+                      TrustCounter(controller: _trustController),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -246,6 +254,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: MyButton(
+        key: ValueKey('personal'),
         label: "Submit",
         onTap: () => _submitNote(context),
         bgColor: widget.myCategory.bgColor ?? Colors.black,

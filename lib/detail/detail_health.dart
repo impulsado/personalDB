@@ -38,7 +38,6 @@ class _TypeAutocompleteState extends State<TypeAutocomplete> {
     final dbHelper = HealthDatabaseHelper();
     List<String> items = await dbHelper.getTypes();
 
-    // Imprimir tipos existentes
     print('Existing Types: $items');
 
     setState(() {
@@ -69,13 +68,18 @@ class _TypeAutocompleteState extends State<TypeAutocomplete> {
           TextEditingController fieldTextController,
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
+        fieldTextController.text = widget.typeController.text;
+        fieldTextController.selection = widget.typeController.selection;
         return MyInputField(
           title: 'Type',
           hint: 'Enter type here.',
-          controller: fieldTextController, // Use the fieldTextController provided by Autocomplete
+          controller: fieldTextController,
           height: 50,
           child: TextFormField(
-            controller: fieldTextController, // Use the fieldTextController provided by Autocomplete
+            controller: fieldTextController,
+            onChanged: (value) {
+              widget.typeController.text = value;
+            },
             focusNode: focusNode,
             decoration: const InputDecoration(
               hintText: 'Enter type here.',
