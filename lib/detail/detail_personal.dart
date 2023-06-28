@@ -6,6 +6,7 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/widgets/trust_counter.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_personal.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class PersonalDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -241,9 +242,12 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
                           controller: _descriptionController,
                           height: 200
                       ),
-                      const SizedBox(height: 10),
-                      TrustCounter(controller: _trustController),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 27),
+                      Text("Trust", style: subHeadingStyle(color: Colors.black)),
+                      const SizedBox(height: 5),
+                      Center(  // Añade el widget Center
+                        child: TrustCounter(controller: _trustController),
+                      ),
                     ],
                   ),
                 ),
