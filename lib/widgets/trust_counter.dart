@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TrustCounter extends StatefulWidget {
   final TextEditingController controller;
-  final double width; // Añade este campo para configurar el ancho
+  final double width;
 
   TrustCounter({required this.controller, this.width = 150.0});
 
@@ -11,12 +11,18 @@ class TrustCounter extends StatefulWidget {
 }
 
 class _TrustCounterState extends State<TrustCounter> {
-  int _counter = 0;
+  late int _counter;
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = int.parse(widget.controller.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.width, // Usa el ancho especificado
+      width: widget.width,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

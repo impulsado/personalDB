@@ -11,7 +11,6 @@ class PersonalDatabaseHelper implements DatabaseHelperCommon {
     return id;
   }
 
-  // Similar for updateItem
   @override
   Future<int> updateItem(int id, Map<String, dynamic> data) async {
     final db = await DatabaseHelper.db();
@@ -31,7 +30,6 @@ class PersonalDatabaseHelper implements DatabaseHelperCommon {
     return db.query("personal", where: "id = ?", whereArgs: [id], limit: 1);
   }
 
-  @override
   Future<List<String>> getTypes() async {
     final db = await DatabaseHelper.db();
     final result = await db.rawQuery('SELECT DISTINCT type FROM personal WHERE type IS NOT NULL');
