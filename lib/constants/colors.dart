@@ -25,6 +25,16 @@ const Color kBlueLight = Color(0xFFD6EAF8);
 const Color kBlue = Color(0xFFAED6F1);
 const Color kBlueDark = Color(0xFF85C1E9);
 
+// Wish List
+const Color kOrangeLight = Color(0xFFFFE5CC);
+const Color kOrange = Color(0xFFFFCC99);
+const Color kOrangeDark = Color(0xFFFFB266);
+
+// Entertainment
+const Color kRedLight = Color(0xFFFFCCCC);
+const Color kRed = Color(0xFFFF9999);
+const Color kRedDark = Color(0xFFFF6666);
+
 // Others
 const Color kGrayLight = Color(0xFFEAECEE);
 const Color kGray = Color(0xFFD5D8DC);

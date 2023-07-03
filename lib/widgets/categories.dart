@@ -29,7 +29,6 @@ class Categories extends StatelessWidget {
   Widget _buildCategory(BuildContext context, MyCategory myCategory) {
     return GestureDetector(
         onTap: () {
-          // Aquí es donde decidimos a qué página de categoría ir en función del título de la categoría.
           Widget page;
           switch (myCategory.title) {
             case 'Cooking':
@@ -60,7 +59,9 @@ class Categories extends StatelessWidget {
               children: [
                 Icon(myCategory.iconData, color: myCategory.iconColor, size: 90,),
                 const SizedBox(height: 5,),
-                Text(myCategory.title!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: myCategory.iconColor), )
+                FittedBox(
+                  child: Text(myCategory.title!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: myCategory.iconColor), ),
+                ),
               ],
             )
         )
