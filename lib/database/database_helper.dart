@@ -67,6 +67,17 @@ class DatabaseHelper {
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
+      "WishList": """
+        CREATE TABLE WishList(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          title TEXT,
+          link TEXT,
+          price TEXT,
+          priority TEXT,
+          notes TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
       "Others": """
         CREATE TABLE others(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
