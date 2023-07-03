@@ -1,5 +1,6 @@
 import 'package:personaldb/constants/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyInputField extends StatelessWidget {
   final String title;
@@ -8,6 +9,7 @@ class MyInputField extends StatelessWidget {
   final int minLines;
   final Widget? child;
   final double? height;
+  final TextInputType inputType;
 
   const MyInputField({
     Key? key,
@@ -17,6 +19,7 @@ class MyInputField extends StatelessWidget {
     this.minLines = 1,
     this.child,
     this.height,
+    this.inputType = TextInputType.text,
   }) : super(key: key);
 
   @override
@@ -40,6 +43,7 @@ class MyInputField extends StatelessWidget {
                 cursorColor: Colors.grey,
                 controller: controller,
                 style: subHeadingStyle(color: Colors.black),
+                keyboardType: inputType,
                 minLines: minLines,
                 maxLines: null, // Allow infinite number of lines
                 decoration: InputDecoration(
