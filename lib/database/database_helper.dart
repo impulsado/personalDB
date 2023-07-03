@@ -40,7 +40,8 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
           type TEXT,
-          description TEXT
+          description TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
       "Personal": """
@@ -50,15 +51,20 @@ class DatabaseHelper {
           type TEXT,
           date DATE,
           description TEXT,
-          trust TEXT
+          trust TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
       "Restaurant": """
         CREATE TABLE restaurant(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          description TEXT,
-          rating INTEGER
+          location TEXT,
+          type TEXT,
+          price TEXT,
+          notes TEXT,
+          rate TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
       "Others": """

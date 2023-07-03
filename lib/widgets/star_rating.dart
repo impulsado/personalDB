@@ -7,6 +7,7 @@ class StarRating extends StatelessWidget {
   final double itemSize;
   final Color? fillColor;
   final Icon? icon;
+  final bool isReadOnly; // New property
 
   StarRating({
     required this.onChanged,
@@ -14,6 +15,7 @@ class StarRating extends StatelessWidget {
     this.itemSize = 40.0,
     this.fillColor,
     this.icon,
+    this.isReadOnly = false, // New property initialized to false by default
   });
 
   @override
@@ -30,7 +32,8 @@ class StarRating extends StatelessWidget {
         color: fillColor ?? Colors.amber,
       ),
       itemSize: itemSize,
-      onRatingUpdate: onChanged,
+      onRatingUpdate: isReadOnly ? (_) {} : onChanged, // Change this line
+      ignoreGestures: isReadOnly, // Add this line
     );
   }
 }

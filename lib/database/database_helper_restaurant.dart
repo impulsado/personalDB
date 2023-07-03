@@ -31,6 +31,12 @@ class RestaurantDatabaseHelper implements DatabaseHelperCommon {
     return db.query("restaurant", where: "id = ?", whereArgs: [id], limit: 1);
   }
 
+  Future<List<String>> getTypes() async {
+    final db = await DatabaseHelper.db();
+    final result = await db.rawQuery('SELECT DISTINCT type FROM restaurant WHERE type IS NOT NULL');
+    return List<String>.from(result.map((item) => item['type']));
+  }
+
   @override
   Future<void> deleteItem(int id) async {
     final db = await DatabaseHelper.db();

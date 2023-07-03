@@ -4,6 +4,7 @@ import 'package:personaldb/detail/detail_ideas.dart';
 import 'package:personaldb/detail/detail_cooking.dart';
 import 'package:personaldb/detail/detail_health.dart';
 import 'package:personaldb/detail/detail_personal.dart';
+import 'package:personaldb/detail/detail_restaurant.dart';
 
 class DetailPageFactory {
   static Widget getDetailPage(MyCategory myCategory, {int? id}) {
@@ -16,6 +17,8 @@ class DetailPageFactory {
         return HealthDetailPage(myCategory, id: id);
       case 'Personal':
         return PersonalDetailPage(myCategory, id: id);
+      case 'Restaurant':
+        return RestaurantDetailPage(myCategory, id: id);
       default:
         throw Exception('Category not found');
     }
