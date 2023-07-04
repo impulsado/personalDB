@@ -78,6 +78,17 @@ class DatabaseHelper {
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
+      "Entertainment": """
+        CREATE TABLE Entertainment(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          title TEXT,
+          author TEXT,
+          genre TEXT,
+          notes TEXT,
+          rate TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
       "Others": """
         CREATE TABLE others(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
