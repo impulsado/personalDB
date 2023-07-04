@@ -1,10 +1,9 @@
 # PersonalDB
 
-[![License](https://img.shields.io/badge/License-CC%20BY--NC-green.svg)](https://creativecommons.org/licenses/by-nc/4.0)
-
-> A secure application for storing your personal database on your phone, with data encryption.
-
-![PersonalDB Logo](screenshots/logo.jpg)
+A secure application for storing your personal database on your phone, with data encryption.
+<div align="center">
+  <img src="screenshots/logo.jpg" alt="PersonalDB Logo" width="400">
+</div>
 
 ## Features
 
