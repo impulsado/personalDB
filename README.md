@@ -1,16 +1,27 @@
-# personaldb
+# PersonalDB
 
-A new Flutter project. TEMP
+[![License](https://img.shields.io/badge/License-CC%20BY--NC-green.svg)](https://creativecommons.org/licenses/by-nc/4.0)
 
-## Getting Started
+> A secure application for storing your personal database on your phone, with data encryption.
 
-This project is a starting point for a Flutter application.
+![PersonalDB Screenshot](screenshots/homepage.png)
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Store and protect your personal database on your phone.
+- Data encryption for enhanced security.
+- Intuitive and user-friendly interface.
+- End-to-end encryption to safeguard your sensitive data.
+- Quick search and data filtering for easy access to desired information.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contributing
+Contributions are welcome! If you have any ideas, suggestions, or find a bug, please open a new issue or submit a pull request.
+
+1. Fork the project.
+2. Create a new branch (git checkout -b feature/new-feature).
+3. Make the necessary changes and commit them (git commit -am 'Add new feature').
+4. Push to the branch (git push origin feature/new-feature).
+5. Open a pull request on GitHub.
+
+# License
+This project is licensed under the [Creative Commons Attribution-NonCommercial (CC BY-NC) 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).
