@@ -16,7 +16,7 @@ class _TrustCounterState extends State<TrustCounter> {
   @override
   void initState() {
     super.initState();
-    _counter = int.parse(widget.controller.text);
+    _counter = int.tryParse(widget.controller.text) ?? 0;
   }
 
   @override

@@ -13,15 +13,15 @@ class DatabaseHelper {
 
   static Future<void> createTables(sql.Database database) async {
     Map<String, String> categories = {
-      "Ideas": """
-      CREATE TABLE ideas(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        title TEXT,
-        date DATE,
-        category TEXT,
-        description TEXT,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
+        "Ideas": """
+        CREATE TABLE ideas(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          title TEXT,
+          date DATE,
+          category TEXT,
+          description TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
       """,
       "Cooking": """
         CREATE TABLE cooking(

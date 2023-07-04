@@ -4,6 +4,7 @@ import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_health.dart';
+import 'package:personaldb/widgets/field_autocomplete.dart';
 
 class HealthDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -13,82 +14,6 @@ class HealthDetailPage extends StatefulWidget {
 
   @override
   _HealthDetailPageState createState() => _HealthDetailPageState();
-}
-
-class TypeAutocomplete extends StatefulWidget {
-  final TextEditingController typeController;
-
-  TypeAutocomplete({required this.typeController});
-
-  @override
-  _TypeAutocompleteState createState() => _TypeAutocompleteState();
-}
-
-class _TypeAutocompleteState extends State<TypeAutocomplete> {
-  List<String> _types = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTypes();
-  }
-
-  _loadTypes() async {
-    final dbHelper = HealthDatabaseHelper();
-    List<String> items = await dbHelper.getTypes();
-
-    print('Existing Types: $items');
-
-    setState(() {
-      _types = items;
-      _isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isLoading
-        ? CircularProgressIndicator()
-        : Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text == '') {
-          return const Iterable<String>.empty();
-        }
-        return _types.where((String type) {
-          return type
-              .toLowerCase()
-              .contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      onSelected: (String selection) {
-        widget.typeController.text = selection;
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController fieldTextController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        fieldTextController.text = widget.typeController.text;
-        fieldTextController.selection = widget.typeController.selection;
-        return MyInputField(
-          title: 'Type',
-          hint: 'Enter type here.',
-          controller: fieldTextController,
-          height: 50,
-          child: TextFormField(
-            controller: fieldTextController,
-            onChanged: (value) {
-              widget.typeController.text = value;
-            },
-            focusNode: focusNode,
-            decoration: const InputDecoration(
-              hintText: 'Enter type here.',
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class _HealthDetailPageState extends State<HealthDetailPage> {
@@ -182,8 +107,13 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
                           controller: _titleController,
                           height: 50),
                       const SizedBox(height: 10),
-                      TypeAutocomplete(
-                        typeController: _typeController,
+                      FieldAutocomplete(
+                        controller: _typeController,
+                        label: "Category",
+                        dbHelper: HealthDatabaseHelper(),
+                        loadItemsFunction: () async {
+                          return await HealthDatabaseHelper().getTypes();
+                        },
                       ),
                       const SizedBox(height: 10),
                       MyInputField(

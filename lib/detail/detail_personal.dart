@@ -7,6 +7,8 @@ import 'package:personaldb/widgets/trust_counter.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_personal.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/widgets/field_autocomplete.dart';
+import 'package:personaldb/widgets/date_picker.dart';
 
 class PersonalDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -18,119 +20,28 @@ class PersonalDetailPage extends StatefulWidget {
   _PersonalDetailPageState createState() => _PersonalDetailPageState();
 }
 
-class TypeAutocomplete extends StatefulWidget {
-  final TextEditingController typeController;
-
-  TypeAutocomplete({required this.typeController});
-
-  @override
-  _TypeAutocompleteState createState() => _TypeAutocompleteState();
-}
-
-class _TypeAutocompleteState extends State<TypeAutocomplete> {
-  List<String> _types = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTypes();
-  }
-
-  _loadTypes() async {
-    final dbHelper = PersonalDatabaseHelper();
-    List<String> items = await dbHelper.getTypes();
-
-    print('Existing Types: $items');
-
-    setState(() {
-      _types = items;
-      _isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isLoading
-        ? CircularProgressIndicator()
-        : Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text == '') {
-          return const Iterable<String>.empty();
-        }
-        return _types.where((String type) {
-          return type
-              .toLowerCase()
-              .contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      onSelected: (String selection) {
-        widget.typeController.text = selection;
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController fieldTextController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        fieldTextController.text = widget.typeController.text;
-        fieldTextController.selection = widget.typeController.selection;
-        return MyInputField(
-          title: 'Type',
-          hint: 'Enter type here.',
-          controller: fieldTextController,
-          height: 50,
-          child: TextFormField(
-            controller: fieldTextController,
-            onChanged: (value) {
-              widget.typeController.text = value;
-            },
-            focusNode: focusNode,
-            decoration: const InputDecoration(
-              hintText: 'Enter type here.',
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class _PersonalDetailPageState extends State<PersonalDetailPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _typeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd');
+  final DateFormat _dateFormatter = DateFormat('dd-MM-yyyy');
   final TextEditingController _trustController = TextEditingController();
-
 
   bool _isLoading = true;
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        _dateController.text = _dateFormatter.format(picked);
-      });
-    }
-  }
-
   _submitNote(BuildContext context) async {
-    print("submit");
     if (_titleController.text.isNotEmpty) {
-      print(_typeController.text);
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
           widget.myCategory.title ?? "Error");
+      DateTime date = DateTime.tryParse(_dateController.text) ?? DateTime.now();
+      String formattedDate = _dateFormatter.format(date);
       final data = {
         "title": _titleController.text,
         "description": _descriptionController.text,
-        "date": _dateController.text,
+        "date": formattedDate,
         "type": _typeController.text,
-        "trust": _trustController.text  // Añade esta línea
+        "trust": _trustController.text
       };
       print("Data to save: $data");
       if (widget.id != null) {
@@ -142,7 +53,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
       _descriptionController.clear();
       _dateController.clear();
       _typeController.clear();
-      _trustController.clear();  // Añade esta línea
+      _trustController.clear();
       Navigator.pop(context, "refresh");
     } else {
       print("No entro");
@@ -214,23 +125,21 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
                         children: [
                           Expanded(
                             flex: 5,
-                            child: TypeAutocomplete(
-                              typeController: _typeController,
+                            child: FieldAutocomplete(
+                              controller: _typeController,
+                              label: "Type",
+                              dbHelper: PersonalDatabaseHelper(),
+                              loadItemsFunction: () async {
+                                return await PersonalDatabaseHelper().getTypes();
+                              },
                             ),
                           ),
-                          const SizedBox(width: 10),  // Añade espacio entre los dos campos
+                          const SizedBox(width: 10),
                           Expanded(
                             flex: 3,
-                            child: GestureDetector(
-                              onTap: () => _selectDate(context),
-                              child: AbsorbPointer(
-                                child: MyInputField(
-                                  title: 'Date',
-                                  hint: 'Select Date',
-                                  controller: _dateController,
-                                  height: 50,
-                                ),
-                                ),
+                            child: CupertinoDatePickerField(
+                              controller: _dateController,
+                              dateFormatter: _dateFormatter,
                             ),
                           ),
                         ],
@@ -245,7 +154,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
                       const SizedBox(height: 27),
                       Text("Trust", style: subHeadingStyle(color: Colors.black)),
                       const SizedBox(height: 5),
-                      Center(  // Añade el widget Center
+                      Center(
                         child: TrustCounter(controller: _trustController),
                       ),
                     ],
@@ -258,11 +167,11 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: MyButton(
-        key: ValueKey('personal'),
+        key: ValueKey("personal"),
         label: "Submit",
         onTap: () => _submitNote(context),
         bgColor: widget.myCategory.bgColor ?? Colors.black,
-        iconColor: Colors.black,
+        iconColor: widget.myCategory.iconColor ?? Colors.white,
       ),
     );
   }

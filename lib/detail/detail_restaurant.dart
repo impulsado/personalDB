@@ -7,7 +7,7 @@ import 'package:personaldb/widgets/cupertino_picker.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_restaurant.dart';
 import 'package:personaldb/widgets/star_rating.dart';
-import 'package:flutter/services.dart';
+import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/constants/theme.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
@@ -20,80 +20,6 @@ class RestaurantDetailPage extends StatefulWidget {
   _RestaurantDetailPageState createState() => _RestaurantDetailPageState();
 }
 
-class TypeAutocomplete extends StatefulWidget {
-  final TextEditingController typeController;
-
-  TypeAutocomplete({required this.typeController});
-
-  @override
-  _TypeAutocompleteState createState() => _TypeAutocompleteState();
-}
-
-class _TypeAutocompleteState extends State<TypeAutocomplete> {
-  List<String> _types = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTypes();
-  }
-
-  _loadTypes() async {
-    final dbHelper = RestaurantDatabaseHelper();
-    List<String> items = await dbHelper.getTypes();
-
-    print('Existing Types: $items');
-
-    setState(() {
-      _types = items;
-      _isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isLoading
-        ? CircularProgressIndicator()
-        : Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text == '') {
-          return const Iterable<String>.empty();
-        }
-        return _types.where((String type) {
-          return type
-              .toLowerCase()
-              .contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      onSelected: (String selection) {
-        widget.typeController.text = selection;
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController fieldTextController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        fieldTextController.text = widget.typeController.text;
-        fieldTextController.selection = widget.typeController.selection;
-        return MyInputField(
-          title: 'Type',
-          hint: 'Enter type here.',
-          controller: fieldTextController,
-          child: TextFormField(
-            controller: fieldTextController,
-            onChanged: (value) {
-              widget.typeController.text = value;
-            },
-            focusNode: focusNode,
-            decoration: const InputDecoration(
-              hintText: 'Enter type here.',
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
 
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   final TextEditingController _titleController = TextEditingController();
@@ -201,8 +127,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                         children: [
                           Flexible(
                             flex: 5,
-                            child: TypeAutocomplete(
-                              typeController: _typeController,
+                            child: FieldAutocomplete(
+                              controller: _typeController,
+                              label: "Type",
+                              dbHelper: RestaurantDatabaseHelper(),
+                              loadItemsFunction: () async {
+                                return await RestaurantDatabaseHelper().getTypes();
+                              },
                             ),
                           ),
                           SizedBox(width: 15),
