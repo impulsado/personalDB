@@ -1,8 +1,9 @@
 # PersonalDB
 
-A secure application for storing your personal database on your phone, with data encryption.
+A **secure** application for storing your **personal database** on your phone, with data encryption.
+
 <div align="center">
-  <img src="screenshots/logo.jpg" alt="PersonalDB Logo" width="400">
+  <img src="screenshots/logo.jpg" alt="PersonalDB Logo" width="350">
 </div>
 
 ## Features
@@ -16,9 +17,10 @@ A secure application for storing your personal database on your phone, with data
 ## Screenshots
 <div align="center">
   <img src="screenshots/homepage.png" alt="PersonalDB Homepage" width="400">
-  <img src="screenshots/restaurant_category.png" alt="PersonalDB Restaurant Category" width="400">
 </div>
+
 <div align="center">
+  <img src="screenshots/restaurant_category.png" alt="PersonalDB Restaurant Category" width="400">
   <img src="screenshots/restaurant_detail.png" alt="PersonalDB Restaurant Detail" width="400">
 </div>
 
