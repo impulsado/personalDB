@@ -6,6 +6,7 @@ import 'package:personaldb/categories/category_personal.dart';
 import 'package:personaldb/categories/category_restaurant.dart';
 import 'package:personaldb/categories/category_wishlist.dart';
 import 'package:personaldb/categories/category_entertainment.dart';
+import 'package:personaldb/categories/category_others.dart';
 import 'package:personaldb/models/categories.dart';
 
 class Categories extends StatelessWidget {
@@ -53,6 +54,9 @@ class Categories extends StatelessWidget {
               break;
             case 'Entertainment':
               page = CategoryEntertainment(myCategory);
+              break;
+            case 'Others':
+              page = CategoryOthers(myCategory);
               break;
             default:
               throw Exception('Unsupported category: ${myCategory.title}');
