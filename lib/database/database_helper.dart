@@ -1,14 +1,43 @@
-import 'package:sqflite/sqflite.dart' as sql;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
 
 class DatabaseHelper {
+  static final storage = new FlutterSecureStorage();
+  static sql.Database? _database;
+  static String? dbPath; // dbPath no debe tener valor por defecto
+
   static Future<sql.Database> db() async {
-    return sql.openDatabase(
-      "personal.db",
+    if (_database != null) return _database!;
+
+    // Recuperar la ruta de la base de datos y la contraseña de storage
+    dbPath = await storage.read(key: 'db_path');
+    String? password = await storage.read(key: 'db_password');
+
+    if (dbPath == null || password == null) {
+      throw Exception('No se encontró la base de datos o la contraseña');
+    }
+
+    _database = await sql.openDatabase(
+      dbPath!, // Usamos la ruta del archivo para abrir la base de datos
       version: 1,
+      password: password,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
       },
     );
+    return _database!;
+  }
+
+  static Future<bool> validatePassword(String password) async {
+    try {
+      await sql.openReadOnlyDatabase(
+        dbPath!, // Usamos la ruta del archivo para abrir la base de datos
+        password: password,
+      );
+      return true;
+    } on sql.DatabaseException {
+      return false;
+    }
   }
 
   static Future<void> createTables(sql.Database database) async {
