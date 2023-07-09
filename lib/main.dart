@@ -17,11 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "personalDB",
       theme: ThemeData(),
-<<<<<<< HEAD
-      initialRoute: '/login', // Cambiamos esta línea
-=======
       initialRoute: '/login',
->>>>>>> master
       routes: {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),

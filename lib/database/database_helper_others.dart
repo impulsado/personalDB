@@ -1,9 +1,5 @@
 import 'package:flutter/foundation.dart';
-<<<<<<< HEAD
-import 'package:sqflite/sqflite.dart' as sql;
-=======
 import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
->>>>>>> master
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/database/database_helper_common.dart';
 
