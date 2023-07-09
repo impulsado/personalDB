@@ -5,6 +5,7 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_health.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
+import 'package:personaldb/main.dart';
 
 class HealthDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -24,36 +25,39 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
   bool _isLoading = true;
 
   _submitNote(BuildContext context) async {
-    print("submit");
     if (_titleController.text.isNotEmpty) {
-      print("Type: ${_typeController.text}");
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "description": _descriptionController.text,
         "type": _typeController.text
       };
-      print("Data to save: $data");
+
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _descriptionController.clear();
       _typeController.clear();
       Navigator.pop(context, "refresh");
-    } else {
-      print("no entro");
     }
   }
 
   _loadNote() async {
     if (widget.id != null) {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
@@ -112,7 +116,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
                         label: "Category",
                         dbHelper: HealthDatabaseHelper(),
                         loadItemsFunction: () async {
-                          return await HealthDatabaseHelper().getTypes();
+                          return await HealthDatabaseHelper().getTypes(MyApp.dbPassword!);
                         },
                       ),
                       const SizedBox(height: 10),

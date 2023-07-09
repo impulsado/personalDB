@@ -6,6 +6,7 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/widgets/cupertino_picker.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:flutter/services.dart';
+import 'package:personaldb/main.dart';  // Import MyApp
 
 class WishlistDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -28,9 +29,12 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> {
 
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty) {
-      print(widget.myCategory.title);
-      final dbHelper =
-      DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "link": _linkController.text,
@@ -39,9 +43,9 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> {
         "notes": _notesController.text,
       };
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _linkController.clear();
@@ -54,9 +58,13 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
-      final dbHelper =
-      DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";

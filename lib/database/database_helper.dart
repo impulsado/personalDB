@@ -1,43 +1,103 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
+import 'package:flutter/material.dart';
 
 class DatabaseHelper {
-  static final storage = new FlutterSecureStorage();
-  static sql.Database? _database;
-  static String? dbPath; // dbPath no debe tener valor por defecto
+  static String? dbPath;
 
-  static Future<sql.Database> db() async {
-    if (_database != null) return _database!;
-
-    // Recuperar la ruta de la base de datos y la contraseña de storage
-    dbPath = await storage.read(key: 'db_path');
-    String? password = await storage.read(key: 'db_password');
-
-    if (dbPath == null || password == null) {
-      throw Exception('No se encontró la base de datos o la contraseña');
+  static Future<sql.Database> db(String password) async {
+    if (dbPath == null) {
+      throw Exception('No se encontró la base de datos');
     }
 
-    _database = await sql.openDatabase(
-      dbPath!, // Usamos la ruta del archivo para abrir la base de datos
+    if (password.isEmpty) {
+      throw Exception('No se encontró la contraseña');
+    }
+
+    sql.Database database = await sql.openDatabase(
+      dbPath!,
       version: 1,
       password: password,
-      onCreate: (sql.Database database, int version) async {
-        await createTables(database);
+      onCreate: (sql.Database db, int version) async {
+        await createTables(db);
       },
     );
-    return _database!;
+
+    return database;
   }
 
-  static Future<bool> validatePassword(String password) async {
+
+  static Future<void> createDb(String path, String password) async {
+    dbPath = path;
+    sql.Database db = await sql.openDatabase(
+      path,
+      version: 1,
+      password: password,
+      onCreate: (sql.Database db, int version) async {
+        await createTables(db);
+      },
+    );
+    await db.close();
+  }
+
+  static Future<bool> validatePassword(String path, String password) async {
+    sql.Database? db;
+
     try {
-      await sql.openReadOnlyDatabase(
-        dbPath!, // Usamos la ruta del archivo para abrir la base de datos
+      db = await sql.openReadOnlyDatabase(
+        path,
         password: password,
       );
+
+      // Probamos a hacer una consulta a la base de datos para verificar la contraseña
+      await db.rawQuery('SELECT * FROM sqlite_master LIMIT 1');
+
+      // Si la consulta se ejecuta con éxito, la contraseña es correcta.
       return true;
-    } on sql.DatabaseException {
+    } catch (e) {
+      // Si hay una excepción (por ejemplo, una excepción de SQLite), la contraseña es incorrecta.
+      print('Contraseña incorrecta. No se puede abrir la base de datos.');
       return false;
+    } finally {
+      // Asegúrese de cerrar la base de datos para evitar fugas de memoria.
+      await db?.close();
     }
+  }
+
+
+  static Future<String?> askPassword(BuildContext context) async {
+    String? password;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ingresa tu contraseña'),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return TextField(
+                  obscureText: true,
+                  onChanged: (value) => setState(() => password = value),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Contraseña',
+                  ),
+                );
+              }
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(null),
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(password),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result;
   }
 
   static Future<void> createTables(sql.Database database) async {

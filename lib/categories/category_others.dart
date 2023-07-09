@@ -4,13 +4,14 @@ import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/detail/detail_factory.dart';
+import 'package:personaldb/main.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyAppOthers());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyAppOthers extends StatelessWidget {
+  const MyAppOthers({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class _CategoryOthersState extends State<CategoryOthers> {
   void _refreshNotes() async {
     try {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      final data = await dbHelper.getItems();
+      final data = await dbHelper.getItems(MyApp.dbPassword!);
       setState(() {
         if (data.isEmpty) {
           print("No items found in the database");
@@ -148,7 +149,7 @@ class _CategoryOthersState extends State<CategoryOthers> {
                         icon: Icon(Icons.close),
                         onPressed: () async {
                           final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-                          await dbHelper.deleteItem(_notes[index]['id']);
+                          await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
                           await Future.delayed(const Duration(milliseconds: 50));
                           _refreshNotes();
                         },

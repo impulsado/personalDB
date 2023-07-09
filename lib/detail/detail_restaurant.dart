@@ -9,6 +9,7 @@ import 'package:personaldb/database/database_helper_restaurant.dart';
 import 'package:personaldb/widgets/star_rating.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/main.dart';  // Import MyApp
 
 class RestaurantDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -33,8 +34,12 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty && _rateController.text.isNotEmpty) {
-      final dbHelper =
-      DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "location": _locationController.text,
@@ -44,9 +49,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
         "rate": _rateController.text,
       };
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _locationController.clear();
@@ -60,9 +65,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
-      final dbHelper =
-      DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
@@ -132,7 +141,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                               label: "Type",
                               dbHelper: RestaurantDatabaseHelper(),
                               loadItemsFunction: () async {
-                                return await RestaurantDatabaseHelper().getTypes();
+                                return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
                               },
                             ),
                           ),

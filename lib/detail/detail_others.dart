@@ -3,6 +3,7 @@ import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
+import 'package:personaldb/main.dart';
 
 class OthersDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -20,22 +21,23 @@ class _OthersDetailPageState extends State<OthersDetailPage> {
 
   bool _isLoading = true;
 
-
-
   _submitNote(BuildContext context) async {
-    print("submit");
+
     if (_titleController.text.isNotEmpty) {
 
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "description": _descriptionController.text,
       };
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _descriptionController.clear();
@@ -46,9 +48,13 @@ class _OthersDetailPageState extends State<OthersDetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";

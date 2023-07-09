@@ -7,7 +7,7 @@ import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/widgets/star_rating.dart';
 import 'package:flutter/services.dart';
 import 'package:personaldb/constants/theme.dart';
-
+import 'package:personaldb/main.dart';
 
 class CookingDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -36,8 +36,12 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
         _difficultyController.text.isNotEmpty &&
         _recipeController.text.isNotEmpty &&
         _rateController.text.isNotEmpty) {
-      final dbHelper =
-      DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "duration": _durationController.text,
@@ -47,9 +51,9 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
         "rate": _rateController.text,
       };
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _durationController.clear();
@@ -63,9 +67,13 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
       final dbHelper =
       DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
@@ -129,32 +137,40 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Duration", style: subHeadingStyle(color: Colors.black)),
+                                Text("Duration", style: subHeadingStyle(
+                                    color: Colors.black)),
                                 GestureDetector(
                                   onTap: () async {
                                     await showCupertinoModalPopup(
                                       context: context,
-                                      builder: (_) => SizedBox(
-                                        height: 200,
-                                        child: CupertinoTimerPicker(
-                                          mode: CupertinoTimerPickerMode.hm,
-                                          initialTimerDuration: Duration(minutes: _duration),
-                                          onTimerDurationChanged: (value) {
-                                            HapticFeedback.selectionClick();
-                                            setState(() {
-                                              _duration = value.inMinutes;
-                                              _durationController.text = '${value.inHours}h ${value.inMinutes.remainder(60)}min';
-                                            });
-                                          },
-                                        ),
-                                      ),
+                                      builder: (_) =>
+                                          SizedBox(
+                                            height: 200,
+                                            child: CupertinoTimerPicker(
+                                              mode: CupertinoTimerPickerMode.hm,
+                                              initialTimerDuration: Duration(
+                                                  minutes: _duration),
+                                              onTimerDurationChanged: (value) {
+                                                HapticFeedback.selectionClick();
+                                                setState(() {
+                                                  _duration = value.inMinutes;
+                                                  _durationController.text =
+                                                  '${value.inHours}h ${value
+                                                      .inMinutes.remainder(
+                                                      60)}min';
+                                                });
+                                              },
+                                            ),
+                                          ),
                                     );
                                   },
                                   child: AbsorbPointer(
                                     child: CupertinoTextField(
                                       controller: _durationController,
                                       placeholder: "Duration",
-                                      prefix: Icon(CupertinoIcons.time, color: CupertinoColors.inactiveGray, size: 18.0),
+                                      prefix: Icon(CupertinoIcons.time,
+                                          color: CupertinoColors.inactiveGray,
+                                          size: 18.0),
                                     ),
                                   ),
                                 ),
@@ -167,14 +183,20 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text("Difficulty", style: subHeadingStyle(color: Colors.black)),
+                                Text("Difficulty", style: subHeadingStyle(
+                                    color: Colors.black)),
                                 StarRating(
-                                  icon: const Icon(Icons.local_fire_department, size: 15, color: Colors.red),
-                                  initialValue: _difficultyController.text.isNotEmpty ? double.parse(_difficultyController.text) : 0.0,
+                                  icon: const Icon(
+                                      Icons.local_fire_department, size: 15,
+                                      color: Colors.red),
+                                  initialValue: _difficultyController.text
+                                      .isNotEmpty ? double.parse(
+                                      _difficultyController.text) : 0.0,
                                   itemSize: 30.0,
                                   onChanged: (value) {
                                     setState(() {
-                                      _difficultyController.text = value.toString();
+                                      _difficultyController.text =
+                                          value.toString();
                                     });
                                   },
                                 ),
@@ -205,7 +227,9 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
                             Align(
                               alignment: Alignment.center,
                               child: StarRating(
-                                initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
+                                initialValue: _rateController.text.isNotEmpty
+                                    ? double.parse(_rateController.text)
+                                    : 0.0,
                                 onChanged: (value) {
                                   setState(() {
                                     _rateController.text = value.toString();

@@ -9,6 +9,7 @@ import 'package:personaldb/database/database_helper_personal.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/widgets/date_picker.dart';
+import 'package:personaldb/main.dart';
 
 class PersonalDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -32,8 +33,11 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
 
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty) {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       DateTime date = DateTime.tryParse(_dateController.text) ?? DateTime.now();
       String formattedDate = _dateFormatter.format(date);
       final data = {
@@ -43,11 +47,10 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
         "type": _typeController.text,
         "trust": _trustController.text
       };
-      print("Data to save: $data");
       if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data);
+        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       } else {
-        await dbHelper.createItem(data);
+        await dbHelper.createItem(data, MyApp.dbPassword!);
       }
       _titleController.clear();
       _descriptionController.clear();
@@ -62,11 +65,13 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
 
   _loadNote() async {
     if (widget.id != null) {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(
-          widget.myCategory.title ?? "Error");
-      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!);
+      if(MyApp.dbPassword == null) {
+        throw ArgumentError("La contraseña de la base de datos es nula");
+      }
+
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
       if (items.isNotEmpty) {
-        print("Loaded item: ${items[0]}");
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
@@ -130,7 +135,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
                               label: "Type",
                               dbHelper: PersonalDatabaseHelper(),
                               loadItemsFunction: () async {
-                                return await PersonalDatabaseHelper().getTypes();
+                                return await PersonalDatabaseHelper().getTypes(MyApp.dbPassword!);
                               },
                             ),
                           ),
