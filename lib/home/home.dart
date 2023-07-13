@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/categories.dart';
+import 'package:personaldb/settings/settings.dart';
+import 'package:personaldb/contacts/contacts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,32 +20,31 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 1; // índice inicial en "Home"
+
+  final List<Widget> _screens = [
+    Contacts(),
+    Categories(),
+    Settings(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(_screens[_currentIndex].runtimeType.toString(), style: headingStyle(color: Colors.black)),
+      ),
+      body: _screens[_currentIndex],
       backgroundColor: Colors.white,
       bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 25, left: 15),
-              child: Text("Categories", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 10),
-            Expanded(child: Categories(),)
-          ]
-      ),
     );
   }
 
@@ -57,25 +58,23 @@ class HomePage extends StatelessWidget {
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
         child: BottomNavigationBar(
           backgroundColor: Colors.white,
+          currentIndex: _currentIndex,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: Colors.grey.withOpacity(0.5),
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
           items: const [
-            BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_rounded, size: 30)),
             BottomNavigationBarItem(label: "Contacts", icon: Icon(Icons.contacts_outlined, size: 30)),
-            BottomNavigationBarItem(label: "Finance", icon: Icon(Icons.lock_clock_outlined, size: 30)),
+            BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_rounded, size: 30)),
+            BottomNavigationBarItem(label: "Settings", icon: Icon(Icons.settings, size: 30)),
           ],
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const Icon(Icons.menu_rounded, color: Colors.black, size: 40,)
     );
   }
 }

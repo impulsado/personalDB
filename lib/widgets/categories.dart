@@ -16,16 +16,37 @@ class Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: GridView.builder(
-          itemCount: categoryList.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10
-          ),
-          itemBuilder: (context, index) => _buildCategory(context, categoryList[index])),
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final appBarHeight = AppBar().preferredSize.height;
+    final bottomNavBarHeight = kBottomNavigationBarHeight; // added this
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Calculate the available height and width for the grid
+    final gridHeight = screenHeight - appBarHeight - bottomPadding - bottomNavBarHeight; // modified this line
+    final gridWidth = screenWidth;
+
+    // Calculate the aspect ratio for grid items
+    final crossAxisCount = 2;
+    final double crossAxisSpacing = 10.0;
+    final double mainAxisSpacing = 10.0;
+    final numberOfItems = categoryList.length;
+    final numberOfRows = (numberOfItems / crossAxisCount).ceil();
+    final heightOfOneRow = (gridHeight - ((numberOfRows - 1) * mainAxisSpacing)) / numberOfRows;
+
+    final childAspectRatio = gridWidth / (crossAxisCount * heightOfOneRow);
+
+    return GridView.builder(
+      padding: EdgeInsets.all(15),
+      itemCount: categoryList.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
+        childAspectRatio: childAspectRatio,
+      ),
+      physics: NeverScrollableScrollPhysics(), // añade esta línea
+      itemBuilder: (context, index) => _buildCategory(context, categoryList[index]),
     );
   }
 
