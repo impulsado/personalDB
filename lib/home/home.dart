@@ -40,7 +40,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(_screens[_currentIndex].runtimeType.toString(), style: headingStyle(color: Colors.black)),
+        title: Padding(
+          padding: EdgeInsets.only(left: 0), // padding on left side
+          child: Text(
+              _screens[_currentIndex].runtimeType.toString(),
+              style: headingStyle(color: Colors.black)
+          ),
+        ),
       ),
       body: _screens[_currentIndex],
       backgroundColor: Colors.white,
