@@ -8,6 +8,9 @@ import 'package:personaldb/categories/category_wishlist.dart';
 import 'package:personaldb/categories/category_entertainment.dart';
 import 'package:personaldb/categories/category_others.dart';
 import 'package:personaldb/models/categories.dart';
+import 'package:personaldb/settings/settings.dart';
+import 'package:personaldb/constants/theme.dart';
+
 
 class Categories extends StatelessWidget {
   final categoryList = MyCategory.generateCategory();
@@ -16,17 +19,37 @@ class Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text('Categories', style: headingStyle(color: Colors.black)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Settings()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final appBarHeight = AppBar().preferredSize.height;
-    final bottomNavBarHeight = kBottomNavigationBarHeight; // added this
+    final bottomNavBarHeight = kBottomNavigationBarHeight;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Calculate the available height and width for the grid
-    final gridHeight = screenHeight - appBarHeight - bottomPadding - bottomNavBarHeight; // modified this line
+    final gridHeight = screenHeight - appBarHeight - bottomPadding - bottomNavBarHeight;
     final gridWidth = screenWidth;
 
-    // Calculate the aspect ratio for grid items
     final crossAxisCount = 2;
     final double crossAxisSpacing = 10.0;
     final double mainAxisSpacing = 10.0;
@@ -45,7 +68,7 @@ class Categories extends StatelessWidget {
         mainAxisSpacing: mainAxisSpacing,
         childAspectRatio: childAspectRatio,
       ),
-      physics: NeverScrollableScrollPhysics(), // añade esta línea
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => _buildCategory(context, categoryList[index]),
     );
   }

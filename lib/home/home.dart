@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/categories.dart';
-import 'package:personaldb/settings/settings.dart';
 import 'package:personaldb/contacts/contacts.dart';
+import 'package:personaldb/search/search.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,28 +26,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 1; // índice inicial en "Home"
+  int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    Contacts(),
     Categories(),
-    Settings(),
+    Contacts(),
+    Search(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Padding(
-          padding: EdgeInsets.only(left: 0), // padding on left side
-          child: Text(
-              _screens[_currentIndex].runtimeType.toString(),
-              style: headingStyle(color: Colors.black)
-          ),
-        ),
-      ),
       body: _screens[_currentIndex],
       backgroundColor: Colors.white,
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -75,9 +64,9 @@ class _HomePageState extends State<HomePage> {
             });
           },
           items: const [
-            BottomNavigationBarItem(label: "Contacts", icon: Icon(Icons.contacts_outlined, size: 30)),
             BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_rounded, size: 30)),
-            BottomNavigationBarItem(label: "Settings", icon: Icon(Icons.settings, size: 30)),
+            BottomNavigationBarItem(label: "Contacts", icon: Icon(Icons.contacts_outlined, size: 30)),
+            BottomNavigationBarItem(label: "Search", icon: Icon(Icons.search, size: 30)),
           ],
         ),
       ),

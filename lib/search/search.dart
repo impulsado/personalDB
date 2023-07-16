@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:personaldb/settings/settings.dart';
-import 'package:personaldb/constants/theme.dart';
 
-class Contacts extends StatelessWidget {
+class Search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Contacts', style: headingStyle(color: Colors.black)),
+        //title: Text('Search', style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.grey),
+            icon: Icon(Icons.close, color: Colors.grey),
             onPressed: () {
+              /*
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Settings()),
               );
+               */
             },
           ),
         ],
@@ -45,4 +45,3 @@ class Contacts extends StatelessWidget {
     );
   }
 }
-
