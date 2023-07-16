@@ -154,7 +154,9 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> {
                           title: "Description",
                           hint: "Enter description here.",
                           controller: _descriptionController,
-                          height: 200
+                          height: 200,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
                       ),
                       const SizedBox(height: 27),
                       Text("Trust", style: subHeadingStyle(color: Colors.black)),

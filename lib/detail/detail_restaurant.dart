@@ -167,7 +167,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                       title: "Notes",
                       hint: "Enter notes here.",
                       controller: _notesController,
-                      minLines: 5, // This will make the notes field larger.
+                      minLines: 5,
+                      inputType: TextInputType.multiline,
+                      inputAction: TextInputAction.newline,
                     ),
                     const SizedBox(height: 10),
                     Padding(

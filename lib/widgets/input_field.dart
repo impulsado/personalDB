@@ -10,6 +10,7 @@ class MyInputField extends StatelessWidget {
   final Widget? child;
   final double? height;
   final TextInputType inputType;
+  final TextInputAction? inputAction;
 
   const MyInputField({
     Key? key,
@@ -20,6 +21,7 @@ class MyInputField extends StatelessWidget {
     this.child,
     this.height,
     this.inputType = TextInputType.text,
+    this.inputAction,
   }) : super(key: key);
 
   @override
@@ -45,7 +47,8 @@ class MyInputField extends StatelessWidget {
                 style: subHeadingStyle(color: Colors.black),
                 keyboardType: inputType,
                 minLines: minLines,
-                maxLines: null, // Allow infinite number of lines
+                maxLines: null,
+                textInputAction: inputAction,
                 decoration: InputDecoration(
                   hintText: hint,
                   hintStyle: subHeadingStyle(color: Colors.black),

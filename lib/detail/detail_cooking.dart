@@ -217,6 +217,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> {
                         hint: "Enter recipe here.",
                         controller: _recipeController,
                         height: 150,
+                        inputType: TextInputType.multiline,
+                        inputAction: TextInputAction.newline,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),

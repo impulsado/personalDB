@@ -111,7 +111,9 @@ class _OthersDetailPageState extends State<OthersDetailPage> {
                           title: "Description",
                           hint: "Enter description here.",
                           controller: _descriptionController,
-                          height: 200
+                          height: 200,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
                       ),
                     ],
                   ),

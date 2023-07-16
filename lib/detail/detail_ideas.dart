@@ -148,6 +148,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
                         hint: "Enter description here.",
                         controller: _descriptionController,
                         height: 200,
+                        inputType: TextInputType.multiline,
+                        inputAction: TextInputAction.newline,
                       ),
                     ],
                   ),
