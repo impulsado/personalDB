@@ -13,21 +13,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registro')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        child: _registerForm(),
+      ),
+    );
+  }
+
+  Widget _registerForm() {
+    return Padding(
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
+          SizedBox(height: 30.0),
+          Container(
+            width: double.infinity,
+            height: 50.0,
+            margin: EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+              ),
               onPressed: () => _createDatabase(context),
-              child: Text('Crear nueva base de datos'),
+              child: Text('Create New Database', style: TextStyle(color: Colors.white)),
             ),
-            ElevatedButton(
+          ),
+          Container(
+            width: double.infinity,
+            height: 50.0,
+            margin: EdgeInsets.only(top: 20.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+              ),
               onPressed: () => _importDatabase(context),
-              child: Text('Importar base de datos'),
+              child: Text('Import Database', style: TextStyle(color: Colors.white)),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -40,15 +69,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final password = await DatabaseHelper.askPassword(context);
     if (password == null || password.isEmpty) {
-      _showErrorMessage(context, 'Acción cancelada o contraseña vacía');
+      _showErrorMessage(context, 'Action cancelled or empty password');
       return;
     }
 
     try {
       await DatabaseHelper.createDb(newPath, password);
-      Navigator.pushReplacementNamed(context, '/login'); // Aquí
+      Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
-      _showErrorMessage(context, 'Error al crear la base de datos: $e');
+      _showErrorMessage(context, 'Error while creating database: $e');
     }
   }
 
@@ -60,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final password = await DatabaseHelper.askPassword(context);
     if (password == null || password.isEmpty) {
-      _showErrorMessage(context, 'Acción cancelada o contraseña vacía');
+      _showErrorMessage(context, 'Action cancelled or empty password');
       return;
     }
 
@@ -68,18 +97,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appStoragePath = appDocDir.path;
 
-      // Crea un nuevo archivo en el almacenamiento de la aplicación con el mismo nombre que el archivo importado
+      // Create a new file in the app storage with the same name as the imported file
       File importedDbFile = File(newPath);
       String newDbPath = '$appStoragePath/${importedDbFile.path.split('/').last}';
       await importedDbFile.copy(newDbPath);
 
-      // Actualiza la ruta de la base de datos en DatabaseHelper a la nueva ubicación
+      // Update the db path in DatabaseHelper to the new location
       DatabaseHelper.dbPath = newDbPath;
 
       await DatabaseHelper.db(password);
-      Navigator.pushReplacementNamed(context, '/login'); // Aquí
+      Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
-      _showErrorMessage(context, 'Contraseña incorrecta o error al importar la base de datos: $e');
+      _showErrorMessage(context, 'Incorrect password or error while importing database: $e');
     }
   }
 

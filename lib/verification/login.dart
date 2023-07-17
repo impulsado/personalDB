@@ -12,7 +12,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final storage = new FlutterSecureStorage();
-  Future<bool>? dbExists;
+  final _passwordController = TextEditingController();
+  late Future<bool> dbExists;
 
   @override
   void initState() {
@@ -22,20 +23,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<bool> _checkIfDatabaseExistsAndInitialized() async {
     Directory docDirectory = await getApplicationDocumentsDirectory();
-
-    // Lista todos los archivos en el directorio de la aplicación
     List<FileSystemEntity> files = docDirectory.listSync();
 
-    // Comprueba si hay algún archivo de base de datos
     for (FileSystemEntity file in files) {
       if (file.path.endsWith('.db')) {
-        // Si se encuentra un archivo de base de datos, establece la ruta en DatabaseHelper y devuelve true
         DatabaseHelper.dbPath = file.path;
         return true;
       }
     }
 
-    // Si no se encuentra ningún archivo de base de datos, borra las claves de almacenamiento y devuelve false
     await storage.delete(key: 'db_path');
     await storage.delete(key: 'db_password');
 
@@ -49,20 +45,22 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == true) {
-            // Si la base de datos existe, muestra la pantalla de inicio de sesión
             return Scaffold(
-              appBar: AppBar(title: Text('Login')),
-              body: Center(child: _loginButton()),
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                //title: Text('', style: TextStyle(color: Colors.black)),
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+              body: SingleChildScrollView(child: _loginForm()),
             );
           } else {
-            // Si la base de datos no existe, redirige al usuario a la pantalla de registro
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacementNamed(context, '/register');
             });
-            return SizedBox.shrink(); // Devuelve un widget vacío mientras se realiza la redirección
+            return SizedBox.shrink();
           }
         } else {
-          // Mientras la comprobación de la base de datos está en progreso, muestra un indicador de progreso
           return Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
@@ -71,73 +69,66 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
-  Widget _loginButton() {
-    return ElevatedButton(
-      onPressed: () => _login(context),
-      child: Text('Iniciar sesión'),
+  Widget _loginForm() {
+    return Padding(
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
+          SizedBox(height: 30.0),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              fillColor: Colors.white,
+              filled: true,
+              border: OutlineInputBorder(),
+              labelText: 'Password',
+              labelStyle: TextStyle(color: Colors.black),
+            ),
+            style: TextStyle(color: Colors.black),
+          ),
+          SizedBox(height: 20.0),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              minimumSize: Size(double.infinity, 50),
+            ),
+            onPressed: () => _login(context),
+            child: Text('Log In', style: TextStyle(color: Colors.white)),
+          ),
+          SizedBox(height: 20.0),
+          TextButton(
+            onPressed: () => Navigator.pushReplacementNamed(context, '/register'),
+            child: Text('Create/Import Database', style: TextStyle(color: Colors.grey)),
+          ),
+        ],
+      ),
     );
   }
 
   void _login(BuildContext context) async {
-    final password = await _askPassword(context);
-    if (password == null || password.isEmpty) {
-      _showErrorMessage(context, 'Acción cancelada o contraseña vacía');
+    final password = _passwordController.text;
+    if (password.isEmpty) {
+      _showErrorMessage(context, 'Empty password');
       return;
     }
 
     if (DatabaseHelper.dbPath != null) {
       bool passwordCorrect = await DatabaseHelper.validatePassword(DatabaseHelper.dbPath!, password);
       if (!passwordCorrect) {
-        _showErrorMessage(context, 'Contraseña incorrecta');
+        _showErrorMessage(context, 'Incorrect password');
         return;
       }
     } else {
-      _showErrorMessage(context, 'Ruta de la base de datos no encontrada');
+      _showErrorMessage(context, 'Database path not found');
       return;
     }
 
     await DatabaseHelper.db(password);
-    MyApp.dbPassword = password; // Store the password
+    MyApp.dbPassword = password;
     Navigator.pushReplacementNamed(context, '/home');
-  }
-
-
-
-  Future<String?> _askPassword(BuildContext context) async {
-    String? password;
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Ingresa tu contraseña'),
-          content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return TextField(
-                  obscureText: true,
-                  onChanged: (value) => setState(() => password = value),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Contraseña',
-                  ),
-                );
-              }
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () => Navigator.of(context).pop(null),
-            ),
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(password),
-            ),
-          ],
-        );
-      },
-    );
-
-    return result;
   }
 
   void _showErrorMessage(BuildContext context, String message) {
