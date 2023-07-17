@@ -139,49 +139,48 @@ class _CategoryCookingState extends State<CategoryCooking> {
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   margin: const EdgeInsets.all(8.0),
-                  height: 90.0,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,  // Color del InkWell
                     borderRadius: BorderRadius.circular(30.0),
                     border: Border.all(color: Colors.grey),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Text(
-                        _notes[index]["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["title"] ?? "No Title",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["duration"] ?? "",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Row(
+                            children: [
+                              DifficultyRating(
+                                initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
+                                onChanged: (value) {},
+                                itemSize: 20,
+                              ),
+                              SizedBox(width: 5),
+                              StarRating(
+                                initialValue: double.parse(_notes[index]["rate"] ?? "0"),
+                                onChanged: (value) {},
+                                itemSize: 20,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 5.0),
-                      Expanded(
-                        child: Text(
-                          _notes[index]["duration"] ?? "",
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(height: 5.0),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            DifficultyRating(
-                              initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
-                              onChanged: (value) {},
-                              itemSize: 20,
-                            ),
-                            SizedBox(width: 5),
-                            StarRating(
-                              initialValue: double.parse(_notes[index]["rate"] ?? "0"),
-                              onChanged: (value) {},
-                              itemSize: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

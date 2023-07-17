@@ -112,33 +112,35 @@ class _CategoryOthersState extends State<CategoryOthers> {
             child: Container(
               padding: const EdgeInsets.all(8.0),
               margin: const EdgeInsets.all(8.0),
-              height: 90.0,
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,  // Color del InkWell
+                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(30.0),
                 border: Border.all(color: Colors.grey),
               ),
               child: Stack(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Text(
-                        _notes[index]["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 5.0),
-                      Expanded(
-                        child: Text(
-                          _notes[index]["description"] ?? "",
-                          maxLines: 3,
+                  Container(
+                    margin: EdgeInsets.only(right: 50.0), // Aquí cambiamos el padding por un margin
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min, // Hace que la columna se ajuste a su contenido.
+                      children: [
+                        const SizedBox(height: 5.0),
+                        Text(
+                          _notes[index]["title"] ?? "No Title",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 5.0),
+                        Text(
+                          _notes[index]["description"] ?? "",
+                          maxLines: 5, // Limita el número de líneas a 5.
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5.0),
+                      ],
+                    ),
                   ),
                   Positioned(
                     right: 0,
@@ -178,5 +180,4 @@ class _CategoryOthersState extends State<CategoryOthers> {
       },
     );
   }
-
 }

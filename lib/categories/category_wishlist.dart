@@ -106,7 +106,10 @@ class _CategoryWishListState extends State<CategoryWishList> {
                 onTap: () async {
                   String? action = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
+                    ),
                   );
                   if (action == "refresh") {
                     _refreshNotes();
@@ -115,41 +118,37 @@ class _CategoryWishListState extends State<CategoryWishList> {
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   margin: const EdgeInsets.all(8.0),
-                  height: 90.0,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade50,  // Color del InkWell
+                    color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(30.0),
                     border: Border.all(color: Colors.grey),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Text(
-                        _notes[index]["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 5.0),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              _notes[index]["price"] ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              _notes[index]["priority"] ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 60.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _notes[index]["title"] ?? "No Title",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 5.0),
+                        Text(
+                          _notes[index]["price"] ?? "",
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          _notes[index]["priority"] ?? "",
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -178,6 +177,7 @@ class _CategoryWishListState extends State<CategoryWishList> {
       ),
     );
   }
+
 
   Widget _buildFloatingActionButton() {
     return MyButton(

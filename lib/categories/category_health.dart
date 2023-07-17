@@ -123,42 +123,29 @@ class _CategoryHealthState extends State<CategoryHealth> {
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(right: 50.0, left: 8.0, top: 8.0, bottom: 8.0),
                   margin: const EdgeInsets.all(8.0),
-                  height: 90.0,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade50, // Color del InkWell
+                    color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(30.0),
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _notes[index]["title"] ?? "No Title",
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(width: 5.0),
-                          Expanded(
-                            child: Text(
-                              _notes[index]["type"] ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        _notes[index]["title"] ?? "No Title",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 5.0),
                       Text(
                         _notes[index]["description"] ?? "",
-                        maxLines: 3,
+                        maxLines: 5,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 5.0),
                     ],
                   ),
                 ),
@@ -188,7 +175,6 @@ class _CategoryHealthState extends State<CategoryHealth> {
       ),
     );
   }
-
 
   Widget _buildFloatingActionButton() {
     return MyButton(

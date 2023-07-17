@@ -115,44 +115,50 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> {
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   margin: const EdgeInsets.all(8.0),
-                  height: 90.0,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(30.0),
                     border: Border.all(color: Colors.grey),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Text(
-                            _notes[index]["title"] ?? "No Title",
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            _notes[index]["author"] ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          StarRating(
-                            initialValue: double.parse(_notes[index]["rate"] ?? "0"),
-                            onChanged: (value) {},
-                            itemSize: 20,
-                            isReadOnly: true,
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 5.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _notes[index]["title"] ?? "No Title",
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                _notes[index]["author"] ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5.0),
+                        Row(
+                          children: [
+                            StarRating(
+                              initialValue: double.parse(_notes[index]["rate"] ?? "0"),
+                              onChanged: (value) {},
+                              itemSize: 20,
+                              isReadOnly: true,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -181,8 +187,6 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> {
       ),
     );
   }
-
-
 
   Widget _buildFloatingActionButton() {
     return MyButton(

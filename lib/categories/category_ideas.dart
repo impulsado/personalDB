@@ -99,71 +99,78 @@ class _CategoryIdeasState extends State<CategoryIdeas> {
       child: ListView.builder(
         itemCount: _notes.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () async {
-              String? action = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
-              );
-              if (action == "refresh") {
-                _refreshNotes();
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.all(8.0),
-              height: 90.0,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,  // Color del InkWell
-                borderRadius: BorderRadius.circular(30.0),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Text(
-                        _notes[index]["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 5.0),
-                      Expanded(
-                        child: Text(
-                          _notes[index]["description"] ?? "",
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+          return Stack(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  String? action = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
+                  );
+                  if (action == "refresh") {
+                    _refreshNotes();
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,  // Color del InkWell
+                    borderRadius: BorderRadius.circular(30.0),
+                    border: Border.all(color: Colors.grey),
                   ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Center(
-                      child: IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () async {
-                          final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-                          await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
-                          await Future.delayed(const Duration(milliseconds: 50));
-                          _refreshNotes();
-                        },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["title"] ?? "No Title",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["description"] ?? "",
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 17.0),
+                  child: Center(
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () async {
+                        final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+                        await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
+                        await Future.delayed(const Duration(milliseconds: 50));
+                        _refreshNotes();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+
 
   Widget _buildFloatingActionButton() {
     return MyButton(
