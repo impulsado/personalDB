@@ -19,17 +19,85 @@ class IdeasDetailPage extends StatefulWidget {
   _IdeasDetailPageState createState() => _IdeasDetailPageState();
 }
 
-class _IdeasDetailPageState extends State<IdeasDetailPage> {
+class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('dd-MM-yyyy');
+  late final IdeasDatabaseHelper dbHelper;
 
   bool _isLoading = true;
+  Map<String, dynamic> initialData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Initialize the dbHelper
+    dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error") as IdeasDatabaseHelper;
+
+    _loadNote();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_isFormModified()) {
+      final confirm = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Discard changes?"),
+            content: const Text("You have unsaved changes! If you leave, you will lose these changes."),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text("CANCEL", style: TextStyle(color: Colors.grey)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text("DISCARD", style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
+      );
+      return confirm ?? false;
+    } else {
+      return true;
+    }
+  }
+
+  bool _isFormModified() {
+    return initialData["title"] != _titleController.text ||
+        initialData["category"] != _categoryController.text ||
+        initialData["date"] != _dateController.text ||
+        initialData["description"] != _descriptionController.text;
+  }
+
+  void _updateInitialData() {
+    initialData = {
+      "title": _titleController.text,
+      "category": _categoryController.text,
+      "date": _dateController.text,
+      "description": _descriptionController.text,
+    };
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _categoryController.dispose();
+    _dateController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty) {
+    if (_titleController.text.isNotEmpty &&
+        _categoryController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
         throw ArgumentError("La contraseña de la base de datos es nula");
@@ -38,9 +106,9 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
-        "description": _descriptionController.text,
+        "category": _categoryController.text,
         "date": _dateController.text,
-        "category": _categoryController.text
+        "description": _descriptionController.text,
       };
       if (widget.id != null) {
         await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
@@ -48,11 +116,13 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
         await dbHelper.createItem(data,MyApp.dbPassword!);
       }
       _titleController.clear();
-      _descriptionController.clear();
-      _dateController.clear();
       _categoryController.clear();
+      _dateController.clear();
+      _descriptionController.clear();
+
+      _updateInitialData();
+
       Navigator.pop(context, "refresh");
-    } else {
     }
   }
 
@@ -64,13 +134,16 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
+
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
-          _descriptionController.text = items[0]["description"] ?? "";
-          _dateController.text = items[0]["date"] ?? "";
           _categoryController.text = items[0]["category"] ?? "";
+          _dateController.text = items[0]["date"] ?? "";
+          _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
+
+          _updateInitialData();
         });
       }
     } else {
@@ -81,94 +154,90 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _loadNote();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.myCategory.bgColor,
-      appBar: _buildAppBar(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Container(
-        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: widget.myCategory.bgColor,
+        appBar: _buildAppBar(),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyInputField(
-                        title: "Title",
-                        hint: "Enter title here.",
-                        controller: _titleController,
-                        height: 50,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: FieldAutocomplete(
-                              controller: _categoryController,
-                              label: "Category",
-                              dbHelper: IdeasDatabaseHelper(),
-                              loadItemsFunction: () async {
-                                return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
-                              },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyInputField(
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          height: 50,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: FieldAutocomplete(
+                                controller: _categoryController,
+                                label: "Category",
+                                dbHelper: IdeasDatabaseHelper(),
+                                loadItemsFunction: () async {
+                                  return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
+                                },
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            flex: 3,
-                            child: CupertinoDatePickerField(
-                              controller: _dateController,
-                              dateFormatter: _dateFormatter,
+                            const SizedBox(width: 10),
+                            Expanded(
+                              flex: 3,
+                              child: CupertinoDatePickerField(
+                                controller: _dateController,
+                                dateFormatter: _dateFormatter,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Description",
-                        hint: "Enter description here.",
-                        controller: _descriptionController,
-                        height: 200,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Description",
+                          hint: "Enter description here.",
+                          controller: _descriptionController,
+                          height: 200,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: MyButton(
-        label: "Submit",
-        onTap: () => _submitNote(context),
-        bgColor: widget.myCategory.bgColor ?? Colors.black,
-        iconColor: widget.myCategory.iconColor ?? Colors.white,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: MyButton(
+          label: "Submit",
+          onTap: () => _submitNote(context),
+          bgColor: widget.myCategory.bgColor ?? Colors.black,
+          iconColor: widget.myCategory.iconColor ?? Colors.white,
+        ),
       ),
     );
   }
-
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -178,10 +247,13 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> {
         widget.myCategory.title ?? "Error",
         style: const TextStyle(color: Colors.black),
       ),
-      leading: GestureDetector(
-        child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-        onTap: () {
-          Navigator.pop(context);
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        onPressed: () async {
+          // If no changes were made or if user decides to discard changes, navigate back
+          if (await _onWillPop()) {
+            Navigator.of(context).pop();
+          }
         },
       ),
     );

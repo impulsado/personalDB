@@ -17,15 +17,79 @@ class HealthDetailPage extends StatefulWidget {
   _HealthDetailPageState createState() => _HealthDetailPageState();
 }
 
-class _HealthDetailPageState extends State<HealthDetailPage> {
+class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _typeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  late final HealthDatabaseHelper dbHelper;
 
   bool _isLoading = true;
+  Map<String, dynamic> initialData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Initialize the dbHelper
+    dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error") as HealthDatabaseHelper;
+
+    _loadNote();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_isFormModified()) {
+      final confirm = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Discard changes?"),
+            content: const Text("You have unsaved changes! If you leave, you will lose these changes."),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text("CANCEL", style: TextStyle(color: Colors.grey)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text("DISCARD", style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
+      );
+      return confirm ?? false;
+    } else {
+      return true;
+    }
+  }
+
+  bool _isFormModified() {
+    return initialData["title"] != _titleController.text ||
+        initialData["type"] != _typeController.text ||
+        initialData["description"] != _descriptionController.text;
+  }
+
+  void _updateInitialData() {
+    initialData = {
+      "title": _titleController.text,
+      "type": _typeController.text,
+      "description": _descriptionController.text,
+    };
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _typeController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty) {
+    if (_titleController.text.isNotEmpty &&
+        _typeController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
         throw ArgumentError("La contraseña de la base de datos es nula");
@@ -34,8 +98,8 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
+        "type": _typeController.text,
         "description": _descriptionController.text,
-        "type": _typeController.text
       };
 
       if (widget.id != null) {
@@ -46,6 +110,9 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
       _titleController.clear();
       _descriptionController.clear();
       _typeController.clear();
+
+      _updateInitialData();
+
       Navigator.pop(context, "refresh");
     }
   }
@@ -58,12 +125,15 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
+
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _typeController.text = items[0]["type"] ?? "";
           _isLoading = false;
+
+          _updateInitialData();
         });
       }
     } else {
@@ -74,74 +144,71 @@ class _HealthDetailPageState extends State<HealthDetailPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _loadNote();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.myCategory.bgColor,
-      appBar: _buildAppBar(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Container(
-          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-          decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: widget.myCategory.bgColor,
+        appBar: _buildAppBar(),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+            margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50),
-                      const SizedBox(height: 10),
-                      FieldAutocomplete(
-                        controller: _typeController,
-                        label: "Category",
-                        dbHelper: HealthDatabaseHelper(),
-                        loadItemsFunction: () async {
-                          return await HealthDatabaseHelper().getTypes(MyApp.dbPassword!);
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                          title: "Description",
-                          hint: "Enter description here.",
-                          controller: _descriptionController,
-                          height: 200,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                      ),
-                    ],
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50),
+                        const SizedBox(height: 10),
+                        FieldAutocomplete(
+                          controller: _typeController,
+                          label: "Category",
+                          dbHelper: HealthDatabaseHelper(),
+                          loadItemsFunction: () async {
+                            return await HealthDatabaseHelper().getTypes(MyApp.dbPassword!);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                            title: "Description",
+                            hint: "Enter description here.",
+                            controller: _descriptionController,
+                            height: 200,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: MyButton(
-        label: "Submit",
-        onTap: () => _submitNote(context),
-        bgColor: widget.myCategory.bgColor ?? Colors.black,
-        iconColor: Colors.black,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: MyButton(
+          label: "Submit",
+          onTap: () => _submitNote(context),
+          bgColor: widget.myCategory.bgColor ?? Colors.black,
+          iconColor: Colors.black,
+        ),
       ),
     );
   }
