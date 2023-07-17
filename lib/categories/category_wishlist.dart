@@ -156,18 +156,36 @@ class _CategoryWishListState extends State<CategoryWishList> {
                 right: 0,
                 top: 0,
                 bottom: 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 17.0),
-                  child: Center(
-                    child: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () async {
+                child: Center(
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () async {
+                      final confirm = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Note"),
+                            content: const Text("Are you sure you want to delete this note?"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text("CANCEL", style: TextStyle(color: Colors.grey),),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text("DELETE", style: TextStyle(color: Colors.red),),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      if (confirm == true) {
                         final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
                         await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
                         await Future.delayed(const Duration(milliseconds: 50));
                         _refreshNotes();
-                      },
-                    ),
+                      }
+                    },
                   ),
                 ),
               ),
