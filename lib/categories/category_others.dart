@@ -120,7 +120,7 @@ class _CategoryOthersState extends State<CategoryOthers> {
               child: Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(right: 50.0), // Aquí cambiamos el padding por un margin
+                    margin: EdgeInsets.only(right: 50.0, left: 13.0), // Updated margin
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min, // Hace que la columna se ajuste a su contenido.

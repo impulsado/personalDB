@@ -99,96 +99,98 @@ class _CategoryIdeasState extends State<CategoryIdeas> {
       child: ListView.builder(
         itemCount: _notes.length,
         itemBuilder: (context, index) {
-          return Stack(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  String? action = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
-                  );
-                  if (action == "refresh") {
-                    _refreshNotes();
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,  // Color del InkWell
-                    borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 5.0),
-                          Text(
-                            _notes[index]["title"] ?? "No Title",
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5.0),
-                          Text(
-                            _notes[index]["description"] ?? "",
-                            maxLines: 5,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5.0),
-                        ],
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: double.infinity,  // This ensures that the note takes up the full available width
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(30.0),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 50.0, left: 13.0),  // Padding to avoid text overlap with the close button
+                    child: GestureDetector(
+                      onTap: () async {
+                        String? action = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
+                        );
+                        if (action == "refresh") {
+                          _refreshNotes();
+                        }
+                      },
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 5.0),
+                            Text(
+                              _notes[index]["title"] ?? "No Title",
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 5.0),
+                            Text(
+                              _notes[index]["description"] ?? "",
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 5.0),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () async {
-                      final confirm = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Delete Note"),
-                            content: const Text("Are you sure you want to delete this note?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: const Text("CANCEL", style: TextStyle(color: Colors.grey),),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
-                                child: const Text("DELETE", style: TextStyle(color: Colors.red),),
-                              ),
-                            ],
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () async {
+                          final confirm = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Delete Note"),
+                                content: const Text("Are you sure you want to delete this note?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(false),
+                                    child: const Text("CANCEL", style: TextStyle(color: Colors.grey),),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(true),
+                                    child: const Text("DELETE", style: TextStyle(color: Colors.red),),
+                                  ),
+                                ],
+                              );
+                            },
                           );
+                          if (confirm == true) {
+                            final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+                            await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
+                            await Future.delayed(const Duration(milliseconds: 50));
+                            _refreshNotes();
+                          }
                         },
-                      );
-                      if (confirm == true) {
-                        final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-                        await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
-                        await Future.delayed(const Duration(milliseconds: 50));
-                        _refreshNotes();
-                      }
-                    },
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           );
         },
       ),
     );
   }
-
 
   Widget _buildFloatingActionButton() {
     return MyButton(

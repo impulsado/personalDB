@@ -11,11 +11,13 @@ class DifficultyRating extends StatelessWidget {
   final double initialValue;
   final ValueChanged<double> onChanged;
   final double itemSize;
+  final bool isReadOnly;
 
   DifficultyRating({
     required this.onChanged,
     this.initialValue = 0.0,
     this.itemSize = 40.0,
+    this.isReadOnly = false,
   });
 
   @override
@@ -145,7 +147,7 @@ class _CategoryCookingState extends State<CategoryCooking> {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
+                    padding: EdgeInsets.only(right: 50.0, left: 13.0),  // Padding added here
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,12 +171,14 @@ class _CategoryCookingState extends State<CategoryCooking> {
                                 initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
                                 onChanged: (value) {},
                                 itemSize: 20,
+                                isReadOnly: true,
                               ),
-                              SizedBox(width: 5),
+                              SizedBox(width: 15),
                               StarRating(
                                 initialValue: double.parse(_notes[index]["rate"] ?? "0"),
                                 onChanged: (value) {},
                                 itemSize: 20,
+                                isReadOnly: true,
                               ),
                             ],
                           ),
@@ -185,7 +189,7 @@ class _CategoryCookingState extends State<CategoryCooking> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 18,
                 top: 0,
                 bottom: 0,
                 child: Center(

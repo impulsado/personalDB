@@ -124,21 +124,19 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 60.0),
+                    padding: EdgeInsets.only(right: 50.0, left: 13.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Expanded(
-                              child: Text(
+                            Text(
                                 _notes[index]["title"] ?? "No Title",
                                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            SizedBox(width: 5),
+                            SizedBox(width: 15),
                             Text(
                               _notes[index]["type"] ?? "",
                               maxLines: 1,
@@ -155,7 +153,7 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> {
                               itemSize: 20,
                               isReadOnly: true,
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: 15),
                             Text(
                               _notes[index]["price"] ?? "",
                               maxLines: 1,
@@ -170,7 +168,7 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 17,
                 top: 0,
                 bottom: 0,
                 child: Center(
@@ -212,6 +210,7 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> {
       ),
     );
   }
+
 
   Widget _buildFloatingActionButton() {
     return MyButton(

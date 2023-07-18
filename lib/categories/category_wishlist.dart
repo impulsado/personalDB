@@ -124,7 +124,7 @@ class _CategoryWishListState extends State<CategoryWishList> {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 60.0),
+                    padding: EdgeInsets.only(right: 50.0, left: 13.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -153,7 +153,7 @@ class _CategoryWishListState extends State<CategoryWishList> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 18,
                 top: 0,
                 bottom: 0,
                 child: Center(

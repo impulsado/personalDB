@@ -121,7 +121,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 60.0),  // Padding added here
+                    padding: EdgeInsets.only(right: 50.0, left: 13.0),  // Padding updated here
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -163,7 +163,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 18,
                 top: 0,
                 bottom: 0,
                 child: Center(

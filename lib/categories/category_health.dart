@@ -120,7 +120,7 @@ class _CategoryHealthState extends State<CategoryHealth> {
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.only(right: 50.0, left: 8.0, top: 8.0, bottom: 8.0),
+                  padding: const EdgeInsets.only(right: 60.0, left: 20.0, top: 8.0, bottom: 8.0),
                   margin: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,
@@ -148,7 +148,7 @@ class _CategoryHealthState extends State<CategoryHealth> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 18,
                 top: 0,
                 bottom: 0,
                 child: Center(
@@ -190,6 +190,7 @@ class _CategoryHealthState extends State<CategoryHealth> {
       ),
     );
   }
+
 
   Widget _buildFloatingActionButton() {
     return MyButton(
