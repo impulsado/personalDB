@@ -8,6 +8,7 @@ import 'package:personaldb/database/database_helper_ideas.dart';
 import 'package:personaldb/widgets/date_picker.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class IdeasDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -243,10 +244,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
-      title: Text(
-        widget.myCategory.title ?? "Error",
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onPressed: () async {

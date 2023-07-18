@@ -6,6 +6,7 @@ import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_health.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class HealthDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -217,10 +218,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
-      title: Text(
-        widget.myCategory.title ?? "Error",
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
       leading: GestureDetector(
         child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onTap: () {

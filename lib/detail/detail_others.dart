@@ -5,6 +5,7 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_others.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class OthersDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -198,10 +199,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
-      title: Text(
-        widget.myCategory.title ?? "Error",
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onPressed: () async {

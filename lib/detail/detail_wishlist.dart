@@ -6,6 +6,7 @@ import 'package:personaldb/widgets/cupertino_picker.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_wishlist.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class WishlistDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -256,10 +257,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
-      title: Text(
-        widget.myCategory.title ?? "Error",
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onPressed: () async {

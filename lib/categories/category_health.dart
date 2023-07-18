@@ -75,10 +75,7 @@ class _CategoryHealthState extends State<CategoryHealth> {
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
       elevation: 0,
-      title: Text(
-        widget.myCategory.title ?? "Error",
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black),),
       leading: GestureDetector(
         child: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onTap: () {
