@@ -1,5 +1,8 @@
 import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:io';
 
 class DatabaseHelper {
   static String? dbPath;
@@ -24,7 +27,6 @@ class DatabaseHelper {
 
     return database;
   }
-
 
   static Future<void> createDb(String path, String password) async {
     dbPath = path;
@@ -63,7 +65,6 @@ class DatabaseHelper {
     }
   }
 
-
   static Future<String?> askPassword(BuildContext context) async {
     String? password;
     final result = await showDialog<String>(
@@ -98,6 +99,20 @@ class DatabaseHelper {
     );
 
     return result;
+  }
+
+  static Future<void> exportDatabase() async {
+    final dbDirectory = await getApplicationDocumentsDirectory();
+    List<FileSystemEntity> dbFiles = dbDirectory.listSync();
+    dbFiles = dbFiles.where((element) => element.path.endsWith('.db')).toList();
+
+    if (dbFiles.isEmpty) {
+      print('No database file found');
+      return;
+    }
+
+    List<XFile> xFiles = dbFiles.map((file) => XFile(file.path)).toList();
+    await Share.shareXFiles(xFiles, text: 'My Database');
   }
 
   static Future<void> createTables(sql.Database database) async {

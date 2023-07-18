@@ -58,10 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacementNamed(context, '/register');
             });
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         } else {
-          return Scaffold(
+          return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
@@ -76,32 +76,33 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
           TextField(
+            cursorColor: Colors.black,
             controller: _passwordController,
             obscureText: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(),
               labelText: 'Password',
               labelStyle: TextStyle(color: Colors.black),
             ),
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               minimumSize: Size(double.infinity, 50),
             ),
             onPressed: () => _login(context),
-            child: Text('Log In', style: TextStyle(color: Colors.white)),
+            child: const Text('Log In', style: TextStyle(color: Colors.white)),
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           TextButton(
             onPressed: () => Navigator.pushReplacementNamed(context, '/register'),
-            child: Text('Create/Import Database', style: TextStyle(color: Colors.grey)),
+            child: const Text('Create/Import Database', style: TextStyle(color: Colors.grey)),
           ),
         ],
       ),

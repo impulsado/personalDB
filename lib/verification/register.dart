@@ -10,6 +10,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool _creatingDatabase = false;
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: <Widget>[
           Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
           SizedBox(height: 30.0),
-          Container(
+          _creatingDatabase
+              ? TextField(
+            obscureText: true,
+            controller: _passwordController,
+            cursorColor: Colors.black,
+            decoration: const InputDecoration(
+              fillColor: Colors.white,
+              filled: true,
+              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
+              labelText: 'Password',
+              labelStyle: TextStyle(color: Colors.black),
+            ),
+          )
+              : Container(
             width: double.infinity,
             height: 50.0,
             margin: EdgeInsets.only(top: 10.0),
@@ -40,8 +57,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
               ),
-              onPressed: () => _createDatabase(context),
-              child: Text('Create New Database', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                setState(() {
+                  _creatingDatabase = true;
+                });
+              },
+              child: const Text('Create New Database', style: TextStyle(color: Colors.white)),
             ),
           ),
           Container(
@@ -52,8 +73,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
               ),
-              onPressed: () => _importDatabase(context),
-              child: Text('Import Database', style: TextStyle(color: Colors.white)),
+              onPressed: _creatingDatabase
+                  ? () async {
+                final password = _passwordController.text;
+                if (password.isEmpty) {
+                  _showErrorMessage(context, 'Password cannot be empty');
+                  return;
+                }
+                await _createDatabase(context, password);
+              }
+                  : () => _importDatabase(context),
+              child: Text(_creatingDatabase ? 'Create' : 'Import Database', style: TextStyle(color: Colors.white)),
             ),
           ),
         ],
@@ -61,15 +91,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _createDatabase(BuildContext context) async {
+  Future<void> _createDatabase(BuildContext context, String password) async {
     final newPath = await _askCreateDatabase(context);
     if (newPath == null) {
-      return;
-    }
-
-    final password = await DatabaseHelper.askPassword(context);
-    if (password == null || password.isEmpty) {
-      _showErrorMessage(context, 'Action cancelled or empty password');
       return;
     }
 
@@ -133,3 +157,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
