@@ -10,7 +10,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  bool _creatingDatabase = false;
+  bool _inputPassword = false;
+  String _filePath = '';
   final _passwordController = TextEditingController();
 
   @override
@@ -35,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: <Widget>[
           Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
           SizedBox(height: 30.0),
-          _creatingDatabase
+          _inputPassword
               ? TextField(
             obscureText: true,
             controller: _passwordController,
@@ -59,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               onPressed: () {
                 setState(() {
-                  _creatingDatabase = true;
+                  _inputPassword = true;
                 });
               },
               child: const Text('Create New Database', style: TextStyle(color: Colors.white)),
@@ -73,17 +74,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
               ),
-              onPressed: _creatingDatabase
+              onPressed: _inputPassword
                   ? () async {
                 final password = _passwordController.text;
                 if (password.isEmpty) {
                   _showErrorMessage(context, 'Password cannot be empty');
                   return;
                 }
-                await _createDatabase(context, password);
+                _filePath.isEmpty ? await _createDatabase(context, password) : await _importDatabase(context, password);
               }
-                  : () => _importDatabase(context),
-              child: Text(_creatingDatabase ? 'Create' : 'Import Database', style: TextStyle(color: Colors.white)),
+                  : () async {
+                final result = await _askImportDatabase(context);
+                if (result != null) {
+                  _filePath = result;
+                  setState(() {
+                    _inputPassword = true;
+                  });
+                }
+              },
+              child: Text(_inputPassword ? 'Confirm' : 'Import Database', style: TextStyle(color: Colors.white)),
             ),
           ),
         ],
@@ -99,30 +108,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await DatabaseHelper.createDb(newPath, password);
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       _showErrorMessage(context, 'Error while creating database: $e');
     }
   }
 
-  void _importDatabase(BuildContext context) async {
-    final newPath = await _askImportDatabase(context);
-    if (newPath == null) {
-      return;
-    }
-
-    final password = await DatabaseHelper.askPassword(context);
-    if (password == null || password.isEmpty) {
-      _showErrorMessage(context, 'Action cancelled or empty password');
-      return;
-    }
-
+  Future<void> _importDatabase(BuildContext context, String password) async {
     try {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appStoragePath = appDocDir.path;
 
       // Create a new file in the app storage with the same name as the imported file
-      File importedDbFile = File(newPath);
+      File importedDbFile = File(_filePath);
       String newDbPath = '$appStoragePath/${importedDbFile.path.split('/').last}';
       await importedDbFile.copy(newDbPath);
 
@@ -130,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       DatabaseHelper.dbPath = newDbPath;
 
       await DatabaseHelper.db(password);
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       _showErrorMessage(context, 'Incorrect password or error while importing database: $e');
     }
@@ -157,4 +155,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-

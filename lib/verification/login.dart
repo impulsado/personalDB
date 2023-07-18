@@ -84,7 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: const InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
               labelText: 'Password',
               labelStyle: TextStyle(color: Colors.black),
             ),
