@@ -22,7 +22,7 @@ class EntertainmentDetailPage extends StatefulWidget {
 class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
-  final TextEditingController _genreController = TextEditingController();
+  final TextEditingController _linkController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
   late final EntertainmentDatabaseHelper dbHelper;
@@ -71,7 +71,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
         initialData["author"] != _authorController.text ||
-        initialData["genre"] != _genreController.text ||
+        initialData["link"] != _linkController.text ||
         initialData["notes"] != _notesController.text ||
         initialData["rate"] != _rateController.text;
   }
@@ -80,7 +80,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
     initialData = {
       "title": _titleController.text,
       "author": _authorController.text,
-      "genre": _genreController.text,
+      "link": _linkController.text,
       "notes": _notesController.text,
       "rate": _rateController.text,
     };
@@ -90,7 +90,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   void dispose() {
     _titleController.dispose();
     _authorController.dispose();
-    _genreController.dispose();
+    _linkController.dispose();
     _notesController.dispose();
     _rateController.dispose();
     super.dispose();
@@ -99,7 +99,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   _submitNote(BuildContext context) async {
     if (_titleController.text.isNotEmpty &&
         _authorController.text.isNotEmpty &&
-        _genreController.text.isNotEmpty &&
+        _linkController.text.isNotEmpty &&
         _notesController.text.isNotEmpty &&
         _rateController.text.isNotEmpty) {
 
@@ -111,7 +111,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
       final data = {
         "title": _titleController.text,
         "author": _authorController.text,
-        "genre": _genreController.text,
+        "link": _linkController.text,
         "notes": _notesController.text,
         "rate": _rateController.text,
       };
@@ -122,7 +122,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
       }
       _titleController.clear();
       _authorController.clear();
-      _genreController.clear();
+      _linkController.clear();
       _notesController.clear();
       _rateController.clear();
 
@@ -145,7 +145,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _authorController.text = items[0]["author"] ?? "";
-          _genreController.text = items[0]["genre"] ?? "";
+          _linkController.text = items[0]["link"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
@@ -199,11 +199,10 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
                         loadItemsFunction: () => dbHelper.getAuthor(MyApp.dbPassword!),
                       ),
                       const SizedBox(height: 10),
-                      FieldAutocomplete(
-                        controller: _genreController,
-                        label: "Genre",
-                        dbHelper: dbHelper,
-                        loadItemsFunction: () => dbHelper.getGenre(MyApp.dbPassword!),
+                      MyInputField(
+                        title: "Link",
+                        hint: "Link",
+                        controller: _linkController,
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
@@ -218,7 +217,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text('Rate', style: subHeadingStyle(color: Colors.black)),
                             StarRating(

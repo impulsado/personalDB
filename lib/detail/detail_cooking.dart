@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/widgets/star_rating.dart';
-import 'package:flutter/services.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/widgets/cupertino_time_picker.dart';
 
 class CookingDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -25,10 +24,10 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   final TextEditingController _difficultyController = TextEditingController();
   final TextEditingController _ingredientsController = TextEditingController();
   final TextEditingController _recipeController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
 
   bool _isLoading = true;
-  int _duration = 0;
   Map<String, dynamic> initialData = {};
 
   Future<bool> _onWillPop() async {
@@ -64,6 +63,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         initialData["difficulty"] != _difficultyController.text ||
         initialData["ingredients"] != _ingredientsController.text ||
         initialData["recipe"] != _recipeController.text ||
+        initialData["price"] != _priceController.text ||
         initialData["rate"] != _rateController.text;
   }
 
@@ -74,6 +74,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       "difficulty": _difficultyController.text,
       "ingredients": _ingredientsController.text,
       "recipe": _recipeController.text,
+      "price": _priceController.text,
       "rate": _rateController.text,
     };
   }
@@ -85,6 +86,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
     _difficultyController.dispose();
     _ingredientsController.dispose();
     _recipeController.dispose();
+    _priceController.dispose();
     _rateController.dispose();
     super.dispose();
   }
@@ -95,6 +97,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         _difficultyController.text.isNotEmpty &&
         _ingredientsController.text.isNotEmpty &&
         _recipeController.text.isNotEmpty &&
+        _priceController.text.isNotEmpty &&
         _rateController.text.isNotEmpty) {
 
       if (MyApp.dbPassword == null) {
@@ -108,8 +111,11 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         "difficulty": _difficultyController.text,
         "ingredients": _ingredientsController.text,
         "recipe": _recipeController.text,
+        "price": _priceController.text + "€",
         "rate": _rateController.text,
       };
+
+      print('Data to be saved: $data');
 
       if (widget.id != null) {
         await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
@@ -122,6 +128,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       _difficultyController.clear();
       _ingredientsController.clear();
       _recipeController.clear();
+      _priceController.clear();
       _rateController.clear();
 
       _updateInitialData();
@@ -141,11 +148,14 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
       if (items.isNotEmpty) {
         setState(() {
+          print('Price value: ${items[0]["price"]}');
+          print('Data loaded: ${items[0]}');
           _titleController.text = items[0]["title"] ?? "";
           _durationController.text = items[0]["duration"] ?? "";
           _difficultyController.text = items[0]["difficulty"] ?? "";
           _ingredientsController.text = items[0]["ingredients"] ?? "";
           _recipeController.text = items[0]["recipe"] ?? "";
+          _priceController.text = items[0]["price"] != null ? items[0]["price"].replaceAll('€', '') : "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
 
@@ -199,83 +209,23 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           controller: _titleController,
                           height: 50,
                         ),
-                        const SizedBox(height: 16),
                         Row(
                           children: [
                             Flexible(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Duration", style: subHeadingStyle(
-                                      color: Colors.black)),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (_) =>
-                                            SizedBox(
-                                              height: 200,
-                                              child: CupertinoTimerPicker(
-                                                mode: CupertinoTimerPickerMode
-                                                    .hm,
-                                                initialTimerDuration: Duration(
-                                                    minutes: _duration),
-                                                onTimerDurationChanged: (
-                                                    value) {
-                                                  HapticFeedback
-                                                      .selectionClick();
-                                                  setState(() {
-                                                    _duration =
-                                                        value.inMinutes;
-                                                    _durationController.text =
-                                                    '${value.inHours}h ${value
-                                                        .inMinutes.remainder(
-                                                        60)}min';
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                      );
-                                    },
-                                    child: AbsorbPointer(
-                                      child: CupertinoTextField(
-                                        controller: _durationController,
-                                        placeholder: "Duration",
-                                        prefix: Icon(CupertinoIcons.time,
-                                            color: CupertinoColors
-                                                .inactiveGray,
-                                            size: 18.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              flex: 1,
+                              child: CupertinoTimePickerWidget(
+                                title: "Duration",
+                                controller: _durationController,
                               ),
                             ),
                             SizedBox(width: 26),
                             Flexible(
-                              flex: 5,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text("Difficulty", style: subHeadingStyle(
-                                      color: Colors.black)),
-                                  StarRating(
-                                    icon: const Icon(
-                                        Icons.local_fire_department, size: 15,
-                                        color: Colors.red),
-                                    initialValue: _difficultyController.text
-                                        .isNotEmpty ? double.parse(
-                                        _difficultyController.text) : 0.0,
-                                    itemSize: 30.0,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _difficultyController.text =
-                                            value.toString();
-                                      });
-                                    },
-                                  ),
-                                ],
+                              flex: 1,
+                              child: MyInputField(
+                                title: "Price",
+                                hint: "Enter price here.",
+                                controller: _priceController,
+                                inputType: TextInputType.number,
                               ),
                             ),
                           ],
@@ -300,7 +250,22 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text('Rate'),
+                              SizedBox(height: 16),
+                              Text("Difficulty", style: subHeadingStyle(
+                                  color: Colors.black)),
+                              StarRating(
+                                icon: const Icon(
+                                    Icons.local_fire_department, size: 15, color: Colors.red),
+                                initialValue: _difficultyController.text.isNotEmpty ? double.parse(_difficultyController.text) : 0.0,
+                                itemSize: 41.5,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _difficultyController.text = value.toString();
+                                  });
+                                },
+                              ),
+                              SizedBox(height: 16),
+                              Text("Rate", style: subHeadingStyle(color: Colors.black)),
                               Align(
                                 alignment: Alignment.center,
                                 child: StarRating(

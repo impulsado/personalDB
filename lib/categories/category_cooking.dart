@@ -156,48 +156,51 @@ class _CategoryCookingState extends State<CategoryCooking> {
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade50,  // Color del InkWell
+                      color: Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(30.0),
                       border: Border.all(color: Colors.grey),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(right: 50.0, left: 13.0),  // Padding added here
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 5.0),
-                            Text(
-                              _notes[index]["title"] ?? "No Title",
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 5.0),
-                            Text(
-                              _notes[index]["duration"] ?? "",
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 5.0),
-                            Row(
-                              children: [
-                                DifficultyRating(
-                                  initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
-                                  onChanged: (value) {},
-                                  itemSize: 20,
-                                  isReadOnly: true,
-                                ),
-                                SizedBox(width: 15),
-                                StarRating(
-                                  initialValue: double.parse(_notes[index]["rate"] ?? "0"),
-                                  onChanged: (value) {},
-                                  itemSize: 20,
-                                  isReadOnly: true,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      padding: EdgeInsets.only(right: 50.0, left: 13.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["title"] ?? "No Title",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Row(
+                            children: [
+                              Text(
+                                _notes[index]["duration"] ?? "",
+                              ),
+                              SizedBox(width: 15),
+                              Text(
+                                _notes[index]["price"] ?? "",
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5.0),
+                          Row(
+                            children: [
+                              DifficultyRating(
+                                initialValue: double.parse(_notes[index]["difficulty"] ?? "0"),
+                                onChanged: (value) {},
+                                itemSize: 20,
+                                isReadOnly: true,
+                              ),
+                              SizedBox(width: 15),
+                              StarRating(
+                                initialValue: double.parse(_notes[index]["rate"] ?? "0"),
+                                onChanged: (value) {},
+                                itemSize: 20,
+                                isReadOnly: true,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),

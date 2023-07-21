@@ -1,5 +1,4 @@
 import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
@@ -9,11 +8,11 @@ class DatabaseHelper {
 
   static Future<sql.Database> db(String password) async {
     if (dbPath == null) {
-      throw Exception('No se encontró la base de datos');
+      throw Exception("No se encontró la base de datos");
     }
 
     if (password.isEmpty) {
-      throw Exception('No se encontró la contraseña');
+      throw Exception("No se encontró la contraseña");
     }
 
     sql.Database database = await sql.openDatabase(
@@ -22,6 +21,11 @@ class DatabaseHelper {
       password: password,
       onCreate: (sql.Database db, int version) async {
         await createTables(db);
+      },
+      onUpgrade: (sql.Database db, int oldVersion, int newVersion) async {
+        if (oldVersion < 2) {
+          // FUTURE CHANGES
+        }
       },
     );
 
@@ -65,42 +69,6 @@ class DatabaseHelper {
     }
   }
 
-  static Future<String?> askPassword(BuildContext context) async {
-    String? password;
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Ingresa tu contraseña'),
-          content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return TextField(
-                  obscureText: true,
-                  onChanged: (value) => setState(() => password = value),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Contraseña',
-                  ),
-                );
-              }
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () => Navigator.of(context).pop(null),
-            ),
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(password),
-            ),
-          ],
-        );
-      },
-    );
-
-    return result;
-  }
-
   static Future<void> exportDatabase() async {
     final dbDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> dbFiles = dbDirectory.listSync();
@@ -135,6 +103,7 @@ class DatabaseHelper {
           difficulty TEXT,
           ingredients TEXT,
           recipe TEXT,
+          price TEXT,
           rate TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -187,7 +156,7 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
           author TEXT,
-          genre TEXT,
+          link TEXT,
           notes TEXT,
           rate TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
