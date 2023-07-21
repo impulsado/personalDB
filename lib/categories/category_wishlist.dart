@@ -36,16 +36,15 @@ class _CategoryWishListState extends State<CategoryWishList> {
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
 
-  void _refreshNotes() async {
+  Future<void> _refreshNotes() async {
     try {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = await dbHelper.getItems(MyApp.dbPassword!);
+      if (data.isEmpty) {
+        print("No items found in the database");
+      }
       setState(() {
-        if (data.isEmpty) {
-          print("No items found in the database");
-        } else {
-          _notes = data;
-        }
+        _notes = data;
         _isLoading = false;
       });
     } catch (e) {
@@ -88,114 +87,132 @@ class _CategoryWishListState extends State<CategoryWishList> {
   }
 
   Widget _buildNoteList() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
+    if (_notes.isEmpty) {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
         ),
-      ),
-      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-      child: ListView.builder(
-        itemCount: _notes.length,
-        itemBuilder: (context, index) {
-          return Stack(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  String? action = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
+        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        child: Center(
+          child: Text("No items available"),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+        ),
+        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        child: ListView.builder(
+          itemCount: _notes.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () async {
+                String? action = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
+                );
+                if (action == "refresh") {
+                  _refreshNotes();
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 50.0, left: 13.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["title"] ?? "No Title",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["price"] ?? "",
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            _notes[index]["priority"] ?? "",
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                  if (action == "refresh") {
-                    _refreshNotes();
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 50.0, left: 13.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          _notes[index]["title"] ?? "No Title",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            _deleteNoteConfirmation(context, index);
+                          },
                         ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          _notes[index]["price"] ?? "",
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          _notes[index]["priority"] ?? "",
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-              Positioned(
-                right: 18,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () async {
-                      final confirm = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Delete Note"),
-                            content: const Text("Are you sure you want to delete this note?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: const Text("CANCEL", style: TextStyle(color: Colors.grey),),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
-                                child: const Text("DELETE", style: TextStyle(color: Colors.red),),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      if (confirm == true) {
-                        final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-                        await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
-                        await Future.delayed(const Duration(milliseconds: 50));
-                        _refreshNotes();
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    }
   }
 
+
+  void _deleteNoteConfirmation(BuildContext context, int index) async {
+    final confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Note"),
+          content: const Text("Are you sure you want to delete this note?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("CANCEL", style: TextStyle(color: Colors.grey),),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("DELETE", style: TextStyle(color: Colors.red),),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirm == true) {
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+      await dbHelper.deleteItem(_notes[index]['id'], MyApp.dbPassword!);
+      await Future.delayed(const Duration(milliseconds: 250));
+      await _refreshNotes();
+    }
+  }
 
   Widget _buildFloatingActionButton() {
     return MyButton(
