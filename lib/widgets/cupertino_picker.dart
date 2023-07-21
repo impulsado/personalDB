@@ -52,14 +52,11 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
               ),
               child: GestureDetector(
                 onTap: () => _showCupertinoPicker(),
-                child: Center(
+                child: Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    selectedIndex != -1
-                        ? widget.options[selectedIndex]
-                        : "Selecciona una opción",
-                    style: TextStyle(
-                      color: selectedIndex != -1 ? Colors.black : Colors.grey,
-                    ),
+                    selectedIndex != -1 ? widget.options[selectedIndex] : "Select price.",
+                    style: subHeadingStyle(color: Colors.black),
                   ),
                 ),
               ),

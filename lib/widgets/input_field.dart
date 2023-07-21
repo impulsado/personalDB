@@ -1,6 +1,5 @@
 import 'package:personaldb/constants/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MyInputField extends StatelessWidget {
   final String title;
@@ -51,7 +50,7 @@ class MyInputField extends StatelessWidget {
                 textInputAction: inputAction,
                 decoration: InputDecoration(
                   hintText: hint,
-                  hintStyle: subHeadingStyle(color: Colors.black),
+                  hintStyle: subHeadingStyle(color: Colors.grey),
                   focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                   enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                   focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),

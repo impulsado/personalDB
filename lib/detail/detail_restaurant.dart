@@ -251,7 +251,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text('Rate', style: subHeadingStyle(color: Colors.black)),
                             StarRating(
