@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:personaldb/main.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -108,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await DatabaseHelper.createDb(newPath, password);
+      MyApp.dbPassword = password;
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       _showErrorMessage(context, 'Error while creating database: $e');
@@ -128,6 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       DatabaseHelper.dbPath = newDbPath;
 
       await DatabaseHelper.db(password);
+      MyApp.dbPassword = password;
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       _showErrorMessage(context, 'Incorrect password or error while importing database: $e');
