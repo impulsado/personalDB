@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/database/database_helper_common.dart';
+import 'package:personaldb/constants/theme.dart';
 
 class FieldAutocomplete extends StatefulWidget {
   final TextEditingController controller;
@@ -65,13 +66,16 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
           controller: fieldTextController,
           height: 50,
           child: TextFormField(
+            cursorColor: Colors.grey,
             controller: fieldTextController,
             onChanged: (value) {
               widget.controller.text = value;
             },
             focusNode: focusNode,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter item here.',
+              hintStyle: subHeadingStyle(color: Colors.grey),
+              border: InputBorder.none, // to remove underline
             ),
           ),
         );
