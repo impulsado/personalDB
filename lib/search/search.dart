@@ -13,6 +13,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final _searchController = TextEditingController();
+  final _focusNode = FocusNode();  // Nuevo objeto FocusNode
 
   String _currentSearch = '';
 
@@ -32,12 +33,16 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();  // Solicita enfoque después de que el marco se haya renderizado
+    });
   }
 
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _focusNode.dispose();  // No olvides eliminar el FocusNode
     super.dispose();
   }
 
@@ -53,6 +58,7 @@ class _SearchState extends State<Search> {
         ),
         title: TextField(
           controller: _searchController,
+          focusNode: _focusNode,  // Asocia el FocusNode al TextField
           cursorColor: Colors.black,
           decoration: InputDecoration(
             hintText: 'Search...',
@@ -71,5 +77,4 @@ class _SearchState extends State<Search> {
       body: SearchResults(query: _currentSearch, password: widget.password),
     );
   }
-
 }
