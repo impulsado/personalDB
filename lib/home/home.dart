@@ -3,13 +3,14 @@ import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/categories.dart';
 import 'package:personaldb/contacts/contacts.dart';
 import 'package:personaldb/search/search.dart';
+import 'package:personaldb/main.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const HomeApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class HomeApp extends StatelessWidget {
+  const HomeApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +28,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  List<Widget> _screens = [];
 
-  final List<Widget> _screens = [
-    Categories(),
-    Contacts(),
-    Search(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      Categories(),
+      Contacts(),
+    ];
+    if (MyApp.dbPassword != null) {
+      _screens.add(Search(password: MyApp.dbPassword!));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: _currentIndex < _screens.length ? _screens[_currentIndex] : CircularProgressIndicator(),
       backgroundColor: Colors.white,
       bottomNavigationBar: _buildBottomNavigationBar(),
     );

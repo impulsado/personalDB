@@ -1,3 +1,4 @@
+// detail_others.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';

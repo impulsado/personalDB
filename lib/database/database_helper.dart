@@ -83,6 +83,38 @@ class DatabaseHelper {
     await Share.shareXFiles(xFiles, text: 'My Database');
   }
 
+  static final Map<String, List<String>> searchColumns = {
+    "Ideas": ['title', 'description'],
+    "Cooking": ['title', 'duration', 'difficulty', 'ingredients', 'recipe', 'price', 'rate'],
+    "Health": ['title', 'type', 'description'],
+    "Personal": ['title', 'type', 'date', 'description', 'trust'],
+    "Restaurant": ['title', 'location', 'type', 'price', 'notes', 'rate'],
+    "WishList": ['title', 'link', 'price', 'priority', 'notes'],
+    "Entertainment": ['title', 'author', 'link', 'notes', 'rate'],
+    "Others": ['title', 'description'],
+  };
+
+  static Future<List<Map<String, dynamic>>> searchItems(String query, String password) async {
+    final db = await DatabaseHelper.db(password);
+    List<Map<String, dynamic>> results = [];
+
+    print('Buscando: $query'); // Añade esto
+
+    for (final table in searchColumns.keys) {
+      var queryString = searchColumns[table]!.map((column) => '$column LIKE ?').join(' OR ');
+      var queryArgs = List<String>.generate(searchColumns[table]!.length, (index) => '%$query%');
+      final result = await db.rawQuery('SELECT *, "$table" AS category_name FROM $table WHERE $queryString', queryArgs);
+
+      print('Resultados de la tabla $table: ${result.length}'); // Añade esto
+
+      results.addAll(result);
+    }
+
+    print('Total de resultados: ${results.length}'); // Añade esto
+
+    return results;
+  }
+
   static Future<void> createTables(sql.Database database) async {
     Map<String, String> categories = {
         "Ideas": """
