@@ -4,12 +4,14 @@ import 'package:personaldb/constants/theme.dart';
 
 class CupertinoPickerWidget extends StatefulWidget {
   final String title;
+  final String hint; // Añadido aquí
   final TextEditingController controller;
   final List<String> options;
   final double pickerHeight;
 
   CupertinoPickerWidget({
     required this.title,
+    required this.hint, // Añadido aquí
     required this.controller,
     required this.options,
     this.pickerHeight = 200.0,
@@ -55,8 +57,8 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    selectedIndex != -1 ? widget.options[selectedIndex] : "Select price.",
-                    style: subHeadingStyle(color: Colors.black),
+                    selectedIndex >= 0 ? widget.options[selectedIndex] : widget.hint, // Modificado aquí
+                    style: subHeadingStyle(color: selectedIndex >= 0 ? Colors.black : Colors.grey),
                   ),
                 ),
               ),
@@ -72,8 +74,9 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
       context: context,
       builder: (BuildContext builder) {
         return Container(
-          height: widget.pickerHeight,
+          height: MediaQuery.of(context).size.height / 5,
           child: CupertinoPicker(
+            scrollController: FixedExtentScrollController(initialItem: selectedIndex >= 0 ? selectedIndex : 0),
             itemExtent: 32.0,
             onSelectedItemChanged: (index) {
               setState(() {
@@ -82,13 +85,20 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
               });
             },
             children: List<Widget>.generate(widget.options.length, (index) {
-              return Center( // Centrar el texto del picker
+              return Center(
                 child: Text(widget.options[index]),
               );
             }),
           ),
         );
       },
-    );
+    ).then((_) {
+      if (selectedIndex < 0) {
+        setState(() {
+          selectedIndex = 0;
+          widget.controller.text = widget.options[selectedIndex];
+        });
+      }
+    });
   }
 }

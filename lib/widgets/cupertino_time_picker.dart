@@ -1,3 +1,4 @@
+// cupertino_time_picker.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
@@ -5,10 +6,12 @@ import 'package:personaldb/constants/theme.dart';
 class CupertinoTimePickerWidget extends StatefulWidget {
   final String title;
   final TextEditingController controller;
+  final String hint;
 
   CupertinoTimePickerWidget({
     required this.title,
     required this.controller,
+    required this.hint,
   });
 
   @override
@@ -16,7 +19,8 @@ class CupertinoTimePickerWidget extends StatefulWidget {
 }
 
 class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
-  int durationMinutes = 0;
+  Duration selectedDuration = Duration.zero;
+  bool openedOnce = false;
 
   @override
   void initState() {
@@ -24,7 +28,10 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
     if (widget.controller.text.isNotEmpty) {
       List<String> parts = widget.controller.text.split('h');
       if (parts.length == 2) {
-        durationMinutes = int.tryParse(parts[0].trim())! * 60 + int.tryParse(parts[1].replaceFirst('min', '').trim())!;
+        selectedDuration = Duration(
+          hours: int.tryParse(parts[0].trim())!,
+          minutes: int.tryParse(parts[1].replaceFirst('min', '').trim())!,
+        );
       }
     }
   }
@@ -56,8 +63,8 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    widget.controller.text.isNotEmpty ? widget.controller.text : "Select duration.",
-                    style: subHeadingStyle(color: Colors.grey),
+                    openedOnce ? widget.controller.text : widget.hint,
+                    style: subHeadingStyle(color: openedOnce ? Colors.black : Colors.grey),
                   ),
                 ),
               ),
@@ -76,16 +83,22 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
           height: 200,
           child: CupertinoTimerPicker(
             mode: CupertinoTimerPickerMode.hm,
-            initialTimerDuration: Duration(minutes: durationMinutes),
+            initialTimerDuration: selectedDuration,
             onTimerDurationChanged: (Duration value) {
-              setState(() {
-                durationMinutes = value.inMinutes;
-                widget.controller.text = '${value.inHours}h ${value.inMinutes.remainder(60)}min';
-              });
+              selectedDuration = value;
             },
           ),
         );
       },
-    );
+    ).then((_) {
+      _updateText(selectedDuration);
+    });
+    openedOnce = true;
+  }
+
+  void _updateText(Duration duration) {
+    setState(() {
+      widget.controller.text = '${duration.inHours}h ${duration.inMinutes.remainder(60)}min';
+    });
   }
 }

@@ -217,6 +217,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                                 children: [
                                   CupertinoPickerWidget(
                                     title: "Priority",
+                                    hint: "Select priority.",
                                     controller: _priorityController,
                                     options: ['High', 'Medium', 'Low'],
                                   ),

@@ -215,6 +215,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                               flex: 1,
                               child: CupertinoTimePickerWidget(
                                 title: "Duration",
+                                hint: "Select duration.",
                                 controller: _durationController,
                               ),
                             ),

@@ -67,7 +67,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
       child: AbsorbPointer(
         child: MyInputField(
           title: 'Date',
-          hint: 'Select Date',
+          hint: 'Select date.',
           controller: widget.controller,
         ),
       ),

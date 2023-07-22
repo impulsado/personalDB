@@ -229,6 +229,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                                 children: [
                                   CupertinoPickerWidget(
                                     title: "Price",
+                                    hint: "Select price.",
                                     controller: _priceController,
                                     options: ['0€ - 10€', '10€ - 15€', '15€ - 20€', '+ 20€'],
                                   ),
