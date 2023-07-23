@@ -43,4 +43,4 @@ If you have any ideas, suggestions, or find a bug, please open a new issue or su
 <br/>
 
 ## License
-This project is licensed under the [Creative Commons Attribution-NonCommercial (CC BY-NC) 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).
+This project is licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
