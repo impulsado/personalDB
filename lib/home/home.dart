@@ -17,13 +17,16 @@ class HomeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: Themes.light,
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -36,7 +39,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _screens = [
       Categories(),
-      Contacts(),
+      const Contacts(),
     ];
     if (MyApp.dbPassword != null) {
       _screens.add(Search(password: MyApp.dbPassword!));
@@ -46,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentIndex < _screens.length ? _screens[_currentIndex] : CircularProgressIndicator(),
+      body: _currentIndex < _screens.length ? _screens[_currentIndex] : const CircularProgressIndicator(),
       backgroundColor: Colors.white,
       bottomNavigationBar: _buildBottomNavigationBar(),
     );

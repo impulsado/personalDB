@@ -8,11 +8,11 @@ class DatabaseHelper {
 
   static Future<sql.Database> db(String password) async {
     if (dbPath == null) {
-      throw Exception("No se encontró la base de datos");
+      throw Exception("Database not found.");
     }
 
     if (password.isEmpty) {
-      throw Exception("No se encontró la contraseña");
+      throw Exception("Password not found.");
     }
 
     sql.Database database = await sql.openDatabase(
@@ -45,6 +45,27 @@ class DatabaseHelper {
     await db.close();
   }
 
+  static Future<void> importDb(String path, String password) async {
+    try {
+      if (await validatePassword(path, password)) {
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+        String appStoragePath = appDocDir.path;
+
+        // Create a new file in the app storage with the same name as the imported file
+        File importedDbFile = File(path);
+        String newDbPath = '$appStoragePath/${importedDbFile.path.split('/').last}';
+        await importedDbFile.copy(newDbPath);
+
+        // Update the db path in DatabaseHelper to the new location
+        DatabaseHelper.dbPath = newDbPath;
+      } else {
+        throw Exception('Incorrect password or error while importing database.');
+      }
+    } catch (e) {
+      throw Exception('Error while importing the database: $e');
+    }
+  }
+
   static Future<bool> validatePassword(String path, String password) async {
     sql.Database? db;
 
@@ -53,18 +74,12 @@ class DatabaseHelper {
         path,
         password: password,
       );
-
-      // Probamos a hacer una consulta a la base de datos para verificar la contraseña
       await db.rawQuery('SELECT * FROM sqlite_master LIMIT 1');
-
-      // Si la consulta se ejecuta con éxito, la contraseña es correcta.
       return true;
     } catch (e) {
-      // Si hay una excepción (por ejemplo, una excepción de SQLite), la contraseña es incorrecta.
-      print('Contraseña incorrecta. No se puede abrir la base de datos.');
+      // Incorrect password. Unable to open the database.
       return false;
     } finally {
-      // Asegúrese de cerrar la base de datos para evitar fugas de memoria.
       await db?.close();
     }
   }
@@ -75,7 +90,7 @@ class DatabaseHelper {
     dbFiles = dbFiles.where((element) => element.path.endsWith('.db')).toList();
 
     if (dbFiles.isEmpty) {
-      print('No database file found');
+      //print("No database file found");
       return;
     }
 
@@ -98,20 +113,18 @@ class DatabaseHelper {
     final db = await DatabaseHelper.db(password);
     List<Map<String, dynamic>> results = [];
 
-    print('Buscando: $query'); // Añade esto
+    //print("Searching: $query");
 
     for (final table in searchColumns.keys) {
       var queryString = searchColumns[table]!.map((column) => '$column LIKE ?').join(' OR ');
       var queryArgs = List<String>.generate(searchColumns[table]!.length, (index) => '%$query%');
       final result = await db.rawQuery('SELECT *, "$table" AS category_name FROM $table WHERE $queryString', queryArgs);
 
-      print('Resultados de la tabla $table: ${result.length}'); // Añade esto
+      //print("Table $table results: ${result.length}");
 
       results.addAll(result);
     }
-
-    print('Total de resultados: ${results.length}'); // Añade esto
-
+    //print("All results: ${results.length}");
     return results;
   }
 

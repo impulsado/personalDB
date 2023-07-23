@@ -20,7 +20,7 @@ class MyButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Hero(
-        tag: key.toString(), // Asegúrate de que cada MyButton tiene una clave única
+        tag: key.toString(),
         child: Container(
           width: 120,
           height: 60,

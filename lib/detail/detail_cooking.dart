@@ -12,9 +12,11 @@ class CookingDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  CookingDetailPage(this.myCategory, {this.id});
+  // ignore: prefer_const_constructors_in_immutables
+  CookingDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CookingDetailPageState createState() => _CookingDetailPageState();
 }
 
@@ -69,7 +71,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "duration": _durationController.text,
       "difficulty": _difficultyController.text,
       "ingredients": _ingredientsController.text,
@@ -101,7 +103,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         _rateController.text.isNotEmpty) {
 
       if (MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -111,11 +113,9 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         "difficulty": _difficultyController.text,
         "ingredients": _ingredientsController.text,
         "recipe": _recipeController.text,
-        "price": _priceController.text + "€",
+        "price": "${_priceController.text}€",
         "rate": _rateController.text,
       };
-
-      print('Data to be saved: $data');
 
       if (widget.id != null) {
         await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
@@ -133,6 +133,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -140,7 +141,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   _loadNote() async {
     if (widget.id != null) {
       if (MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -148,8 +149,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
       if (items.isNotEmpty) {
         setState(() {
-          print('Price value: ${items[0]["price"]}');
-          print('Data loaded: ${items[0]}');
+          //print("Price value: ${items[0]["price"]}");
+          //print("Data loaded: ${items[0]}");
           _titleController.text = items[0]["title"] ?? "";
           _durationController.text = items[0]["duration"] ?? "";
           _difficultyController.text = items[0]["difficulty"] ?? "";
@@ -158,8 +159,6 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
           _priceController.text = items[0]["price"] != null ? items[0]["price"].replaceAll('€', '') : "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -167,6 +166,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
@@ -176,6 +176,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
     _loadNote();
   }
 
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -219,7 +220,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                                 controller: _durationController,
                               ),
                             ),
-                            SizedBox(width: 26),
+                            const SizedBox(width: 26),
                             Flexible(
                               flex: 1,
                               child: MyInputField(
@@ -251,7 +252,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Text("Difficulty", style: subHeadingStyle(
                                   color: Colors.black)),
                               StarRating(
@@ -265,7 +266,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                                   });
                                 },
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Text("Rate", style: subHeadingStyle(color: Colors.black)),
                               Align(
                                 alignment: Alignment.center,
@@ -311,8 +312,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         onPressed: () async {
-          // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

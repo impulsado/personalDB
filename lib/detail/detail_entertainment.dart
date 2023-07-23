@@ -13,9 +13,10 @@ class EntertainmentDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  EntertainmentDetailPage(this.myCategory, {this.id});
+  const EntertainmentDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _EntertainmentDetailPageState createState() => _EntertainmentDetailPageState();
 }
   
@@ -78,7 +79,8 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      // DO NOT REMOVE '?? ""'
+      "title": _titleController.text ?? "",
       "author": _authorController.text,
       "link": _linkController.text,
       "notes": _notesController.text,
@@ -104,7 +106,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
         _rateController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -128,6 +130,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -135,7 +138,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -149,8 +152,6 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
           _notesController.text = items[0]["notes"] ?? "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -158,6 +159,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
@@ -259,6 +261,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

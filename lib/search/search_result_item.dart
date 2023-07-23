@@ -14,7 +14,7 @@ class SearchResultItem extends StatelessWidget {
   final Color backgroundColor;
   final Function(Map<String, dynamic>) onTap;
 
-  SearchResultItem({
+  const SearchResultItem({super.key,
     required this.note,
     required this.backgroundColor,
     required this.onTap,
@@ -78,7 +78,6 @@ class SearchResultItem extends StatelessWidget {
           categoryName: note["category_name"],
           showDeleteButton: false,
         );
-    // Agrega aquí los casos para otras categorías...
       default:
         return Container();
     }

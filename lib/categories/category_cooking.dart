@@ -26,9 +26,10 @@ class MyAppCooking extends StatelessWidget {
 class CategoryCooking extends StatefulWidget {
   final MyCategory myCategory;
 
-  const CategoryCooking(this.myCategory);
+  const CategoryCooking(this.myCategory, {super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryCookingState createState() => _CategoryCookingState();
 }
 
@@ -41,7 +42,7 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
     try {
       _notes = await refreshNotes(widget.myCategory.title ?? "Error");
       if (_notes.isEmpty) {
-        print("No items found in the database");
+        //print("No items found in the database");
       }
       setState(() {
         _isLoading = false;
@@ -49,7 +50,7 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
       _controller.reset();
       _controller.forward();
     } catch (e) {
-      print("Error occurred while refreshing notes: $e");
+      //print("Error occurred while refreshing notes: $e");
       setState(() {
         _isLoading = false;
       });
@@ -89,6 +90,7 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
     return const Center(child: CircularProgressIndicator());
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget.myCategory.bgColor,
@@ -147,7 +149,7 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 
@@ -187,7 +189,7 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 

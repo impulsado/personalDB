@@ -10,9 +10,10 @@ class SearchResults extends StatefulWidget {
   final String query;
   final String password;
 
-  SearchResults({required this.query, required this.password});
+  const SearchResults({super.key, required this.query, required this.password});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchResultsState createState() => _SearchResultsState();
 }
 
@@ -45,7 +46,7 @@ class _SearchResultsState extends State<SearchResults> {
       future: _searchResults,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox.shrink(); // Retorna un widget vacío
+          return const SizedBox.shrink();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -55,7 +56,7 @@ class _SearchResultsState extends State<SearchResults> {
               var item = snapshot.data![index];
               return SearchResultItem(
                 note: item,
-                backgroundColor: getCategoryColor(item['category_name']),
+                backgroundColor: getCategoryColor(item["category_name"]),
                 onTap: (item) => onTap(item),
               );
             },
@@ -66,24 +67,22 @@ class _SearchResultsState extends State<SearchResults> {
   }
 
   Color getCategoryColor(String? category) {
-    print("EL NOM ES: ");
-    print(category);
     switch (category) {
-      case 'Ideas':
+      case "Ideas":
         return kYellowLight;
-      case 'Cooking':
+      case "Cooking":
         return kPinkLight;
-      case 'Health':
+      case "Health":
         return kGreenLight;
-      case 'Personal':
+      case "Personal":
         return kPurpleLight;
-      case 'Restaurant':
+      case "Restaurant":
         return kBlueLight;
-      case 'WishList':
+      case "WishList":
         return kOrangeLight;
-      case 'Entertainment':
+      case "Entertainment":
         return kRedLight;
-      case 'Others':
+      case "Others":
         return kGrayLight;
       default:
         return Colors.white;
@@ -97,10 +96,10 @@ class _SearchResultsState extends State<SearchResults> {
         builder: (context) =>
             DetailPageFactory.getDetailPage(
               MyCategory(
-                title: item['category_name'],
-                bgColor: getCategoryColor(item['category_name']),
+                title: item["category_name"],
+                bgColor: getCategoryColor(item["category_name"]),
               ),
-              id: item['id'],
+              id: item["id"],
             ),
       ),
     ).then((result) {

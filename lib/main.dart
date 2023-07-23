@@ -5,11 +5,13 @@ import 'package:personaldb/verification/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   static String? dbPassword;
+
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => LoginScreen(),
-        '/register': (context) => RegisterScreen(),
-        '/home': (context) => HomePage(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const HomePage(),
       },
     );
   }

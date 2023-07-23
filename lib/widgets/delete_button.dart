@@ -8,13 +8,13 @@ class DeleteButton extends StatelessWidget {
   final String categoryName;
   final VoidCallback onConfirmed;
 
-  DeleteButton({Key? key, required this.note, required this.categoryName, required this.onConfirmed}) : super(key: key);
+  const DeleteButton({Key? key, required this.note, required this.categoryName, required this.onConfirmed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector( // Cambiado a GestureDetector
-      onTap: () => _deleteNoteConfirmation(context), // OnTap en lugar de onPressed
-      child: Icon(Icons.close), // Icon en lugar de IconButton
+    return GestureDetector(
+      onTap: () => _deleteNoteConfirmation(context),
+      child: const Icon(Icons.close),
     );
   }
 
@@ -41,7 +41,7 @@ class DeleteButton extends StatelessWidget {
 
     if (confirm == true) {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(categoryName);
-      await dbHelper.deleteItem(note['id'], MyApp.dbPassword!);
+      await dbHelper.deleteItem(note["id"], MyApp.dbPassword!);
       await Future.delayed(const Duration(milliseconds: 250));
       onConfirmed();
     }

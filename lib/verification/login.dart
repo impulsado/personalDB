@@ -6,12 +6,15 @@ import 'package:personaldb/main.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final _passwordController = TextEditingController();
   late Future<bool> dbExists;
 
@@ -26,14 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
     List<FileSystemEntity> files = docDirectory.listSync();
 
     for (FileSystemEntity file in files) {
-      if (file.path.endsWith('.db')) {
+      if (file.path.endsWith(".db")) {
         DatabaseHelper.dbPath = file.path;
         return true;
       }
     }
 
-    await storage.delete(key: 'db_path');
-    await storage.delete(key: 'db_password');
+    await storage.delete(key: "db_path");
+    await storage.delete(key: "db_password");
 
     return false;
   }
@@ -56,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacementNamed(context, '/register');
+              Navigator.pushReplacementNamed(context, "/register");
             });
             return const SizedBox.shrink();
           }
@@ -71,11 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _loginForm() {
     return Padding(
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset('assets/images/icon.jpg', height: 250.0, width: 250.0),
+          Image.asset("assets/images/icon.jpg", height: 250.0, width: 250.0),
           const SizedBox(height: 30.0),
           TextField(
             cursorColor: Colors.black,
@@ -86,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               filled: true,
               border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
-              labelText: 'Password',
+              labelText: "Password",
               labelStyle: TextStyle(color: Colors.black),
             ),
             style: const TextStyle(color: Colors.black),
@@ -95,15 +98,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
-              minimumSize: Size(double.infinity, 50),
+              minimumSize: const Size(double.infinity, 50),
             ),
             onPressed: () => _login(context),
             child: const Text('Log In', style: TextStyle(color: Colors.white)),
           ),
           const SizedBox(height: 20.0),
           TextButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/register'),
-            child: const Text('Create/Import Database', style: TextStyle(color: Colors.grey)),
+            onPressed: () => Navigator.pushReplacementNamed(context, "/register"),
+            child: const Text("Create/Import Database", style: TextStyle(color: Colors.grey)),
           ),
         ],
       ),
@@ -113,24 +116,26 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login(BuildContext context) async {
     final password = _passwordController.text;
     if (password.isEmpty) {
-      _showErrorMessage(context, 'Empty password');
+      _showErrorMessage(context, "Empty password");
       return;
     }
 
     if (DatabaseHelper.dbPath != null) {
       bool passwordCorrect = await DatabaseHelper.validatePassword(DatabaseHelper.dbPath!, password);
       if (!passwordCorrect) {
-        _showErrorMessage(context, 'Incorrect password');
+        // ignore: use_build_context_synchronously
+        _showErrorMessage(context, "Incorrect password");
         return;
       }
     } else {
-      _showErrorMessage(context, 'Database path not found');
+      _showErrorMessage(context, "Database path not found");
       return;
     }
 
     await DatabaseHelper.db(password);
     MyApp.dbPassword = password;
-    Navigator.pushReplacementNamed(context, '/home');
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, "/home");
   }
 
   void _showErrorMessage(BuildContext context, String message) {

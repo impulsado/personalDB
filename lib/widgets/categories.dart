@@ -23,7 +23,7 @@ class Categories extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Categories', style: headingStyle(color: Colors.black)),
+        title: Text("Categories", style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black,),
@@ -37,19 +37,37 @@ class Categories extends StatelessWidget {
     );
   }
 
+  void navigateToSettings(BuildContext context) {
+    Navigator.push(context, PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const Settings(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = const Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    ));
+  }
+
   Widget _buildBody(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final appBarHeight = AppBar().preferredSize.height;
-    final bottomNavBarHeight = kBottomNavigationBarHeight;
+    const bottomNavBarHeight = kBottomNavigationBarHeight;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     final gridHeight = screenHeight - appBarHeight - bottomPadding - bottomNavBarHeight;
     final gridWidth = screenWidth;
 
-    final crossAxisCount = 2;
-    final double crossAxisSpacing = 10.0;
-    final double mainAxisSpacing = 10.0;
+    const crossAxisCount = 2;
+    const double crossAxisSpacing = 10.0;
+    const double mainAxisSpacing = 10.0;
     final numberOfItems = categoryList.length;
     final numberOfRows = (numberOfItems / crossAxisCount).ceil();
     final heightOfOneRow = (gridHeight - ((numberOfRows - 1) * mainAxisSpacing)) / numberOfRows;
@@ -57,7 +75,7 @@ class Categories extends StatelessWidget {
     final childAspectRatio = gridWidth / (crossAxisCount * heightOfOneRow);
 
     return GridView.builder(
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       itemCount: categoryList.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
@@ -65,7 +83,7 @@ class Categories extends StatelessWidget {
         mainAxisSpacing: mainAxisSpacing,
         childAspectRatio: childAspectRatio,
       ),
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => _buildCategory(context, categoryList[index]),
     );
   }
@@ -75,32 +93,32 @@ class Categories extends StatelessWidget {
         onTap: () {
           Widget page;
           switch (myCategory.title) {
-            case 'Cooking':
+            case "Cooking":
               page = CategoryCooking(myCategory);
               break;
-            case 'Ideas':
+            case "Ideas":
               page = CategoryIdeas(myCategory);
               break;
-            case 'Health':
+            case "Health":
               page = CategoryHealth(myCategory);
               break;
-            case 'Personal':
+            case "Personal":
               page = CategoryPersonal(myCategory);
               break;
-            case 'Restaurant':
+            case "Restaurant":
               page = CategoryRestaurant(myCategory);
               break;
-            case 'Wish List':
+            case "Wish List":
               page = CategoryWishList(myCategory);
               break;
-            case 'Entertainment':
+            case "Entertainment":
               page = CategoryEntertainment(myCategory);
               break;
-            case 'Others':
+            case "Others":
               page = CategoryOthers(myCategory);
               break;
             default:
-              throw Exception('Unsupported category: ${myCategory.title}');
+              throw Exception("Unsupported category: ${myCategory.title}");
           }
           Navigator.of(context).push(_createRoute(page));
         },
@@ -125,7 +143,7 @@ class Categories extends StatelessWidget {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(1.0, 0.0);
+        var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.ease;
 

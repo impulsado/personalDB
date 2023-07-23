@@ -5,9 +5,10 @@ class MinutePicker extends StatefulWidget {
   final ValueChanged<int> onChanged;
   final int initialValue;
 
-  MinutePicker({required this.onChanged, required this.initialValue});
+  const MinutePicker({super.key, required this.onChanged, required this.initialValue});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MinutePickerState createState() => _MinutePickerState();
 }
 

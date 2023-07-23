@@ -4,9 +4,10 @@ class TrustCounter extends StatefulWidget {
   final TextEditingController controller;
   final double width;
 
-  TrustCounter({required this.controller, this.width = 150.0});
+  const TrustCounter({super.key, required this.controller, this.width = 150.0});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TrustCounterState createState() => _TrustCounterState();
 }
 
@@ -42,7 +43,7 @@ class _TrustCounterState extends State<TrustCounter> {
               icon: const Icon(Icons.remove),
               color: Colors.black,
             ),
-            Text('$_counter', style: TextStyle(fontSize: 20.0)),
+            Text('$_counter', style: const TextStyle(fontSize: 20.0)),
             IconButton(
               onPressed: () {
                 setState(() {

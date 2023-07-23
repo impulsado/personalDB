@@ -15,9 +15,11 @@ class PersonalDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  PersonalDetailPage(this.myCategory, {this.id});
+  // ignore: prefer_const_constructors_in_immutables
+  PersonalDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PersonalDetailPageState createState() => _PersonalDetailPageState();
 }
 
@@ -81,7 +83,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "description": _descriptionController.text,
       "date": _dateController.text,
       "type": _typeController.text,
@@ -106,7 +108,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
         _trustController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -132,6 +134,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -139,7 +142,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -152,8 +155,6 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
           _typeController.text = items[0]["type"] ?? "";
           _trustController.text = items[0]["trust"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -161,6 +162,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
@@ -245,7 +247,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: MyButton(
-          key: ValueKey("personal"),
+          key: const ValueKey("personal"),
           label: "Submit",
           onTap: () => _submitNote(context),
           bgColor: widget.myCategory.bgColor ?? Colors.black,
@@ -265,6 +267,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

@@ -12,9 +12,10 @@ class WishlistDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  WishlistDetailPage(this.myCategory, {this.id});
+  const WishlistDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _WishlistDetailPageState createState() => _WishlistDetailPageState();
 }
 
@@ -77,7 +78,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "link": _linkController.text,
       "price": _priceController.text,
       "priority": _priorityController.text,
@@ -103,14 +104,14 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
         _notesController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
       final data = {
         "title": _titleController.text,
         "link": _linkController.text,
-        "price": _priceController.text + "€",
+        "price": "${_priceController.text}€",
         "priority": _priorityController.text,
         "notes": _notesController.text,
       };
@@ -127,6 +128,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -135,7 +137,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
     if (widget.id != null) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -149,8 +151,6 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
           _priorityController.text = items[0]["priority"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -158,8 +158,10 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -197,35 +199,33 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         controller: _linkController,
                       ),
                       const SizedBox(height: 10),
-                      Container(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 5,
-                              child: MyInputField(
-                                title: "Price",
-                                hint: "Enter price here.",
-                                controller: _priceController,
-                                inputType: TextInputType.number,
-                              ),
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 5,
+                            child: MyInputField(
+                              title: "Price",
+                              hint: "Enter price here.",
+                              controller: _priceController,
+                              inputType: TextInputType.number,
                             ),
-                            SizedBox(width: 15),
-                            Flexible(
-                              flex: 5,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CupertinoPickerWidget(
-                                    title: "Priority",
-                                    hint: "Select priority.",
-                                    controller: _priorityController,
-                                    options: ['High', 'Medium', 'Low'],
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(width: 15),
+                          Flexible(
+                            flex: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CupertinoPickerWidget(
+                                  title: "Priority",
+                                  hint: "Select priority.",
+                                  controller: _priorityController,
+                                  options: const ["High", "Medium", "Low"],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
@@ -264,6 +264,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

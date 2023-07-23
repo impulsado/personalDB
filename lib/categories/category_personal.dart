@@ -26,9 +26,10 @@ class MyAppPersonal extends StatelessWidget {
 class CategoryPersonal extends StatefulWidget {
   final MyCategory myCategory;
 
-  const CategoryPersonal(this.myCategory);
+  const CategoryPersonal(this.myCategory, {super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryPersonalState createState() => _CategoryPersonalState();
 }
 
@@ -41,7 +42,7 @@ class _CategoryPersonalState extends State<CategoryPersonal> with TickerProvider
     try {
       _notes = await refreshNotes(widget.myCategory.title ?? "Error");
       if (_notes.isEmpty) {
-        print("No items found in the database");
+        //print("No items found in the database");
       }
       setState(() {
         _isLoading = false;
@@ -49,7 +50,7 @@ class _CategoryPersonalState extends State<CategoryPersonal> with TickerProvider
       _controller.reset();
       _controller.forward();
     } catch (e) {
-      print("Error occurred while refreshing notes: $e");
+      //print("Error occurred while refreshing notes: $e");
       setState(() {
         _isLoading = false;
       });
@@ -128,7 +129,7 @@ class _CategoryPersonalState extends State<CategoryPersonal> with TickerProvider
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 
@@ -167,7 +168,7 @@ class _CategoryPersonalState extends State<CategoryPersonal> with TickerProvider
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 

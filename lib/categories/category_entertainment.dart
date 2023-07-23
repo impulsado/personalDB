@@ -26,9 +26,10 @@ class MyAppEntertainment extends StatelessWidget {
 class CategoryEntertainment extends StatefulWidget {
   final MyCategory myCategory;
 
-  const CategoryEntertainment(this.myCategory);
+  const CategoryEntertainment(this.myCategory, {super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryEntertainmentState createState() => _CategoryEntertainmentState();
 }
 
@@ -41,7 +42,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
     try {
       _notes = await refreshNotes(widget.myCategory.title ?? "Error");
       if (_notes.isEmpty) {
-        print("No items found in the database");
+        //print("No items found in the database");
       }
       setState(() {
         _isLoading = false;
@@ -49,7 +50,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
       _controller.reset();
       _controller.forward();
     } catch (e) {
-      print("Error occurred while refreshing notes: $e");
+      //print("Error occurred while refreshing notes: $e");
       setState(() {
         _isLoading = false;
       });
@@ -97,7 +98,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
           borderRadius: BorderRadius.circular(30.0),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        child: Center(child: Text("No items available"),),
+        child: const Center(child: Text("No items available"),),
       );
     } else {
       return Container(
@@ -128,7 +129,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 
@@ -167,7 +168,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
+              var begin = const Offset(1.0, 0.0);
               var end = Offset.zero;
               var curve = Curves.ease;
 

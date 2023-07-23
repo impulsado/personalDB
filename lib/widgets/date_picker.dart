@@ -6,21 +6,22 @@ class CupertinoDatePickerField extends StatefulWidget {
   final TextEditingController controller;
   final DateFormat dateFormatter;
 
-  CupertinoDatePickerField({
+  const CupertinoDatePickerField({super.key,
     required this.controller,
     required this.dateFormatter,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _CupertinoDatePickerFieldState createState() =>
       _CupertinoDatePickerFieldState();
 }
 
 class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
-  DateTime? selectedDate; // Variable para almacenar la fecha seleccionada
+  DateTime? selectedDate;
 
   _selectDate(BuildContext context) async {
-    selectedDate = widget.controller.text.isEmpty || widget.controller.text == 'Select Date'
+    selectedDate = widget.controller.text.isEmpty || widget.controller.text == "Select Date"
         ? DateTime.now()
         : widget.dateFormatter.parse(widget.controller.text);
 
@@ -28,24 +29,23 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
       context: context,
       builder: (_) => Container(
         height: 250,
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 200,
                 child: CupertinoDatePicker(
                   initialDateTime: selectedDate,
                   onDateTimeChanged: (val) {
-                    selectedDate = val; // Actualiza la fecha seleccionada
+                    selectedDate = val;
                   },
                   mode: CupertinoDatePickerMode.date,
                 ),
               ),
               CupertinoButton(
-                child: Text('OK'),
+                child: Text("OK"),
                 onPressed: () {
-                  // Solo actualiza el controlador si se ha seleccionado una fecha
                   if (selectedDate != null) {
                     widget.controller.text =
                         widget.dateFormatter.format(selectedDate!);
@@ -66,8 +66,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
       onTap: () => _selectDate(context),
       child: AbsorbPointer(
         child: MyInputField(
-          title: 'Date',
-          hint: 'Select date.',
+          title: "Date",
+          hint: "Select date.",
           controller: widget.controller,
         ),
       ),

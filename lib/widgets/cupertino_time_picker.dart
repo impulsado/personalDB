@@ -8,13 +8,14 @@ class CupertinoTimePickerWidget extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
 
-  CupertinoTimePickerWidget({
+  const CupertinoTimePickerWidget({super.key,
     required this.title,
     required this.controller,
     required this.hint,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _CupertinoTimePickerWidgetState createState() => _CupertinoTimePickerWidgetState();
 }
 
@@ -26,11 +27,11 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
   void initState() {
     super.initState();
     if (widget.controller.text.isNotEmpty) {
-      List<String> parts = widget.controller.text.split('h');
+      List<String> parts = widget.controller.text.split("h");
       if (parts.length == 2) {
         selectedDuration = Duration(
           hours: int.tryParse(parts[0].trim())!,
-          minutes: int.tryParse(parts[1].replaceFirst('min', '').trim())!,
+          minutes: int.tryParse(parts[1].replaceFirst("min", "").trim())!,
         );
       }
     }
@@ -48,9 +49,7 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
             style: subHeadingStyle(color: Colors.black),
           ),
           ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 57,
-            ),
+            constraints: const BoxConstraints(minHeight: 57,),
             child: Container(
               margin: const EdgeInsets.only(top: 8.0),
               padding: const EdgeInsets.only(left: 14),
@@ -79,7 +78,7 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        return Container(
+        return SizedBox(
           height: 200,
           child: CupertinoTimerPicker(
             mode: CupertinoTimerPickerMode.hm,

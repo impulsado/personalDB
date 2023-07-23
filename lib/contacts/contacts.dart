@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 
 class Contacts extends StatelessWidget {
+  const Contacts({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Contacts', style: headingStyle(color: Colors.black)),
+        title: Text("Contacts", style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.grey),
+            icon: const Icon(Icons.settings, color: Colors.grey),
             onPressed: () {},
           ),
         ],
@@ -28,7 +30,7 @@ class Contacts extends StatelessWidget {
             ),
             SizedBox(height: 10,),
             Text(
-              'COMING SOON!',
+              "COMING SOON!",
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 15,

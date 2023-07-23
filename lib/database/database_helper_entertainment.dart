@@ -10,7 +10,6 @@ class EntertainmentDatabaseHelper implements DatabaseHelperCommon {
     return id;
   }
 
-  // Similar for updateItem
   @override
   Future<int> updateItem(int id, Map<String, dynamic> data, String password) async {
     final db = await DatabaseHelper.db(password);

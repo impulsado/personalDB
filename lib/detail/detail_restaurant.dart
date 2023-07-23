@@ -14,9 +14,10 @@ class RestaurantDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  RestaurantDetailPage(this.myCategory, {this.id});
+  const RestaurantDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RestaurantDetailPageState createState() => _RestaurantDetailPageState();
 }
 
@@ -82,7 +83,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "location": _locationController.text,
       "type": _typeController.text,
       "price": _priceController.text,
@@ -111,7 +112,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
         _rateController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -137,6 +138,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -144,7 +146,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -159,8 +161,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
           _notesController.text = items[0]["notes"] ?? "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -168,8 +168,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -207,37 +209,35 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                         controller: _locationController,
                       ),
                       const SizedBox(height: 10),
-                      Container(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 5,
-                              child: FieldAutocomplete(
-                                controller: _typeController,
-                                label: "Type",
-                                dbHelper: RestaurantDatabaseHelper(),
-                                loadItemsFunction: () async {
-                                  return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
-                                },
-                              ),
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 5,
+                            child: FieldAutocomplete(
+                              controller: _typeController,
+                              label: "Type",
+                              dbHelper: RestaurantDatabaseHelper(),
+                              loadItemsFunction: () async {
+                                return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
+                              },
                             ),
-                            SizedBox(width: 15),
-                            Flexible(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CupertinoPickerWidget(
-                                    title: "Price",
-                                    hint: "Select price.",
-                                    controller: _priceController,
-                                    options: ['0€ - 10€', '10€ - 15€', '15€ - 20€', '+ 20€'],
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(width: 15),
+                          Flexible(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CupertinoPickerWidget(
+                                  title: "Price",
+                                  hint: "Select price.",
+                                  controller: _priceController,
+                                  options: const ["0€ - 10€", "10€ - 15€", "15€ - 20€", "+ 20€"],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
@@ -254,7 +254,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Rate', style: subHeadingStyle(color: Colors.black)),
+                            Text("Rate", style: subHeadingStyle(color: Colors.black)),
                             StarRating(
                               initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
                               onChanged: (value) {
@@ -294,6 +294,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

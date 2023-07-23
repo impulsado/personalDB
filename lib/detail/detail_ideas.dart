@@ -14,9 +14,10 @@ class IdeasDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  IdeasDetailPage(this.myCategory, {this.id});
+  const IdeasDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _IdeasDetailPageState createState() => _IdeasDetailPageState();
 }
 
@@ -78,7 +79,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "category": _categoryController.text,
       "date": _dateController.text,
       "description": _descriptionController.text,
@@ -101,7 +102,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
         _descriptionController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -123,6 +124,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -130,7 +132,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -143,8 +145,6 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
           _dateController.text = items[0]["date"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -152,6 +152,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
@@ -250,6 +251,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

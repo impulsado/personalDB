@@ -4,20 +4,21 @@ import 'package:personaldb/constants/theme.dart';
 
 class CupertinoPickerWidget extends StatefulWidget {
   final String title;
-  final String hint; // Añadido aquí
+  final String hint;
   final TextEditingController controller;
   final List<String> options;
   final double pickerHeight;
 
-  CupertinoPickerWidget({
+  const CupertinoPickerWidget({super.key,
     required this.title,
-    required this.hint, // Añadido aquí
+    required this.hint,
     required this.controller,
     required this.options,
     this.pickerHeight = 200.0,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _CupertinoPickerWidgetState createState() => _CupertinoPickerWidgetState();
 }
 
@@ -42,9 +43,7 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
             style: subHeadingStyle(color: Colors.black),
           ),
           ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 57,
-            ),
+            constraints: const BoxConstraints(minHeight: 57,),
             child: Container(
               margin: const EdgeInsets.only(top: 8.0),
               padding: const EdgeInsets.only(left: 14),
@@ -73,7 +72,7 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height / 5,
           child: CupertinoPicker(
             scrollController: FixedExtentScrollController(initialItem: selectedIndex >= 0 ? selectedIndex : 0),

@@ -5,17 +5,18 @@ import 'package:personaldb/search/search_results.dart';
 class Search extends StatefulWidget {
   final String password;
 
-  Search({required this.password});
+  const Search({super.key, required this.password});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
   final _searchController = TextEditingController();
-  final _focusNode = FocusNode();  // Nuevo objeto FocusNode
+  final _focusNode = FocusNode();
 
-  String _currentSearch = '';
+  String _currentSearch = "";
 
   void _onSearchChanged() {
     if (_searchController.text.length > 1) {
@@ -24,7 +25,7 @@ class _SearchState extends State<Search> {
       });
     } else if (_currentSearch.isNotEmpty) {
       setState(() {
-        _currentSearch = '';
+        _currentSearch = "";
       });
     }
   }
@@ -34,7 +35,7 @@ class _SearchState extends State<Search> {
     super.initState();
     _searchController.addListener(_onSearchChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();  // Solicita enfoque después de que el marco se haya renderizado
+      _focusNode.requestFocus();
     });
   }
 
@@ -42,7 +43,7 @@ class _SearchState extends State<Search> {
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
-    _focusNode.dispose();  // No olvides eliminar el FocusNode
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -52,23 +53,23 @@ class _SearchState extends State<Search> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.search, color: Colors.black),
+        leading: const IconButton(
+          icon: Icon(Icons.search, color: Colors.black),
           onPressed: null,
         ),
         title: TextField(
           controller: _searchController,
-          focusNode: _focusNode,  // Asocia el FocusNode al TextField
+          focusNode: _focusNode,
           cursorColor: Colors.black,
           decoration: InputDecoration(
-            hintText: 'Search...',
+            hintText: "Search...",
             suffixIcon: IconButton(
-              icon: Icon(Icons.close, color: Colors.black),
+              icon: const Icon(Icons.close, color: Colors.black),
               onPressed: () {
                 _searchController.clear();
               },
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),
           ),

@@ -5,11 +5,23 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/main.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
+  const Settings({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  String _filePath = "";
+  bool _inputPassword = false;
+  final _passwordController = TextEditingController();
 
   Future<String> onDatabaseLocation() async {
-    return DatabaseHelper.dbPath ?? 'No database found';
+    return DatabaseHelper.dbPath ?? "No database found";
   }
 
   void _openDialog(BuildContext context, String title, String description) {
@@ -26,7 +38,7 @@ class Settings extends StatelessWidget {
                 size: 60,
                 color: Colors.grey[700],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(description, textAlign: TextAlign.center),
             ],
           ),
@@ -35,11 +47,35 @@ class Settings extends StatelessWidget {
     );
   }
 
+  Future<void> _selectDatabase(BuildContext context) async {
+    final newFilePath = await FilePicker.platform.pickFiles(type: FileType.any);
+    if (newFilePath != null && newFilePath.files.single.path != null) {
+      _filePath = newFilePath.files.single.path!;
+      setState(() {
+        _inputPassword = true;
+      });
+    }
+  }
+
+  Future<void> _importDatabaseWithPassword(BuildContext context, String password) async {
+    try {
+      await DatabaseHelper.importDb(_filePath, password);
+      MyApp.dbPassword = password;
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, "/home");
+    } catch (e) {
+      _openDialog(context, "Error", "Error while importing database: $e");
+    }
+  }
+
+  final Uri githubUrl = Uri.parse("https://github.com/impulsado/PersonalDB");
+  final Uri donationUrl = Uri.parse("https://www.buymeacoffee.com/impulsado");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings', style: headingStyle(color: Colors.black)),
+        title: Text("Settings", style: headingStyle(color: Colors.black)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: GestureDetector(
@@ -53,60 +89,102 @@ class Settings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('General', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+              Text("General", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
-                title: const Text('Database Location'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Database Location"),
+                subtitle: const Text("Internal device storage"),
                 onTap: () async {
                   final location = await onDatabaseLocation();
+                  // ignore: use_build_context_synchronously
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('Database Location'),
+                        title: const Text("Database Location"),
                         content: Text(location),
                       );
                     },
                   );
                 },
               ),
-              const SizedBox(height: 15.0),
-              Text('View', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+              Divider(color: Colors.grey.shade300, thickness: 1.0,),
+              const SizedBox(height: 10.0),
+              Text("View", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
-                title: const Text('Theme'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Theme"),
+                subtitle: const Text("Choose the application theme"),
                 onTap: () {
-                  _openDialog(context, 'Theme', 'Comming soon!');
+                  _openDialog(context, "Theme", "Coming soon!");
                 },
               ),
               ListTile(
-                title: const Text('Language'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Language"),
+                subtitle: const Text("Select the application language"),
                 onTap: () {
-                  _openDialog(context, 'Language', 'Comming soon!');
+                  _openDialog(context, "Language", "Coming soon!");
                 },
               ),
-              const SizedBox(height: 15.0),
-              Text('Database', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+              Divider(color: Colors.grey.shade300, thickness: 1.0,),
+              const SizedBox(height: 10.0),
+              Text("Database", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
-                title: const Text('Restore'),
-                onTap: () {
-                  FilePicker.platform.pickFiles(type: FileType.any);
-                },
-              ),
-              ListTile(
-                title: const Text('Export'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Export"),
+                subtitle: const Text("Export database for migration or security purposes"),
                 onTap: () async {
                   await DatabaseHelper.exportDatabase();
                 },
               ),
-              const SizedBox(height: 15.0),
-              Text('Information', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
-                title: const Text('Donate'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Restore"),
+                subtitle: const Text("Restore a different database with your notes"),
+                onTap: () {
+                  _inputPassword
+                      ? showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Enter password"),
+                        content: TextField(
+                          obscureText: true,
+                          controller: _passwordController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Password",
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _importDatabaseWithPassword(context, _passwordController.text);
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  )
+                      : _selectDatabase(context);
+                },
+              ),
+              Divider(color: Colors.grey.shade300, thickness: 1.0,),
+              const SizedBox(height: 10.0),
+              Text("Information", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Donate"),
+                subtitle: const Text("Support the development"),
                 onTap: () {
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('Donate'),
+                        title: const Text("Donate"),
                         content: RichText(
                           text: TextSpan(
                             children: [
@@ -114,17 +192,17 @@ class Settings extends StatelessWidget {
                                 text: "This application was created to help people, that's why all the code is public & free. \n",
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                              TextSpan(text: "\n"),
+                              const TextSpan(text: "\n"),
                               TextSpan(
                                 text: "If you find it useful, you can make a donation here: \n",
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                              TextSpan(text: "\n"),
+                              const TextSpan(text: "\n"),
                               TextSpan(
                                 text: "Buy Me a Coffee",
                                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
                                 recognizer: TapGestureRecognizer()..onTap = () {
-                                  launch('https://bmc.link/impulsado');
+                                  launchUrl(donationUrl);
                                 },
                               ),
                             ],
@@ -136,7 +214,9 @@ class Settings extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const Text('About'),
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("About"),
+                subtitle: const Text("View software version"),
                 onTap: () {
                   showDialog(
                     context: context,
@@ -146,34 +226,34 @@ class Settings extends StatelessWidget {
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/images/icon.jpg'),
+                            const Image(
+                              image: AssetImage("assets/images/icon.jpg"),
                               height: 100,
                               width: 100,
                             ),
-                            SizedBox(height: 15),
-                            Text('0.0.0', style: TextStyle(fontSize: 16),),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
+                            const Text('0.0.0', style: TextStyle(fontSize: 16),),
+                            const SizedBox(height: 15),
                             RichText(
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: 'Code Repository: ',
+                                    text: "Code Repository: ",
                                     style: Theme.of(context).textTheme.bodyLarge,
                                   ),
                                   TextSpan(
-                                    text: 'Github',
+                                    text: "Github",
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()..onTap = () {
-                                      launch('https://github.com/impulsado/personalDB');
+                                      launchUrl(githubUrl);
                                     },
                                   ),
                                 ],
                               ),
                             ),
 
-                            SizedBox(height: 15),
-                            Text("© 2023 personalDB \n All rights reserved", style: TextStyle(fontSize: 16),),
+                            const SizedBox(height: 15),
+                            const Text("© 2023 personalDB. All rights reserved.", style: TextStyle(fontSize: 10),),
                           ],
                         ),
                       );
@@ -188,21 +268,3 @@ class Settings extends StatelessWidget {
     );
   }
 }
-
-void navigateToSettings(BuildContext context) {
-  Navigator.push(context, PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => Settings(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  ));
-}
-

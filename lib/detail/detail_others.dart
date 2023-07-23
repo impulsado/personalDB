@@ -12,9 +12,10 @@ class OthersDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  OthersDetailPage(this.myCategory, {this.id});
+  const OthersDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _OthersDetailPageState createState() => _OthersDetailPageState();
 }
 
@@ -71,7 +72,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "description": _descriptionController.text,
     };
   }
@@ -88,7 +89,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
         _descriptionController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -106,6 +107,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -113,7 +115,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -124,8 +126,6 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -133,6 +133,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
@@ -206,6 +207,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
         onPressed: () async {
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           }
         },

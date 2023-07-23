@@ -12,9 +12,10 @@ class HealthDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  HealthDetailPage(this.myCategory, {this.id});
+  const HealthDetailPage(this.myCategory, {super.key, this.id});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HealthDetailPageState createState() => _HealthDetailPageState();
 }
 
@@ -73,7 +74,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text,
+      "title": _titleController.text ?? "",
       "type": _typeController.text,
       "description": _descriptionController.text,
     };
@@ -93,7 +94,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
         _descriptionController.text.isNotEmpty) {
 
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -114,6 +115,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
 
       _updateInitialData();
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     }
   }
@@ -121,7 +123,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
   _loadNote() async {
     if (widget.id != null) {
       if(MyApp.dbPassword == null) {
-        throw ArgumentError("La contraseña de la base de datos es nula");
+        throw ArgumentError("Database password is null");
       }
 
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
@@ -133,8 +135,6 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
           _descriptionController.text = items[0]["description"] ?? "";
           _typeController.text = items[0]["type"] ?? "";
           _isLoading = false;
-
-          _updateInitialData();
         });
       }
     } else {
@@ -142,6 +142,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
         _isLoading = false;
       });
     }
+    _updateInitialData();
   }
 
   @override
