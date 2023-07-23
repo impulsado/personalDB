@@ -10,7 +10,7 @@ class NoteRestaurant extends StatelessWidget {
   final bool showDeleteButton;
   final Color backgroundColor;
 
-  NoteRestaurant({
+  const NoteRestaurant({
     Key? key,
     required this.note,
     this.onDelete,
@@ -32,7 +32,7 @@ class NoteRestaurant extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-              margin: EdgeInsets.only(right: 50.0, left: 13.0),
+              margin: const EdgeInsets.only(right: 50.0, left: 13.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -44,7 +44,7 @@ class NoteRestaurant extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(width: 15),
+                      const SizedBox(width: 15),
                       Text(
                         note["type"] ?? "",
                         maxLines: 1,
@@ -61,13 +61,13 @@ class NoteRestaurant extends StatelessWidget {
                         itemSize: 20,
                         isReadOnly: true,
                       ),
-                      SizedBox(width: 15),
+                      const SizedBox(width: 15),
                       Text(
                         note["price"] ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                     ],
                   ),
                 ],
@@ -75,7 +75,7 @@ class NoteRestaurant extends StatelessWidget {
             ),
           if (showDeleteButton)
             Positioned(
-              right: 0,
+              right: 16,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

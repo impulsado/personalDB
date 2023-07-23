@@ -8,15 +8,15 @@ class NoteEntertainment extends StatelessWidget {
   final VoidCallback? onDelete;
   final String categoryName;
   final bool showDeleteButton;
-  final Color backgroundColor;  // Añadir backgroundColor a NoteEntertainment
+  final Color backgroundColor;
 
-  NoteEntertainment({
+  const NoteEntertainment({
     Key? key,
     required this.note,
     this.onDelete,
     required this.categoryName,
     this.showDeleteButton = true,
-    required this.backgroundColor,  // Hacer backgroundColor requerido
+    required this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -25,14 +25,14 @@ class NoteEntertainment extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: backgroundColor,  // Usar backgroundColor para el color de fondo
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
         border: Border.all(color: Colors.grey),
       ),
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(right: 50.0, left: 13.0),
+            margin: const EdgeInsets.only(right: 50.0, left: 13.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -48,7 +48,7 @@ class NoteEntertainment extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Expanded(
                       child: Text(
                         note["author"] ?? "",
@@ -74,7 +74,7 @@ class NoteEntertainment extends StatelessWidget {
           ),
           if (showDeleteButton)
             Positioned(
-              right: 0,
+              right: 16,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),
