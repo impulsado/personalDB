@@ -1,11 +1,11 @@
+// category_cooking.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/button.dart';
-import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/detail/detail_factory.dart';
-import 'package:personaldb/main.dart';
 import 'package:personaldb/widgets/notes/note_cooking.dart';
+import 'package:personaldb/widgets/refresh_notes.dart';
 
 void main() {
   runApp(const MyAppCooking());
@@ -32,21 +32,22 @@ class CategoryCooking extends StatefulWidget {
   _CategoryCookingState createState() => _CategoryCookingState();
 }
 
-class _CategoryCookingState extends State<CategoryCooking> {
+class _CategoryCookingState extends State<CategoryCooking> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
+  late AnimationController _controller;
 
   Future<void> _refreshNotes() async {
     try {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      final data = await dbHelper.getItems(MyApp.dbPassword!);
-      if (data.isEmpty) {
+      _notes = await refreshNotes(widget.myCategory.title ?? "Error");
+      if (_notes.isEmpty) {
         print("No items found in the database");
       }
       setState(() {
-        _notes = data;
         _isLoading = false;
       });
+      _controller.reset();
+      _controller.forward();
     } catch (e) {
       print("Error occurred while refreshing notes: $e");
       setState(() {
@@ -59,15 +60,16 @@ class _CategoryCookingState extends State<CategoryCooking> {
   void initState() {
     super.initState();
     _refreshNotes();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.myCategory.bgColor,
-      appBar: _buildAppBar(),
-      body: _isLoading ? _buildLoading() : _buildNoteList(),
-      floatingActionButton: _buildFloatingActionButton(),
-    );
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   AppBar _buildAppBar() {
@@ -82,61 +84,96 @@ class _CategoryCookingState extends State<CategoryCooking> {
     );
   }
 
+
   Widget _buildLoading() {
     return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: widget.myCategory.bgColor,
+      appBar: _buildAppBar(),
+      body: _isLoading ? _buildLoading() : _buildNoteList(),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
   }
 
   Widget _buildNoteList() {
     if (_notes.isEmpty) {
       return Container(
-        decoration: const BoxDecoration(
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
+        decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-          ),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        child: Center(
-          child: Text("No items available"),
-        ),
+        child: const Center(child: Text("No items available"),),
       );
     } else {
       return Container(
-        decoration: const BoxDecoration(
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
+        decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-          ),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
         child: ListView.builder(
           itemCount: _notes.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () async {
-                String? action = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id'])),
-                );
-                if (action == "refresh") {
-                  _refreshNotes();
-                }
-                },
-              child: NoteCooking(
-                backgroundColor: Colors.grey.shade50,
-                note: _notes[index],
-                onDelete: () {
-                  _refreshNotes();
-                  },
-                categoryName: widget.myCategory.title ?? "Error",
-              ),
+            return FadeTransition(
+              opacity: _controller.drive(
+                  Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(
+                      curve: Interval(
+                          (index / _notes.length), 1, curve: Curves.easeOut)))),
+              child: _note(index),
             );
           },
         ),
       );
     }
+  }
+
+  Widget _note(int index){
+    return GestureDetector(
+      onTap: () async {
+        String? action = await Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory, id: _notes[index]['id']),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          ),
+        );
+        if (action == "refresh") {
+          _refreshNotes();
+        }
+      },
+      child: NoteCooking(
+        backgroundColor: Colors.grey.shade50,
+        note: _notes[index],
+        onDelete: () {
+          _refreshNotes();
+        },
+        categoryName: widget.myCategory.title ?? "Error",
+      ),
+    );
+
   }
 
   Widget _buildFloatingActionButton() {
@@ -145,7 +182,24 @@ class _CategoryCookingState extends State<CategoryCooking> {
       bgColor: widget.myCategory.bgColor ?? Colors.black,
       iconColor: widget.myCategory.iconColor ?? Colors.white,
       onTap: () async {
-        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPageFactory.getDetailPage(widget.myCategory),),);
+        final result = await Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => DetailPageFactory.getDetailPage(widget.myCategory),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          ),
+        );
         if (result == "refresh") {
           _refreshNotes();
         }

@@ -1,5 +1,5 @@
+// contacts.dart
 import 'package:flutter/material.dart';
-import 'package:personaldb/settings/settings.dart';
 import 'package:personaldb/constants/theme.dart';
 
 class Contacts extends StatelessWidget {
@@ -13,12 +13,7 @@ class Contacts extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.settings, color: Colors.grey),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Settings()),
-              );
-            },
+            onPressed: () {},
           ),
         ],
       ),

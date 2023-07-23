@@ -1,3 +1,4 @@
+// categories.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/categories/category_cooking.dart';
 import 'package:personaldb/categories/category_ideas.dart';
@@ -10,7 +11,6 @@ import 'package:personaldb/categories/category_others.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/settings/settings.dart';
 import 'package:personaldb/constants/theme.dart';
-
 
 class Categories extends StatelessWidget {
   final categoryList = MyCategory.generateCategory();
@@ -26,12 +26,9 @@ class Categories extends StatelessWidget {
         title: Text('Categories', style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.black),
+            icon: const Icon(Icons.settings, color: Colors.black,),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Settings()),
-              );
+              navigateToSettings(context);
             },
           ),
         ],
@@ -105,7 +102,7 @@ class Categories extends StatelessWidget {
             default:
               throw Exception('Unsupported category: ${myCategory.title}');
           }
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
+          Navigator.of(context).push(_createRoute(page));
         },
         child: Container (
             padding: const EdgeInsets.all(20),
@@ -121,6 +118,24 @@ class Categories extends StatelessWidget {
               ],
             )
         )
+    );
+  }
+
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }

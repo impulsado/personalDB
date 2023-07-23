@@ -1,3 +1,4 @@
+// home.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/categories.dart';
