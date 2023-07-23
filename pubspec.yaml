@@ -40,6 +40,10 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   path_provider: ^2.0.15
   share_plus: ^7.0.2
+  animations: ^2.0.7
+  app_settings: ^5.0.0
+  url_launcher: ^6.1.12
+  permission_handler: ^10.4.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
