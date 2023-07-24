@@ -29,7 +29,7 @@ We have integrated robust security measures within the App. Our design and codin
 ## 5. Changes To This Privacy Policy
 We reserve the right to revise this Privacy Policy from time to time. If we make changes, we will notify you by revising the date at the top of the policy and, depending on the specific changes, we may provide you with additional notice or require your consent.
 
-6. Contact Us
+## 6. Contact Us
 We encourage users to contact us if there are any questions, concerns, or comments regarding this Privacy Policy. You can reach us at impulsado@protonmail.com.
 
 By using personalDB, you confirm that you have read and understood this Privacy Policy.
