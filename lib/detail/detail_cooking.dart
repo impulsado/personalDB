@@ -32,6 +32,13 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _loadNote();
+  }
+
   Future<bool> _onWillPop() async {
     if (_isFormModified()) {
       final confirm = await showDialog(
@@ -71,7 +78,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text ?? "",
+      "title": _titleController.text,
       "duration": _durationController.text,
       "difficulty": _difficultyController.text,
       "ingredients": _ingredientsController.text,
@@ -94,48 +101,68 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   }
 
   _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty &&
-        _durationController.text.isNotEmpty &&
-        _difficultyController.text.isNotEmpty &&
-        _ingredientsController.text.isNotEmpty &&
-        _recipeController.text.isNotEmpty &&
-        _priceController.text.isNotEmpty &&
-        _rateController.text.isNotEmpty) {
 
-      if (MyApp.dbPassword == null) {
-        throw ArgumentError("Database password is null");
-      }
-
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      final data = {
-        "title": _titleController.text,
-        "duration": _durationController.text,
-        "difficulty": _difficultyController.text,
-        "ingredients": _ingredientsController.text,
-        "recipe": _recipeController.text,
-        "price": "${_priceController.text}€",
-        "rate": _rateController.text,
-      };
-
-      if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
-      } else {
-        await dbHelper.createItem(data, MyApp.dbPassword!);
-      }
-
-      _titleController.clear();
-      _durationController.clear();
-      _difficultyController.clear();
-      _ingredientsController.clear();
-      _recipeController.clear();
-      _priceController.clear();
-      _rateController.clear();
-
-      _updateInitialData();
-
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, "refresh");
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a title")));
+    } else if (_durationController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select the duration")));
+    } else if (_priceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a price")));
+    } else if (_ingredientsController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter the ingredients")));
+    } else if (_recipeController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a recipe")));
+    } else if (_difficultyController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please choose the difficulty")));
+    } else if (_rateController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please choose your rate")));
+    } else {
+      _saveNote(context);
     }
+
+  }
+
+  _saveNote(BuildContext context) async {
+    if (MyApp.dbPassword == null) {
+      throw ArgumentError("Database password is null");
+    }
+
+    final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    final data = {
+      "title": _titleController.text,
+      "duration": _durationController.text,
+      "difficulty": _difficultyController.text,
+      "ingredients": _ingredientsController.text,
+      "recipe": _recipeController.text,
+      "price": "${_priceController.text}€",
+      "rate": _rateController.text,
+    };
+
+    if (widget.id != null) {
+      await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+    } else {
+      await dbHelper.createItem(data, MyApp.dbPassword!);
+    }
+
+    _titleController.clear();
+    _durationController.clear();
+    _difficultyController.clear();
+    _ingredientsController.clear();
+    _recipeController.clear();
+    _priceController.clear();
+    _rateController.clear();
+
+    _updateInitialData();
+
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context, "refresh");
   }
 
   _loadNote() async {
@@ -167,13 +194,6 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       });
     }
     _updateInitialData();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _loadNote();
   }
 
   @override

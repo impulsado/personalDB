@@ -1,18 +1,15 @@
-// detail_others.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
-import 'package:personaldb/database/database_helper_others.dart';
 import 'package:personaldb/main.dart';
-import 'package:personaldb/constants/theme.dart';
 
 class OthersDetailPage extends StatefulWidget {
   final MyCategory myCategory;
   final int? id;
 
-  const OthersDetailPage(this.myCategory, {super.key, this.id});
+  const OthersDetailPage(this.myCategory, {Key? key, this.id}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -22,7 +19,6 @@ class OthersDetailPage extends StatefulWidget {
 class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  late final OthersDatabaseHelper dbHelper;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
@@ -31,9 +27,6 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    // Initialize the dbHelper
-    dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error") as OthersDatabaseHelper;
 
     _loadNote();
   }
@@ -72,7 +65,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text ?? "",
+      "title": _titleController.text,
       "description": _descriptionController.text,
     };
   }
@@ -84,32 +77,41 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
     super.dispose();
   }
 
-  _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty &&
-        _descriptionController.text.isNotEmpty) {
-
-      if(MyApp.dbPassword == null) {
-        throw ArgumentError("Database password is null");
-      }
-
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      final data = {
-        "title": _titleController.text,
-        "description": _descriptionController.text,
-      };
-      if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
-      } else {
-        await dbHelper.createItem(data, MyApp.dbPassword!);
-      }
-      _titleController.clear();
-      _descriptionController.clear();
-
-      _updateInitialData();
-
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, "refresh");
+  _submitNote(BuildContext context) {
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a title")));
+    } else if (_descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a description")));
+    } else {
+      _saveNote(context);
     }
+  }
+
+  _saveNote(BuildContext context) async {
+    if(MyApp.dbPassword == null) {
+      throw ArgumentError("Database password is null");
+    }
+
+    final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    final data = {
+      "title": _titleController.text,
+      "description": _descriptionController.text,
+    };
+
+    if (widget.id != null) {
+      await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+    } else {
+      await dbHelper.createItem(data, MyApp.dbPassword!);
+    }
+    _titleController.clear();
+    _descriptionController.clear();
+
+    _updateInitialData();
+
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context, "refresh");
   }
 
   _loadNote() async {
@@ -171,12 +173,12 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
                             height: 50),
                         const SizedBox(height: 10),
                         MyInputField(
-                            title: "Description",
-                            hint: "Enter description here.",
-                            controller: _descriptionController,
-                            height: 200,
-                            inputType: TextInputType.multiline,
-                            inputAction: TextInputAction.newline,
+                          title: "Description",
+                          hint: "Enter description here.",
+                          controller: _descriptionController,
+                          height: 200,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
                         ),
                       ],
                     ),
@@ -200,15 +202,17 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: widget.myCategory.bgColor,
-      elevation: 0,
-      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
+      elevation: 0.0,
+      title: Text(
+        widget.myCategory.title ?? "",
+        style: const TextStyle(fontSize: 24.0, color: Colors.black),
+      ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
         onPressed: () async {
-          // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
             // ignore: use_build_context_synchronously
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           }
         },
       ),

@@ -83,7 +83,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
 
   void _updateInitialData() {
     initialData = {
-      "title": _titleController.text ?? "",
+      "title": _titleController.text,
       "description": _descriptionController.text,
       "date": _dateController.text,
       "type": _typeController.text,
@@ -102,41 +102,56 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
   }
 
   _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty &&
-        _descriptionController.text.isNotEmpty &&
-        _typeController.text.isNotEmpty &&
-        _trustController.text.isNotEmpty) {
-
-      if(MyApp.dbPassword == null) {
-        throw ArgumentError("Database password is null");
-      }
-
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      DateTime date = DateTime.tryParse(_dateController.text) ?? DateTime.now();
-      String formattedDate = _dateFormatter.format(date);
-      final data = {
-        "title": _titleController.text,
-        "description": _descriptionController.text,
-        "date": formattedDate,
-        "type": _typeController.text,
-        "trust": _trustController.text
-      };
-      if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
-      } else {
-        await dbHelper.createItem(data, MyApp.dbPassword!);
-      }
-      _titleController.clear();
-      _descriptionController.clear();
-      _dateController.clear();
-      _typeController.clear();
-      _trustController.clear();
-
-      _updateInitialData();
-
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, "refresh");
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a title")));
+    } else if (_typeController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a type")));
+    } else if (_dateController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select the date")));
+    } else if (_descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a description")));
+    } else if (_trustController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please your trust")));
+    } else {
+      _saveNote(context);
     }
+  }
+
+  _saveNote(BuildContext context) async {
+    if(MyApp.dbPassword == null) {
+      throw ArgumentError("Database password is null");
+    }
+
+    final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    DateTime date = DateTime.tryParse(_dateController.text) ?? DateTime.now();
+    String formattedDate = _dateFormatter.format(date);
+    final data = {
+      "title": _titleController.text,
+      "description": _descriptionController.text,
+      "date": formattedDate,
+      "type": _typeController.text,
+      "trust": _trustController.text
+    };
+    if (widget.id != null) {
+      await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+    } else {
+      await dbHelper.createItem(data, MyApp.dbPassword!);
+    }
+    _titleController.clear();
+    _descriptionController.clear();
+    _dateController.clear();
+    _typeController.clear();
+    _trustController.clear();
+
+    _updateInitialData();
+
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context, "refresh");
   }
 
   _loadNote() async {

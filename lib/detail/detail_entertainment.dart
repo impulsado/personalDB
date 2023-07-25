@@ -79,8 +79,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
 
   void _updateInitialData() {
     initialData = {
-      // DO NOT REMOVE '?? ""'
-      "title": _titleController.text ?? "",
+      "title": _titleController.text,
       "author": _authorController.text,
       "link": _linkController.text,
       "notes": _notesController.text,
@@ -99,40 +98,54 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   }
 
   _submitNote(BuildContext context) async {
-    if (_titleController.text.isNotEmpty &&
-        _authorController.text.isNotEmpty &&
-        _linkController.text.isNotEmpty &&
-        _notesController.text.isNotEmpty &&
-        _rateController.text.isNotEmpty) {
-
-      if(MyApp.dbPassword == null) {
-        throw ArgumentError("Database password is null");
-      }
-
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
-      final data = {
-        "title": _titleController.text,
-        "author": _authorController.text,
-        "link": _linkController.text,
-        "notes": _notesController.text,
-        "rate": _rateController.text,
-      };
-      if (widget.id != null) {
-        await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
-      } else {
-        await dbHelper.createItem(data, MyApp.dbPassword!);
-      }
-      _titleController.clear();
-      _authorController.clear();
-      _linkController.clear();
-      _notesController.clear();
-      _rateController.clear();
-
-      _updateInitialData();
-
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, "refresh");
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a title")));
+    } else if (_authorController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter an author")));
+    } else if (_linkController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter a link")));
+    } else if (_notesController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter your notes")));
+    } else if (_rateController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please choose your rate")));
+    } else {
+      _saveNote(context);
     }
+  }
+
+  _saveNote(BuildContext context) async {
+    if(MyApp.dbPassword == null) {
+      throw ArgumentError("Database password is null");
+    }
+
+    final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    final data = {
+      "title": _titleController.text,
+      "author": _authorController.text,
+      "link": _linkController.text,
+      "notes": _notesController.text,
+      "rate": _rateController.text,
+    };
+    if (widget.id != null) {
+      await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+    } else {
+      await dbHelper.createItem(data, MyApp.dbPassword!);
+    }
+    _titleController.clear();
+    _authorController.clear();
+    _linkController.clear();
+    _notesController.clear();
+    _rateController.clear();
+
+    _updateInitialData();
+
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context, "refresh");
   }
 
   _loadNote() async {
