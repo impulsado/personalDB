@@ -7,7 +7,7 @@ import 'package:personaldb/widgets/notes/note_wishlist.dart';
 import 'package:personaldb/widgets/notes/note_entertainment.dart';
 import 'package:personaldb/widgets/notes/note_others.dart';
 import 'package:personaldb/widgets/notes/note_personal.dart';
-import 'package:personaldb/widgets/notes/notes_ideas.dart';
+import 'package:personaldb/widgets/notes/note_ideas.dart';
 
 class SearchResultItem extends StatelessWidget {
   final Map<String, dynamic> note;
