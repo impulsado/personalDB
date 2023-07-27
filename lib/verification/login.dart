@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final storage = const FlutterSecureStorage();
   final _passwordController = TextEditingController();
   late Future<bool> dbExists;
+  bool _obscureText = true; // To toggle password visibility
 
   @override
   void initState() {
@@ -83,14 +84,23 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             cursorColor: Colors.black,
             controller: _passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
+            obscureText: _obscureText,  // Use variable to toggle
+            decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
+              border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
               labelText: "Password",
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: const TextStyle(color: Colors.black),
+              suffixIcon: IconButton(
+                icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
             ),
             style: const TextStyle(color: Colors.black),
           ),
@@ -101,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               minimumSize: const Size(double.infinity, 50),
             ),
             onPressed: () => _login(context),
-            child: const Text('Log In', style: TextStyle(color: Colors.white)),
+            child: const Text("Log In", style: TextStyle(color: Colors.white)),
           ),
           const SizedBox(height: 20.0),
           TextButton(
