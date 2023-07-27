@@ -103,36 +103,37 @@ class _CategoryCookingState extends State<CategoryCooking> with TickerProviderSt
   Widget _buildNoteList() {
     if (_notes.isEmpty) {
       return Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
-        decoration: BoxDecoration(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        child: const Center(child: Text("No items available"),),
+        child: const Center(child: Text("No items available")),
       );
     } else {
       return Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
-        decoration: BoxDecoration(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
         child: ListView.builder(
           itemCount: _notes.length,
           itemBuilder: (context, index) {
             return FadeTransition(
-              opacity: _controller.drive(
-                  Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(
-                      curve: Interval(
-                          (index / _notes.length), 1, curve: Curves.easeOut)))),
+              opacity: _controller.drive(Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Interval((index / _notes.length), 1, curve: Curves.easeOut)))),
               child: _note(index),
             );
           },

@@ -93,9 +93,14 @@ class _CategoryOthersState extends State<CategoryOthers> with TickerProviderStat
     if (_notes.isEmpty) {
       return Container(
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
         child: const Center(child: Text("No items available")),
@@ -103,9 +108,14 @@ class _CategoryOthersState extends State<CategoryOthers> with TickerProviderStat
     } else {
       return Container(
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
         ),
         margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
         child: ListView.builder(

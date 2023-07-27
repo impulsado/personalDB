@@ -5,7 +5,7 @@ import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/detail/detail_factory.dart';
 import 'package:personaldb/widgets/refresh_notes.dart';
-import 'package:personaldb/widgets/notes/notes_ideas.dart';
+import 'package:personaldb/widgets/notes/note_ideas.dart';
 
 void main() {
   runApp(const MyAppIdeas());
