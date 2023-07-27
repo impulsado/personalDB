@@ -213,6 +213,7 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
                             title: "Website",
                             hint: "Enter website here.",
                             controller: _linkController,
+                            isLink: true,
                             height: 50),
                         const SizedBox(height: 10),
                         MyInputField(

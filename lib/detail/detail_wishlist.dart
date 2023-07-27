@@ -211,6 +211,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         title: "Website",
                         hint: "Enter website link here.",
                         controller: _linkController,
+                        isLink: true,
                       ),
                       const SizedBox(height: 10),
                       Row(

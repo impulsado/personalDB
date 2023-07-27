@@ -218,6 +218,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
                         title: "Link",
                         hint: "Link",
                         controller: _linkController,
+                        isLink: true,
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
