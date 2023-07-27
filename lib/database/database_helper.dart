@@ -105,6 +105,8 @@ class DatabaseHelper {
     "Personal": ['title', 'type', 'date', 'description', 'trust'],
     "Restaurant": ['title', 'location', 'type', 'price', 'notes', 'rate'],
     "WishList": ['title', 'link', 'price', 'priority', 'notes'],
+    "Passwords": ['title', 'username', 'password', 'link', 'notes'],
+    "Inventory": ['item', 'quantity', 'price', 'location', 'notes'],
     "Entertainment": ['title', 'author', 'link', 'notes', 'rate'],
     "Others": ['title', 'description'],
   };
@@ -192,6 +194,29 @@ class DatabaseHelper {
           link TEXT,
           price TEXT,
           priority TEXT,
+          notes TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
+    "Passwords": """
+        CREATE TABLE passwords(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          title TEXT,
+          username TEXT,
+          password TEXT,
+          link TEXT,
+          notes TEXT,
+          lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
+    "Inventory": """
+        CREATE TABLE inventory(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          item TEXT,
+          quantity TEXT,
+          price TEXT,
+          location TEXT,
           notes TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )

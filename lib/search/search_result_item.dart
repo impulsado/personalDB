@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:personaldb/widgets/notes/note_cooking.dart';
 import 'package:personaldb/widgets/notes/note_health.dart';
+import 'package:personaldb/widgets/notes/note_inventory.dart';
+import 'package:personaldb/widgets/notes/note_passwords.dart';
 import 'package:personaldb/widgets/notes/note_restaurant.dart';
 import 'package:personaldb/widgets/notes/note_wishlist.dart';
 import 'package:personaldb/widgets/notes/note_entertainment.dart';
@@ -59,6 +61,20 @@ class SearchResultItem extends StatelessWidget {
         );
       case "WishList":
         return NoteWishlist(
+          note: note,
+          backgroundColor: backgroundColor,
+          categoryName: note["category_name"],
+          showDeleteButton: false,
+        );
+      case "Passwords":
+        return NotePasswords(
+          note: note,
+          backgroundColor: backgroundColor,
+          categoryName: note["category_name"],
+          showDeleteButton: false,
+        );
+      case "Inventory":
+        return NoteInventory(
           note: note,
           backgroundColor: backgroundColor,
           categoryName: note["category_name"],

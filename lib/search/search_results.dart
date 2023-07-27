@@ -80,6 +80,10 @@ class _SearchResultsState extends State<SearchResults> {
         return kBlueLight;
       case "WishList":
         return kOrangeLight;
+      case "Passwords":
+        return kDarkBlueLight;
+      case "Inventory":
+        return kBrownLight;
       case "Entertainment":
         return kRedLight;
       case "Others":

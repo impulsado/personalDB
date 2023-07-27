@@ -1,4 +1,3 @@
-// categories.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/categories/category_cooking.dart';
 import 'package:personaldb/categories/category_ideas.dart';
@@ -6,6 +5,8 @@ import 'package:personaldb/categories/category_health.dart';
 import 'package:personaldb/categories/category_personal.dart';
 import 'package:personaldb/categories/category_restaurant.dart';
 import 'package:personaldb/categories/category_wishlist.dart';
+import 'package:personaldb/categories/category_passwords.dart';
+import 'package:personaldb/categories/category_inventory.dart';
 import 'package:personaldb/categories/category_entertainment.dart';
 import 'package:personaldb/categories/category_others.dart';
 import 'package:personaldb/models/categories.dart';
@@ -26,7 +27,7 @@ class Categories extends StatelessWidget {
         title: Text("Categories", style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.black,),
+            icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
               navigateToSettings(context);
             },
@@ -45,8 +46,7 @@ class Categories extends StatelessWidget {
         var end = Offset.zero;
         var curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
         return SlideTransition(
           position: animation.drive(tween),
           child: child,
@@ -56,86 +56,113 @@ class Categories extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final appBarHeight = AppBar().preferredSize.height;
-    const bottomNavBarHeight = kBottomNavigationBarHeight;
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final spaceSize = screenWidth / 20; // divide screen width into 20 parts, 1 for space size
+    final boxSize = (screenWidth - (3 * spaceSize)) / 3; // 3 spaces (left, right, middle)
 
-    final gridHeight = screenHeight - appBarHeight - bottomPadding - bottomNavBarHeight;
-    final gridWidth = screenWidth;
-
-    const crossAxisCount = 2;
-    const double crossAxisSpacing = 10.0;
-    const double mainAxisSpacing = 10.0;
-    final numberOfItems = categoryList.length;
-    final numberOfRows = (numberOfItems / crossAxisCount).ceil();
-    final heightOfOneRow = (gridHeight - ((numberOfRows - 1) * mainAxisSpacing)) / numberOfRows;
-
-    final childAspectRatio = gridWidth / (crossAxisCount * heightOfOneRow);
-
-    return GridView.builder(
-      padding: const EdgeInsets.all(15),
-      itemCount: categoryList.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: crossAxisSpacing,
-        mainAxisSpacing: mainAxisSpacing,
-        childAspectRatio: childAspectRatio,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: spaceSize),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _buildRow(context, categoryList.getRange(0, 2).toList(), boxSize, spaceSize),
+            SizedBox(height: spaceSize),
+            _buildRow(context, categoryList.getRange(2, 4).toList(), boxSize, spaceSize),
+            SizedBox(height: spaceSize),
+            _buildRow(context, categoryList.getRange(4, 6).toList(), boxSize, spaceSize),
+            SizedBox(height: spaceSize),
+            _buildRow(context, categoryList.getRange(6, 8).toList(), boxSize, spaceSize),
+            SizedBox(height: spaceSize),
+            _buildRow(context, categoryList.getRange(8, 10).toList(), boxSize, spaceSize),
+          ],
+        ),
       ),
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => _buildCategory(context, categoryList[index]),
     );
   }
 
-  Widget _buildCategory(BuildContext context, MyCategory myCategory) {
+
+  Widget _buildRow(BuildContext context, List<MyCategory> categories, double boxSize, double spaceSize) {
+    List<Widget> rowItems = [];
+    rowItems.add(SizedBox(width: spaceSize)); // add left spacer
+    for (var i = 0; i < categories.length; i++) {
+      rowItems.add(_buildCategory(context, categories[i], boxSize, spaceSize));
+      if (i != categories.length - 1) { // add space in between if it's not the last item
+        rowItems.add(SizedBox(width: spaceSize));
+      }
+    }
+    rowItems.add(SizedBox(width: spaceSize)); // add right spacer
+
+    return Row(
+      children: rowItems,
+    );
+  }
+
+  Widget _buildCategory(BuildContext context, MyCategory myCategory, double boxSize, double spaceSize) {
     return GestureDetector(
-        onTap: () {
-          Widget page;
-          switch (myCategory.title) {
-            case "Cooking":
-              page = CategoryCooking(myCategory);
-              break;
-            case "Ideas":
-              page = CategoryIdeas(myCategory);
-              break;
-            case "Health":
-              page = CategoryHealth(myCategory);
-              break;
-            case "Personal":
-              page = CategoryPersonal(myCategory);
-              break;
-            case "Restaurant":
-              page = CategoryRestaurant(myCategory);
-              break;
-            case "Wish List":
-              page = CategoryWishList(myCategory);
-              break;
-            case "Entertainment":
-              page = CategoryEntertainment(myCategory);
-              break;
-            case "Others":
-              page = CategoryOthers(myCategory);
-              break;
-            default:
-              throw Exception("Unsupported category: ${myCategory.title}");
-          }
-          Navigator.of(context).push(_createRoute(page));
-        },
-        child: Container (
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(color: myCategory.bgColor, borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(myCategory.iconData, color: myCategory.iconColor, size: 90,),
-                const SizedBox(height: 5,),
-                FittedBox(
-                  child: Text(myCategory.title!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: myCategory.iconColor), ),
-                ),
-              ],
-            )
-        )
+      onTap: () {
+        Widget page;
+        switch (myCategory.title) {
+          case "Cooking":
+            page = CategoryCooking(myCategory);
+            break;
+          case "Ideas":
+            page = CategoryIdeas(myCategory);
+            break;
+          case "Health":
+            page = CategoryHealth(myCategory);
+            break;
+          case "Personal":
+            page = CategoryPersonal(myCategory);
+            break;
+          case "Restaurant":
+            page = CategoryRestaurant(myCategory);
+            break;
+          case "Wish List":
+            page = CategoryWishList(myCategory);
+            break;
+          case "Passwords":
+            page = CategoryPasswords(myCategory);
+            break;
+          case "Inventory":
+            page = CategoryInventory(myCategory);
+            break;
+          case "Entertainment":
+            page = CategoryEntertainment(myCategory);
+            break;
+          case "Others":
+            page = CategoryOthers(myCategory);
+            break;
+          default:
+            throw Exception("Unsupported category: ${myCategory.title}");
+        }
+        Navigator.of(context).push(_createRoute(page));
+      },
+      child: Container(
+        width: boxSize,
+        height: boxSize,
+        margin: EdgeInsets.symmetric(horizontal: spaceSize / 2), // divide by 2 to have equal space in between
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: myCategory.bgColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(myCategory.iconData, color: myCategory.iconColor, size: boxSize * 0.5,),
+            const SizedBox(height: 5,),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                myCategory.title!,
+                style: TextStyle(fontSize: boxSize * 0.125, fontWeight: FontWeight.bold, color: myCategory.iconColor),
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -143,7 +170,7 @@ class Categories extends StatelessWidget {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
+        var begin = const Offset(0.0, 1.0);
         var end = Offset.zero;
         var curve = Curves.easeInOut;
 

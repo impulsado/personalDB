@@ -34,7 +34,7 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
   _loadItems() async {
     List<String> items = await widget.loadItemsFunction();
 
-    //print('Existing Items: $items');
+    print('Existing Items: $items');
 
     setState(() {
       _items = items;
@@ -74,7 +74,7 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
             },
             focusNode: focusNode,
             decoration: InputDecoration(
-              hintText: "Enter item here.",
+              hintText: "Enter ${widget.label.toLowerCase()} here.",
               hintStyle: subHeadingStyle(color: Colors.grey),
               border: InputBorder.none, // to remove underline
             ),
