@@ -107,15 +107,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_locationController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please choose the location")));
-    } else if (_typeController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a type")));
-    } else if (_priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a price")));
     } else if (_notesController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter your notes")));

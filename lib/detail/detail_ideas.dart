@@ -102,12 +102,6 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     } else if (_categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a category")));
-    } else if (_dateController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please select the date")));
-    } else if (_descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a description")));
     } else {
       _saveNote(context);
     }

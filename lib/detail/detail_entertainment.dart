@@ -101,15 +101,6 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_authorController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter an author")));
-    } else if (_linkController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a link")));
-    } else if (_notesController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter your notes")));
     } else if (_rateController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please choose your rate")));

@@ -105,18 +105,6 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_durationController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please select the duration")));
-    } else if (_priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a price")));
-    } else if (_ingredientsController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter the ingredients")));
-    } else if (_recipeController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a recipe")));
     } else if (_difficultyController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please choose the difficulty")));

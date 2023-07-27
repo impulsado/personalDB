@@ -100,18 +100,9 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_linkController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a link")));
-    } else if (_priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a price")));
     } else if (_priorityController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please choose the priority")));
-    } else if (_notesController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter your notes")));
     } else {
       _saveNote(context);
     }

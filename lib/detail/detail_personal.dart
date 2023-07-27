@@ -108,15 +108,9 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     } else if (_typeController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a type")));
-    } else if (_dateController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please select the date")));
     } else if (_descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a description")));
-    } else if (_trustController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please your trust")));
     } else {
       _saveNote(context);
     }
