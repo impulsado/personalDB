@@ -73,7 +73,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
         initialData["link"] != _linkController.text ||
         initialData["price"] != _priceController.text ||
         initialData["priority"] != _priorityController.text ||
-        initialData["rate"] != _notesController.text;
+        initialData["notes"] != _notesController.text;
   }
 
   void _updateInitialData() {
@@ -217,16 +217,6 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         children: [
                           Flexible(
                             flex: 5,
-                            child: MyInputField(
-                              title: "Price",
-                              hint: "Enter price here.",
-                              controller: _priceController,
-                              inputType: TextInputType.number,
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 5,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -237,6 +227,16 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                                   options: const ["High", "Medium", "Low"],
                                 ),
                               ],
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Flexible(
+                            flex: 5,
+                            child: MyInputField(
+                              title: "Price",
+                              hint: "Enter price here.",
+                              controller: _priceController,
+                              inputType: TextInputType.number,
                             ),
                           ),
                         ],
