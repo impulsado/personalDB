@@ -12,6 +12,7 @@ class MyInputField extends StatelessWidget {
   final TextInputType inputType;
   final TextInputAction? inputAction;
   final bool isLink;
+  final TextOverflow? overflow;
 
   const MyInputField({
     Key? key,
@@ -24,6 +25,7 @@ class MyInputField extends StatelessWidget {
     this.inputType = TextInputType.text,
     this.inputAction,
     this.isLink = false,
+    this.overflow,
   }) : super(key: key);
 
   void _launchURL(BuildContext context, String url) async {
@@ -60,18 +62,19 @@ class MyInputField extends StatelessWidget {
                     autofocus: false,
                     cursorColor: Colors.grey,
                     controller: controller,
-                    style: subHeadingStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, overflow: overflow),
                     keyboardType: inputType,
                     minLines: minLines,
-                    maxLines: null,
+                    maxLines: 1, // here we set maxLines to 1
                     textInputAction: inputAction,
                     decoration: InputDecoration(
                       hintText: hint,
-                      hintStyle: subHeadingStyle(color: Colors.grey),
+                      hintStyle: TextStyle(color: Colors.grey, overflow: overflow),
                       focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                       enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                       focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
                     ),
+                    textAlignVertical: TextAlignVertical.center,
                   ),
                   if (isLink)
                     Positioned(

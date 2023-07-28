@@ -194,6 +194,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
                           hint: "Enter title here.",
                           controller: _titleController,
                           height: 50,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 10),
                         Row(

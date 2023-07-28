@@ -208,12 +208,14 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                         title: "Title",
                         hint: "Enter title here.",
                         controller: _titleController,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
                         title: "Location",
                         hint: "Enter Google Maps link here.",
                         controller: _locationController,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -251,7 +253,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                         title: "Notes",
                         hint: "Enter notes here.",
                         controller: _notesController,
-                        minLines: 5,
+                        height: 150,
                         inputType: TextInputType.multiline,
                         inputAction: TextInputAction.newline,
                       ),

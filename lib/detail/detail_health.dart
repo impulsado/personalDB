@@ -187,7 +187,9 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
                             title: "Title",
                             hint: "Enter title here.",
                             controller: _titleController,
-                            height: 50),
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                        ),
                         const SizedBox(height: 10),
                         FieldAutocomplete(
                           controller: _typeController,

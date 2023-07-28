@@ -167,10 +167,12 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         MyInputField(
-                            title: "Title",
-                            hint: "Enter title here.",
-                            controller: _titleController,
-                            height: 50),
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          height: 50,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         const SizedBox(height: 10),
                         MyInputField(
                           title: "Description",

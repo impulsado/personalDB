@@ -217,6 +217,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           hint: "Enter title here.",
                           controller: _titleController,
                           height: 50,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Row(
                           children: [
@@ -246,6 +247,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           hint: "Enter ingredients here.",
                           controller: _ingredientsController,
                           height: 50,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         MyInputField(
                           title: "Recipe",

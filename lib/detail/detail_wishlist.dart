@@ -196,6 +196,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         title: "Title",
                         hint: "Enter title here.",
                         controller: _titleController,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
@@ -203,6 +204,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         hint: "Enter website link here.",
                         controller: _linkController,
                         isLink: true,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -238,7 +240,7 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
                         title: "Notes",
                         hint: "Enter notes here.",
                         controller: _notesController,
-                        minLines: 5,
+                        height: 150,
                         inputType: TextInputType.multiline,
                         inputAction: TextInputAction.newline,
                       ),
