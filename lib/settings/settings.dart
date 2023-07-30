@@ -70,6 +70,7 @@ class _SettingsState extends State<Settings> {
 
   final Uri githubUrl = Uri.parse("https://github.com/impulsado/PersonalDB");
   final Uri donationUrl = Uri.parse("https://www.buymeacoffee.com/impulsado");
+  final Uri portfolioUrl = Uri.parse("https://www.impulsado.org");
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +178,54 @@ class _SettingsState extends State<Settings> {
               Text("Information", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
                 contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("About"),
+                subtitle: const Text("View software version"),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("About"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Image(
+                              image: AssetImage("assets/images/icon.jpg"),
+                              height: 100,
+                              width: 100,
+                            ),
+                            const SizedBox(height: 15),
+                            const Text("0.0.0", style: TextStyle(fontSize: 16),),
+                            const SizedBox(height: 15),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Code Repository: ",
+                                    style: Theme.of(context).textTheme.bodyLarge,
+                                  ),
+                                  TextSpan(
+                                    text: "Github",
+                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
+                                    recognizer: TapGestureRecognizer()..onTap = () {
+                                      launchUrl(githubUrl, mode: LaunchMode.externalApplication);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 15),
+                            const Text("© 2023 personalDB. All rights reserved.", style: TextStyle(fontSize: 10),),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 0.0),
                 title: const Text("Donate"),
                 subtitle: const Text("Support the development"),
                 onTap: () {
@@ -202,7 +251,7 @@ class _SettingsState extends State<Settings> {
                                 text: "Buy Me a Coffee",
                                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
                                 recognizer: TapGestureRecognizer()..onTap = () {
-                                  launchUrl(donationUrl);
+                                  launchUrl(donationUrl, mode: LaunchMode.externalApplication);
                                 },
                               ),
                             ],
@@ -215,45 +264,40 @@ class _SettingsState extends State<Settings> {
               ),
               ListTile(
                 contentPadding: const EdgeInsets.only(left: 0.0),
-                title: const Text("About"),
-                subtitle: const Text("View software version"),
+                title: const Text("Contact Me"),
+                subtitle: const Text("Know more about impulsado"),
                 onTap: () {
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('About'),
+                        title: const Text("Contact Me"),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             const Image(
-                              image: AssetImage("assets/images/icon.jpg"),
+                              image: AssetImage("assets/images/impulsado.jpg"),
                               height: 100,
                               width: 100,
                             ),
-                            const SizedBox(height: 15),
-                            const Text('0.0.0', style: TextStyle(fontSize: 16),),
+                            const SizedBox(height: 10),
+                            const Text("impu | 2003", style: TextStyle(fontSize: 14),),
+                            const SizedBox(height: 30),
+                            const Text("Autodidact born to never stop creating.", style: TextStyle(color: Colors.black,fontSize: 16),),
                             const SizedBox(height: 15),
                             RichText(
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: "Code Repository: ",
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  TextSpan(
-                                    text: "Github",
+                                    text: "Portfolio",
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()..onTap = () {
-                                      launchUrl(githubUrl);
+                                      launchUrl(portfolioUrl, mode: LaunchMode.externalApplication);
                                     },
                                   ),
                                 ],
                               ),
                             ),
-
-                            const SizedBox(height: 15),
-                            const Text("© 2023 personalDB. All rights reserved.", style: TextStyle(fontSize: 10),),
                           ],
                         ),
                       );
