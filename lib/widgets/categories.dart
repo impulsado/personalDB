@@ -57,8 +57,8 @@ class Categories extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final spaceSize = screenWidth / 20; // divide screen width into 20 parts, 1 for space size
-    final boxSize = (screenWidth - (3 * spaceSize)) / 3; // 3 spaces (left, right, middle)
+    final spaceSize = screenWidth / 20;
+    final boxSize = (screenWidth - (3 * spaceSize)) / 3;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: spaceSize),
@@ -81,19 +81,17 @@ class Categories extends StatelessWidget {
     );
   }
 
-
   Widget _buildRow(BuildContext context, List<MyCategory> categories, double boxSize, double spaceSize) {
     List<Widget> rowItems = [];
-    rowItems.add(SizedBox(width: spaceSize)); // add left spacer
     for (var i = 0; i < categories.length; i++) {
       rowItems.add(_buildCategory(context, categories[i], boxSize, spaceSize));
-      if (i != categories.length - 1) { // add space in between if it's not the last item
+      if (i != categories.length - 1) {
         rowItems.add(SizedBox(width: spaceSize));
       }
     }
-    rowItems.add(SizedBox(width: spaceSize)); // add right spacer
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: rowItems,
     );
   }
@@ -141,7 +139,7 @@ class Categories extends StatelessWidget {
       child: Container(
         width: boxSize,
         height: boxSize,
-        margin: EdgeInsets.symmetric(horizontal: spaceSize / 2), // divide by 2 to have equal space in between
+        margin: EdgeInsets.symmetric(horizontal: spaceSize / 2),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: myCategory.bgColor,
