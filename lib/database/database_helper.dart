@@ -1,3 +1,4 @@
+// database_helper.dart
 import 'package:sqflite_sqlcipher/sqflite.dart' as sql;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -237,8 +238,33 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
           description TEXT
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
-      """
+      """,
+      "Contacts": """
+        CREATE TABLE contacts(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          name TEXT,
+          birthday TEXT, 
+          email TEXT, 
+          phone TEXT, 
+          label TEXT,
+          address TEXT, 
+          remindMe TEXT, 
+          notes TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
+      "Topics": """
+        CREATE TABLE topics(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          contact_id INTEGER,
+          title TEXT,
+          description TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY(contact_id) REFERENCES contacts(id)
+        )
+      """,
     };
 
     for (String category in categories.keys) {

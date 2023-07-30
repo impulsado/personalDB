@@ -1,44 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
-import 'package:personaldb/database/database_helper_ideas.dart';
-import 'package:personaldb/widgets/cupertino_date_picker.dart';
-import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/main.dart';
-import 'package:personaldb/constants/theme.dart';
 
-class IdeasDetailPage extends StatefulWidget {
-  final MyCategory myCategory;
+class TopicDetailPage extends StatefulWidget {
   final int? id;
+  final int contactId;
 
-  const IdeasDetailPage(this.myCategory, {super.key, this.id});
+  const TopicDetailPage({Key? key, required this.id, required this.contactId}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _IdeasDetailPageState createState() => _IdeasDetailPageState();
+  _TopicDetailPageState createState() => _TopicDetailPageState();
 }
 
-class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingObserver {
+class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat('dd-MM-yyyy');
-  late final IdeasDatabaseHelper dbHelper;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
+  String _contactName = "";
+
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    // Initialize the dbHelper
-    dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error") as IdeasDatabaseHelper;
 
     _loadNote();
   }
@@ -72,16 +61,12 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
-        initialData["category"] != _categoryController.text ||
-        initialData["date"] != _dateController.text ||
         initialData["description"] != _descriptionController.text;
   }
 
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
-      "category": _categoryController.text,
-      "date": _dateController.text,
       "description": _descriptionController.text,
     };
   }
@@ -89,19 +74,17 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   @override
   void dispose() {
     _titleController.dispose();
-    _categoryController.dispose();
-    _dateController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
 
-  _submitNote(BuildContext context) async {
+  _submitNote(BuildContext context) {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_categoryController.text.isEmpty) {
+    } else if (_descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a category")));
+          const SnackBar(content: Text("Please enter a description")));
     } else {
       _saveNote(context);
     }
@@ -112,21 +95,20 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
       throw ArgumentError("Database password is null");
     }
 
-    final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Topics");
+
     final data = {
       "title": _titleController.text,
-      "category": _categoryController.text,
-      "date": _dateController.text,
       "description": _descriptionController.text,
+      "contact_id": widget.contactId,
     };
+
     if (widget.id != null) {
       await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
     } else {
-      await dbHelper.createItem(data,MyApp.dbPassword!);
+      await dbHelper.createItem(data, MyApp.dbPassword!);
     }
     _titleController.clear();
-    _categoryController.clear();
-    _dateController.clear();
     _descriptionController.clear();
 
     _updateInitialData();
@@ -136,19 +118,26 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   }
 
   _loadNote() async {
-    if (widget.id != null) {
-      if(MyApp.dbPassword == null) {
-        throw ArgumentError("Database password is null");
-      }
+    if(MyApp.dbPassword == null) {
+      throw ArgumentError("Database password is null");
+    }
 
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
+    final dbHelperContacts = DatabaseHelperFactory.getDatabaseHelper("Contacts");
+    List<Map<String, dynamic>> contact = await dbHelperContacts.getItem(widget.contactId, MyApp.dbPassword!);
+
+    if (contact.isNotEmpty) {
+      setState(() {
+        _contactName = contact[0]["name"];
+      });
+    }
+
+    if (widget.id != null) {
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Topics");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
 
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
-          _categoryController.text = items[0]["category"] ?? "";
-          _dateController.text = items[0]["date"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
         });
@@ -161,12 +150,13 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     _updateInitialData();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: widget.myCategory.bgColor,
+        backgroundColor: Colors.grey,
         appBar: _buildAppBar(),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -190,36 +180,11 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: FieldAutocomplete(
-                                controller: _categoryController,
-                                label: "Category",
-                                dbHelper: IdeasDatabaseHelper(),
-                                loadItemsFunction: () async {
-                                  return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              flex: 3,
-                              child: CupertinoDatePickerField(
-                                controller: _dateController,
-                                dateFormatter: _dateFormatter,
-                              ),
-                            ),
-                          ],
-                        ),
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            overflow: TextOverflow.ellipsis,
+                            height: 50),
                         const SizedBox(height: 10),
                         MyInputField(
                           title: "Description",
@@ -241,8 +206,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: Colors.black,
+          iconColor: Colors.white,
         ),
       ),
     );
@@ -250,19 +215,17 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: widget.myCategory.bgColor,
-      elevation: 0,
-      title: Text(widget.myCategory.title ?? "Error", style: headingStyle(color: Colors.black)),
+      backgroundColor: Colors.grey,
+      elevation: 0.0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-        onPressed: () async {
-          // If no changes were made or if user decides to discard changes, navigate back
-          if (await _onWillPop()) {
-            // ignore: use_build_context_synchronously
-            Navigator.of(context).pop();
-          }
-        },
+        onPressed: () => Navigator.of(context).pop(),
+        icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+      ),
+      title: Text(
+        _contactName,
+        style: const TextStyle(color: Colors.black),
       ),
     );
   }
 }
+

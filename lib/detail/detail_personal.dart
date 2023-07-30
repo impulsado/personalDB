@@ -8,7 +8,7 @@ import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_personal.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
-import 'package:personaldb/widgets/date_picker.dart';
+import 'package:personaldb/widgets/cupertino_date_picker.dart';
 import 'package:personaldb/main.dart';
 
 class PersonalDetailPage extends StatefulWidget {
