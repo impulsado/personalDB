@@ -23,7 +23,6 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
   Map<String, dynamic> initialData = {};
   String _contactName = "";
 
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +31,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
     _loadNote();
   }
 
-  Future<bool> _onWillPop() async {
+  Future<void> _onWillPop() async {
     if (_isFormModified()) {
       final confirm = await showDialog(
         context: context,
@@ -53,9 +52,12 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
           );
         },
       );
-      return confirm ?? false;
+
+      if (confirm == true) {
+        Navigator.of(context).pop();
+      }
     } else {
-      return true;
+      Navigator.of(context).pop();
     }
   }
 
@@ -150,65 +152,61 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
     _updateInitialData();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        backgroundColor: Colors.grey,
-        appBar: _buildAppBar(),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Container(
-          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
-            ),
+    return Scaffold(
+      backgroundColor: Colors.grey,
+      appBar: _buildAppBar(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Container(
+        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                            title: "Title",
-                            hint: "Enter title here.",
-                            controller: _titleController,
-                            overflow: TextOverflow.ellipsis,
-                            height: 50),
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Description",
-                          hint: "Enter description here.",
-                          controller: _descriptionController,
-                          height: 200,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                      ],
-                    ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyInputField(
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          overflow: TextOverflow.ellipsis,
+                          height: 50),
+                      const SizedBox(height: 10),
+                      MyInputField(
+                        title: "Description",
+                        hint: "Enter description here.",
+                        controller: _descriptionController,
+                        height: 200,
+                        inputType: TextInputType.multiline,
+                        inputAction: TextInputAction.newline,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: MyButton(
-          label: "Submit",
-          onTap: () => _submitNote(context),
-          bgColor: Colors.black,
-          iconColor: Colors.white,
-        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: MyButton(
+        label: "Submit",
+        onTap: () => _submitNote(context),
+        bgColor: Colors.black,
+        iconColor: Colors.white,
       ),
     );
   }
@@ -218,7 +216,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
       backgroundColor: Colors.grey,
       elevation: 0.0,
       leading: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: _onWillPop,
         icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
       ),
       title: Text(
@@ -228,4 +226,3 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
     );
   }
 }
-

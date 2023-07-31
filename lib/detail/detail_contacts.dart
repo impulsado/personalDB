@@ -87,7 +87,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
         initialData["label"] != _labelController.text ||
         initialData["address"] != _addressController.text ||
         initialData["remindMe"] != _remindMeController.text ||
-        initialData["label"] != _notesController.text;
+        initialData["notes"] != _notesController.text;
   }
 
   void _updateInitialData() {
