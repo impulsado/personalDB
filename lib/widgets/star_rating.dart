@@ -9,7 +9,7 @@ class StarRating extends StatelessWidget {
   final Icon? icon;
   final bool isReadOnly;
 
-  StarRating({
+  const StarRating({super.key,
     required this.onChanged,
     this.initialValue = 0,
     this.itemSize = 40.0,
@@ -32,8 +32,8 @@ class StarRating extends StatelessWidget {
         color: fillColor ?? Colors.amber,
       ),
       itemSize: itemSize,
-      onRatingUpdate: isReadOnly ? (_) {} : onChanged, // Change this line
-      ignoreGestures: isReadOnly, // Add this line
+      onRatingUpdate: isReadOnly ? (_) {} : onChanged,
+      ignoreGestures: isReadOnly,
     );
   }
 }

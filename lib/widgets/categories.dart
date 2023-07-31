@@ -1,3 +1,4 @@
+// categories.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/categories/category_cooking.dart';
 import 'package:personaldb/categories/category_ideas.dart';

@@ -76,7 +76,7 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
             decoration: InputDecoration(
               hintText: "Enter ${widget.label.toLowerCase()} here.",
               hintStyle: subHeadingStyle(color: Colors.grey),
-              border: InputBorder.none, // to remove underline
+              border: InputBorder.none,
             ),
           ),
         );

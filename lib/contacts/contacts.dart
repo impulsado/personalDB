@@ -22,13 +22,11 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     try {
       _contacts = await refreshNotes("Contacts");
       if (_contacts.isEmpty) {
-        //print("No items found in the database");
       }
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      //print("Error occurred while refreshing contacts: $e");
       setState(() {
         _isLoading = false;
       });

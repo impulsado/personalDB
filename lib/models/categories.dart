@@ -7,6 +7,7 @@ class MyCategory {
   Color? bgColor;
   Color? iconColor;
   MyCategory({this.iconData, this.title, this.bgColor, this.iconColor});
+
   static List<MyCategory> generateCategory() {
     return [
       MyCategory(iconData: Icons.lightbulb_outline_rounded,

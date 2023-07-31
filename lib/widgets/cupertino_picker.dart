@@ -56,7 +56,7 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    selectedIndex >= 0 ? widget.options[selectedIndex] : widget.hint, // Modificado aquí
+                    selectedIndex >= 0 ? widget.options[selectedIndex] : widget.hint,
                     style: subHeadingStyle(color: selectedIndex >= 0 ? Colors.black : Colors.grey),
                   ),
                 ),

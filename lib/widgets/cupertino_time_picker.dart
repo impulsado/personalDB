@@ -97,7 +97,7 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
 
   void _updateText(Duration duration) {
     setState(() {
-      widget.controller.text = '${duration.inHours}h ${duration.inMinutes.remainder(60)}min';
+      widget.controller.text = "${duration.inHours}h ${duration.inMinutes.remainder(60)}min";
     });
   }
 }

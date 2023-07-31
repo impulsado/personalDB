@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final storage = const FlutterSecureStorage();
   final _passwordController = TextEditingController();
   late Future<bool> dbExists;
-  bool _obscureText = true; // To toggle password visibility
+  bool _obscureText = true;
 
   @override
   void initState() {
@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                //title: Text('', style: TextStyle(color: Colors.black)),
                 backgroundColor: Colors.transparent,
                 elevation: 0.0,
               ),
@@ -84,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             cursorColor: Colors.black,
             controller: _passwordController,
-            obscureText: _obscureText,  // Use variable to toggle
+            obscureText: _obscureText,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,

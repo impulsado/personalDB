@@ -34,6 +34,7 @@ class MyInputField extends StatelessWidget {
     if (await canLaunchUrl(userUrl)) {
       await launchUrl(userUrl, mode: LaunchMode.externalApplication);
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Could not launch $userUrl")),
       );

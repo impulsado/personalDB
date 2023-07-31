@@ -48,7 +48,7 @@ class _SearchResultsState extends State<SearchResults> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Text("Error: ${snapshot.error}");
         } else {
           return ListView.builder(
             itemCount: snapshot.data!.length,
