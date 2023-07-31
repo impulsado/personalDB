@@ -1,3 +1,4 @@
+// topics_list_view.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_topics.dart';
@@ -43,7 +44,6 @@ class _TopicsListViewState extends State<TopicsListView> {
       _topics = topicsMutable;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +97,20 @@ class _TopicsListViewState extends State<TopicsListView> {
                                 onTap: () async {
                                   final result = await Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => TopicDetailPage(id: _topics[index]["id"], contactId: widget.contactId!),
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) => TopicDetailPage(id: _topics[index]["id"], contactId: widget.contactId!),
+                                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                        var begin = const Offset(1.0, 0.0);
+                                        var end = Offset.zero;
+                                        var curve = Curves.ease;
+
+                                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                                        return SlideTransition(
+                                          position: animation.drive(tween),
+                                          child: child,
+                                        );
+                                      },
                                     ),
                                   );
                                   if (result == "refresh") {
@@ -121,8 +133,20 @@ class _TopicsListViewState extends State<TopicsListView> {
                           onPressed: () async {
                             final result = await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => TopicDetailPage(id: null, contactId: widget.contactId!),
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1, animation2) => TopicDetailPage(id: null, contactId: widget.contactId!),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = const Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+
+                                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
                               ),
                             );
                             if (result == "refresh") {

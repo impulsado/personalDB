@@ -68,13 +68,7 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ContactsDetailPage(id: _contacts[index]['id']),
-                ),
-              );
+              Navigator.of(context).push(_createRoute(ContactsDetailPage(id: _contacts[index]["id"])));
             },
             child: NoteContacts(
               backgroundColor: Colors.grey.shade100,
@@ -90,7 +84,6 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     }
   }
 
-
   Widget _buildFloatingActionButton() {
     return MyButton(
       label: "+ Add Contact",
@@ -99,7 +92,7 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
       onTap: () async {
         final result = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ContactsDetailPage()),
+          _createRoute(const ContactsDetailPage()),
         );
         if (result == "refresh") {
           _refreshContacts();
@@ -114,6 +107,24 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
       appBar: _buildAppBar(),
       body: _isLoading ? _buildLoading() : _buildContactList(),
       floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = const Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.easeInOut;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }
