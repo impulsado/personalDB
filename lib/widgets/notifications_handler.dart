@@ -1,8 +1,7 @@
-// notification_handler.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationHandler {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -12,11 +11,21 @@ class NotificationHandler {
     var initializationSettingsAndroid =
     const AndroidInitializationSettings("@mipmap/ic_launcher");
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid,);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: onSelectNotification);
+  }
+
+  static Future onSelectNotification(NotificationResponse response) async {
+    final payload = response.payload;
+    print("Payload: $payload");
+    if (payload != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('notificationPayload', payload);  // Store the payload for later use
+    }
   }
 
   // CONTACT NOTIFICATION
-  static Future<void> scheduleNotification(String name, String remindMeOption) async {
+  static Future<void> scheduleNotification(String name, String remindMeOption, int contactId) async {
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       "reminder_id",
       "Reminder",
@@ -24,7 +33,7 @@ class NotificationHandler {
       importance: Importance.max,
       priority: Priority.high,
       showWhen: false,
-      icon: 'ic_launcher',
+      icon: "ic_launcher",
       color: Colors.black,
     );
 
@@ -68,6 +77,7 @@ class NotificationHandler {
           "Click to remember $name's topics",
           tz.TZDateTime.now(tz.local).add(Duration(days: remindMeInDays)),
           platformChannelSpecifics,
+          payload: contactId.toString(),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime);
@@ -83,7 +93,7 @@ class NotificationHandler {
       importance: Importance.max,
       priority: Priority.high,
       showWhen: false,
-      icon: 'ic_launcher',
+      icon: "ic_launcher",
       color: Colors.black,
     );
 
@@ -111,7 +121,7 @@ class NotificationHandler {
       styleInformation: BigTextStyleInformation(
         "No one will ever have access to your data. Remember your password as it cannot be recovered.",
         htmlFormatBigText: true,
-        contentTitle: 'Your Privacy First!',
+        contentTitle: "Your Privacy First!",
         htmlFormatContentTitle: true,
       ),
     );

@@ -36,7 +36,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   final TextEditingController _remindMeController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final DateFormat _birthdayFormatter = DateFormat('dd-MM-yyyy');
-
+  late int contactId;
   late final ContactsDatabaseHelper dbHelper;
 
   bool _isLoading = true;
@@ -49,6 +49,9 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
 
     // Initialize the dbHelper
     dbHelper = DatabaseHelperFactory.getDatabaseHelper("Contacts") as ContactsDatabaseHelper;
+
+    // Initialize contactId
+    contactId = widget.id ?? 0;
 
     _loadNote();
   }
@@ -137,15 +140,6 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
       throw ArgumentError("Database password is null");
     }
 
-    if (_remindMeController.text != "Do not remind me") {
-      await NotificationHandler.testNotification();
-
-      await NotificationHandler.scheduleNotification(
-        _nameController.text,
-        _remindMeController.text,
-      );
-    }
-
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Contacts");
     final data = {
       "name": _nameController.text,
@@ -157,11 +151,27 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
       "remindMe": _remindMeController.text,
       "notes": _notesController.text,
     };
+
     if (widget.id != null) {
-      await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+      final contactId = await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
+      if (_remindMeController.text != "Do not remind me") {
+        await NotificationHandler.scheduleNotification(
+          _nameController.text,
+          _remindMeController.text,
+          contactId,
+        );
+      }
     } else {
-      await dbHelper.createItem(data, MyApp.dbPassword!);
+      final contactId = await dbHelper.createItem(data, MyApp.dbPassword!);
+      if (_remindMeController.text != "Do not remind me") {
+        await NotificationHandler.scheduleNotification(
+          _nameController.text,
+          _remindMeController.text,
+          contactId,
+        );
+      }
     }
+
     _nameController.clear();
     _birthdayController.clear();
     _emailController.clear();

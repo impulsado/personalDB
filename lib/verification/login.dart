@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/main.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:personaldb/detail/detail_contacts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -143,9 +145,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
     await DatabaseHelper.db(password);
     MyApp.dbPassword = password;
-    // ignore: use_build_context_synchronously
-    Navigator.pushReplacementNamed(context, "/home");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? notificationPayload = prefs.getString('notificationPayload');
+    if (notificationPayload != null) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ContactsDetailPage(id: int.parse(notificationPayload)),
+        ),
+      );
+      await prefs.remove('notificationPayload');  // Clear the payload
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, "/home");
+    }
   }
+
+
 
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
