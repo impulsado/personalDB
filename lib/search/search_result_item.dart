@@ -1,5 +1,6 @@
 // search_result_item.dart
 import 'package:flutter/material.dart';
+import 'package:personaldb/widgets/notes/note_contacts.dart';
 import 'package:personaldb/widgets/notes/note_cooking.dart';
 import 'package:personaldb/widgets/notes/note_health.dart';
 import 'package:personaldb/widgets/notes/note_inventory.dart';
@@ -94,6 +95,14 @@ class SearchResultItem extends StatelessWidget {
           categoryName: note["category_name"],
           showDeleteButton: false,
         );
+      case "Contacts":
+        return NoteContacts(
+          note: note,
+          backgroundColor: backgroundColor,
+          categoryName: note["category_name"],
+          showDeleteButton: false,
+        );
+
       default:
         return Container();
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/detail/detail_contacts.dart';
 import 'package:personaldb/detail/detail_inventory.dart';
 import 'package:personaldb/detail/detail_passwords.dart';
 import 'package:personaldb/models/categories.dart';
@@ -34,6 +35,8 @@ class DetailPageFactory {
         return EntertainmentDetailPage(myCategory, id: id);
       case "Others":
         return OthersDetailPage(myCategory, id: id);
+      case "Contacts":
+        return ContactsDetailPage(id: id);
       default:
         throw Exception("Category not found");
     }

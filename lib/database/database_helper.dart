@@ -100,16 +100,17 @@ class DatabaseHelper {
   }
 
   static final Map<String, List<String>> searchColumns = {
-    "Ideas": ['title', 'description'],
-    "Cooking": ['title', 'duration', 'difficulty', 'ingredients', 'recipe', 'price', 'rate'],
-    "Health": ['title', 'type', 'description'],
-    "Personal": ['title', 'type', 'date', 'description', 'trust'],
-    "Restaurant": ['title', 'location', 'type', 'price', 'notes', 'rate'],
-    "WishList": ['title', 'link', 'price', 'priority', 'notes'],
-    "Passwords": ['title', 'username', 'password', 'link', 'notes'],
-    "Inventory": ['item', 'quantity', 'price', 'location', 'notes'],
-    "Entertainment": ['title', 'author', 'link', 'notes', 'rate'],
-    "Others": ['title', 'description'],
+    "Ideas": ["title", "category", "description"],
+    "Cooking": ["title", "duration", "ingredients", "recipe", "price"],
+    "Health": ["title", "type", "description"],
+    "Personal": ["title", "type", "description"],
+    "Restaurant": ["title", "location", "type", "price", "notes"],
+    "WishList": ["title", "link", "price", "priority", "notes"],
+    "Passwords": ["title", "username", "link", "notes"],
+    "Inventory": ["item", "quantity", "price", "location", "notes"],
+    "Entertainment": ["title", "author", "link", "notes"],
+    "Others": ["title", "description"],
+    "Contacts": ["name", "birthday", "phone", "label", "address", "remindMe", "notes"],
   };
 
   static Future<List<Map<String, dynamic>>> searchItems(String query, String password) async {
