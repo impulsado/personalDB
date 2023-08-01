@@ -12,6 +12,7 @@ import 'package:personaldb/widgets/cupertino_date_picker.dart';
 import 'package:personaldb/widgets/topics_list_view.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/widgets/notifications_handler.dart';
 
 class ContactsDetailPage extends StatefulWidget {
   final MyCategory? myCategory;
@@ -134,6 +135,15 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   _saveNote(BuildContext context) async {
     if(MyApp.dbPassword == null) {
       throw ArgumentError("Database password is null");
+    }
+
+    if (_remindMeController.text != "Do not remind me") {
+      await NotificationHandler.testNotification();
+
+      await NotificationHandler.scheduleNotification(
+        _nameController.text,
+        _remindMeController.text,
+      );
     }
 
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Contacts");
@@ -292,7 +302,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
                         title: "Remind Me",
                         hint: "Select when to contact again.",
                         controller: _remindMeController,
-                          options: const ["1 week", "2 week", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks"]
+                          options: const ["Do not remind me", "1 week", "2 week", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks"]
                       ),
                       const SizedBox(height: 10),
                       TopicsListView(contactId: widget.id),

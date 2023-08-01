@@ -1,10 +1,10 @@
-// register.dart
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/widgets/notifications_handler.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -19,6 +19,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _filePath = "";
   final _passwordController = TextEditingController();
   bool _obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await DatabaseHelper.createDb(newPath, password);
       MyApp.dbPassword = password;
+      NotificationHandler.testNotification();
+      NotificationHandler.privacyNotification();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
@@ -136,6 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await DatabaseHelper.importDb(_filePath, password);
       MyApp.dbPassword = password;
+      NotificationHandler.testNotification();
+      NotificationHandler.privacyNotification();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
