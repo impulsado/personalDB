@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/contacts/import_contacts.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -106,6 +107,17 @@ class _SettingsState extends State<Settings> {
                         content: Text(location),
                       );
                     },
+                  );
+                },
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Import Contacts"),
+                subtitle: const Text("Import local contacts to CRM"),
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ImportContactsWidget(password: MyApp.dbPassword!)),
                   );
                 },
               ),

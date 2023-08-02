@@ -5,6 +5,8 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/widgets/refresh_notes.dart';
 import 'package:personaldb/widgets/notes/note_contacts.dart';
 import 'package:personaldb/detail/detail_contacts.dart';
+import 'package:personaldb/main.dart';
+import 'package:personaldb/contacts/import_contacts.dart';
 
 class Contacts extends StatefulWidget {
   const Contacts({super.key});
@@ -21,8 +23,6 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
   Future<void> _refreshContacts() async {
     try {
       _contacts = await refreshNotes("Contacts");
-      if (_contacts.isEmpty) {
-      }
       setState(() {
         _isLoading = false;
       });
@@ -59,7 +59,42 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
 
   Widget _buildContactList() {
     if (_contacts.isEmpty) {
-      return const Center(child: Text("No contacts available"));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "No contacts available",
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16.0),
+            const Text(
+              "Click 'Import' to import local contacts or Create them manually.",
+              style: TextStyle(fontSize: 12.0),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32.0),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black, side: const BorderSide(
+                color: Colors.black,
+              ),
+              ),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  _createRoute(ImportContactsWidget(password: MyApp.dbPassword!)),
+                );
+                if (result == "refresh") {
+                  _refreshContacts();
+                }
+              },
+              child: const Text("Import"),
+            ),
+          ],
+        ),
+      );
     } else {
       return ListView.builder(
         itemCount: _contacts.length,
@@ -112,7 +147,7 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(0.0, 1.0);
+        var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.easeInOut;
 
