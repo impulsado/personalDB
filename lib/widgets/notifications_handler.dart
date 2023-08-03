@@ -17,7 +17,6 @@ class NotificationHandler {
 
   static Future onSelectNotification(NotificationResponse response) async {
     final payload = response.payload;
-    print("Payload: $payload");
     if (payload != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('notificationPayload', payload);  // Store the payload for later use
@@ -64,6 +63,18 @@ class NotificationHandler {
         break;
       case "8 weeks":
         remindMeInDays = 56;
+        break;
+      case "3 months":
+        remindMeInDays = 90;
+        break;
+      case "4 months":
+        remindMeInDays = 120;
+        break;
+      case "5 months":
+        remindMeInDays = 150;
+        break;
+      case "6 months":
+        remindMeInDays = 180;
         break;
       default:
         remindMeInDays = 0;
