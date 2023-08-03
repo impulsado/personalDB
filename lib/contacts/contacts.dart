@@ -1,6 +1,6 @@
 // contacts.dart
 import 'package:flutter/material.dart';
-import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/widgets/search_appbar.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/widgets/refresh_notes.dart';
 import 'package:personaldb/widgets/notes/note_contacts.dart';
@@ -19,6 +19,8 @@ class Contacts extends StatefulWidget {
 class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _contacts = [];
   bool _isLoading = true;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   Future<void> _refreshContacts() async {
     try {
@@ -39,17 +41,27 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     _refreshContacts();
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      title: Text("Contacts", style: headingStyle(color: Colors.black)),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.settings, color: Colors.grey),
-          onPressed: () {},
-        ),
-      ],
+  PreferredSizeWidget _buildAppBar() {
+    return SearchAppBar(
+      searchController: _searchController,
+      focusNode: _searchFocusNode,
+      enableOrdering: true,
+      onOrderSelected: (String result) {
+        setState(() {
+          switch (result) {
+            case 'Name':
+              _contacts.sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
+              break;
+            case 'Label':
+              _contacts.sort((a, b) => a['label'].toString().compareTo(b['label'].toString()));
+              break;
+            case 'Category':
+              _contacts.sort((a, b) => a['category'].toString().compareTo(b['category'].toString()));
+              break;
+          }
+        });
+        _refreshContacts();
+      },
     );
   }
 
@@ -100,8 +112,14 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
         itemCount: _contacts.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(_createRoute(ContactsDetailPage(id: _contacts[index]["id"])));
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                _createRoute(ContactsDetailPage(id: _contacts[index]["id"])),
+              );
+              if (result == "refresh") {
+                _refreshContacts();
+              }
             },
             child: NoteContacts(
               backgroundColor: Colors.grey.shade100,
