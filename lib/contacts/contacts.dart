@@ -19,6 +19,7 @@ class Contacts extends StatefulWidget {
 class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _contacts = [];
   bool _isLoading = true;
+  bool _isAscending = true;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -41,6 +42,24 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     _refreshContacts();
   }
 
+  int _remindMeToDays(String remindMe) {
+    if (remindMe == "Do not remind me") {
+      return -1;
+    }
+
+    var split = remindMe.split(' ');
+    var value = int.parse(split[0]);
+    var unit = split[1];
+
+    if (unit.startsWith('week')) {
+      return value * 7;
+    } else if (unit.startsWith('month')) {
+      return value * 30;
+    }
+
+    return 0;
+  }
+
   PreferredSizeWidget _buildAppBar() {
     return SearchAppBar(
       searchController: _searchController,
@@ -48,19 +67,19 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
       enableOrdering: true,
       onOrderSelected: (String result) {
         setState(() {
+          _isAscending = !_isAscending;
           switch (result) {
-            case 'Name':
-              _contacts.sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
+            case "Name":
+              _contacts.sort((a, b) => _isAscending ? a["name"].toString().compareTo(b["name"].toString()) : b["name"].toString().compareTo(a["name"].toString()));
               break;
-            case 'Label':
-              _contacts.sort((a, b) => a['label'].toString().compareTo(b['label'].toString()));
+            case "Label":
+              _contacts.sort((a, b) => _isAscending ? a["label"].toString().compareTo(b["label"].toString()) : b["label"].toString().compareTo(a["label"].toString()));
               break;
-            case 'Category':
-              _contacts.sort((a, b) => a['category'].toString().compareTo(b['category'].toString()));
+            case "Remind Me":
+              _contacts.sort((a, b) => _isAscending ? _remindMeToDays(a["remindMe"]).compareTo(_remindMeToDays(b["remindMe"])) : _remindMeToDays(b["remindMe"]).compareTo(_remindMeToDays(a["remindMe"])));
               break;
           }
         });
-        _refreshContacts();
       },
     );
   }

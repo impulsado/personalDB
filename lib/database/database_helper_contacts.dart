@@ -21,7 +21,8 @@ class ContactsDatabaseHelper implements DatabaseHelperCommon {
   @override
   Future<List<Map<String, dynamic>>> getItems(String password) async {
     final db = await DatabaseHelper.db(password);
-    return db.query("contacts", orderBy: "id");
+    var result = await db.query("contacts", orderBy: "id");
+    return List<Map<String, dynamic>>.from(result);
   }
 
   @override

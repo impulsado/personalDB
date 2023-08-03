@@ -1,6 +1,6 @@
-// search.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/search/search_results.dart';
+import 'package:personaldb/widgets/search_appbar.dart';
 
 class Search extends StatefulWidget {
   final String password;
@@ -8,7 +8,6 @@ class Search extends StatefulWidget {
   const Search({super.key, required this.password});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SearchState createState() => _SearchState();
 }
 
@@ -50,30 +49,9 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const IconButton(
-          icon: Icon(Icons.search, color: Colors.black),
-          onPressed: null,
-        ),
-        title: TextField(
-          controller: _searchController,
-          focusNode: _focusNode,
-          cursorColor: Colors.black,
-          decoration: InputDecoration(
-            hintText: "Search...",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
-              onPressed: () {
-                _searchController.clear();
-              },
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-          ),
-        ),
+      appBar: SearchAppBar(
+        searchController: _searchController,
+        focusNode: _focusNode,
       ),
       body: SearchResults(query: _currentSearch, password: widget.password),
     );

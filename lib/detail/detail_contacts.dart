@@ -35,7 +35,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _remindMeController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-  final DateFormat _birthdayFormatter = DateFormat('dd-MM-yyyy');
+  final DateFormat _birthdayFormatter = DateFormat("dd-MM-yyyy");
   late int contactId;
   late final ContactsDatabaseHelper dbHelper;
 
@@ -309,10 +309,10 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
                       ),
                       const SizedBox(height: 10),
                       CupertinoPickerWidget(
-                        title: "Remind Me",
-                        hint: "Select when to contact again.",
-                        controller: _remindMeController,
-                          options: const ["Do not remind me", "1 week", "2 week", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks"]
+                          title: "Remind Me",
+                          hint: "Select when to contact again.",
+                          controller: _remindMeController,
+                          options: const ["Do not remind me", "1 week", "2 week", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks", "3 months", "4 months", "5 months", "6 months",]
                       ),
                       const SizedBox(height: 10),
                       TopicsListView(contactId: widget.id),
@@ -355,7 +355,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
           // If no changes were made or if user decides to discard changes, navigate back
           if (await _onWillPop()) {
             // ignore: use_build_context_synchronously
-            Navigator.of(context).pop();
+            Navigator.of(context,).pop();
           }
         },
       ),

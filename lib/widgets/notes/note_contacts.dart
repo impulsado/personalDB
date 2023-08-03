@@ -58,12 +58,18 @@ class NoteContacts extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5.0),
+                Text(
+                  _formatRemindMe(note["remindMe"]),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 5.0),
               ],
             ),
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 10,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),
@@ -71,5 +77,12 @@ class NoteContacts extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatRemindMe(String? remindMe) {
+    if (remindMe == null || remindMe == "Do not remind me") {
+      return remindMe ?? '';
+    }
+    return "Remind me every $remindMe";
   }
 }

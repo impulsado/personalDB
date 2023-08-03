@@ -7,13 +7,12 @@ import 'package:personaldb/detail/detail_factory.dart';
 import 'package:personaldb/models/categories.dart';
 
 class SearchResults extends StatefulWidget {
-  final String query;
+  final String? query; // query can now be null
   final String password;
 
-  const SearchResults({super.key, required this.query, required this.password});
+  const SearchResults({Key? key, this.query, required this.password}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _SearchResultsState createState() => _SearchResultsState();
 }
 
@@ -23,22 +22,24 @@ class _SearchResultsState extends State<SearchResults> {
   @override
   void initState() {
     super.initState();
-    if (widget.query.isNotEmpty) {
-      _searchResults = DatabaseHelper.searchItems(widget.query, widget.password);
+    if (widget.query != null && widget.query!.isNotEmpty) { // check if query is not null before checking if it's empty
+      _searchResults = DatabaseHelper.searchItems(widget.query!, widget.password);
+    } else {
+      _searchResults = Future.value([]);
     }
   }
 
   @override
   void didUpdateWidget(covariant SearchResults oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.query != oldWidget.query && widget.query.isNotEmpty) {
-      _searchResults = DatabaseHelper.searchItems(widget.query, widget.password);
+    if (widget.query != oldWidget.query && widget.query != null && widget.query!.isNotEmpty) { // check if query is not null before checking if it's empty
+      _searchResults = DatabaseHelper.searchItems(widget.query!, widget.password);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.query.isEmpty) {
+    if (widget.query == null || widget.query!.isEmpty) { // check if query is null before checking if it's empty
       return const Center(child: Text("Search for your notes."));
     }
 
@@ -49,6 +50,8 @@ class _SearchResultsState extends State<SearchResults> {
           return const SizedBox.shrink();
         } else if (snapshot.hasError) {
           return Text("Error: ${snapshot.error}");
+        } else if (snapshot.data!.isEmpty) {
+          return const Center(child: Text("No results found."));
         } else {
           return ListView.builder(
             itemCount: snapshot.data!.length,
@@ -110,8 +113,9 @@ class _SearchResultsState extends State<SearchResults> {
       ),
     ).then((result) {
       if (result == "refresh") {
-        _searchResults =
-            DatabaseHelper.searchItems(widget.query, widget.password);
+        if (widget.query != null && widget.query!.isNotEmpty) { // check if query is not null before checking if it's empty
+          _searchResults = DatabaseHelper.searchItems(widget.query!, widget.password);
+        }
       }
     });
   }
