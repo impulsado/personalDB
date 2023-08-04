@@ -18,7 +18,7 @@ const Color kGreenDark = Color(0xFF53915E);
 // Personal
 const Color kPurpleLight = Color(0xFFE0CEE8);
 const Color kPurple = Color(0xFFC69FD2);
-const Color kPurpleDark = Color(0xFFAA6FB8);
+const Color kPurpleDark = Color(0xFFAA6AB9);
 
 // Restaurants
 const Color kBlueLight = Color(0xFFC2D1E0);
@@ -38,7 +38,7 @@ const Color kRedDark = Color(0xFFFF6666);
 // Others
 const Color kGrayLight = Color(0xFFD8D8D8);
 const Color kGray = Color(0xFFB3B3B3);
-const Color kGrayDark = Color(0xFF8F8F8F);
+const Color kGrayDark = Color(0xFF727272);
 
 // Password
 const Color kDarkBlueLight = Color(0xFF8793B2);
