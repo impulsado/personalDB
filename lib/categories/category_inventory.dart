@@ -38,12 +38,12 @@ class CategoryInventory extends StatefulWidget {
 
 class _CategoryInventoryState extends State<CategoryInventory> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _notes = [];
+  List<Map<String, dynamic>> _allNotes = [];
   bool _isLoading = true;
   late AnimationController _controller;
   final _searchController = TextEditingController();
   final _focusNode = FocusNode();
   bool _isAscending = true;
-  List<Map<String, dynamic>> _allNotes = [];
 
   Future<void> _refreshNotes() async {
     try {
@@ -60,11 +60,11 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
   }
 
   void _applyFilters({Map<String, bool>? filters}) {
-    if (filters == null || filters.values.every((isSelected) => isSelected)) {
-      _notes = List<Map<String, dynamic>>.from(_allNotes);
-    } else {
-      _notes = _allNotes.where((note) {
-        String category = note["location"];
+    _notes = _applySearch(_searchController.text);
+
+    if (!(filters == null || filters.values.every((isSelected) => isSelected))) {
+      _notes = _notes.where((note) {
+        String category = note["category"];
         return filters[category] ?? false;
       }).toList();
     }
@@ -72,6 +72,16 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
     setState(() {
       _isLoading = false;
     });
+  }
+
+  List<Map<String, dynamic>> _applySearch(String searchText) {
+    if (searchText.isEmpty) {
+      return List<Map<String, dynamic>>.from(_allNotes);
+    } else {
+      return _allNotes.where((note) {
+        return note.values.any((value) => value.toString().contains(searchText));
+      }).toList();
+    }
   }
 
   @override
@@ -82,6 +92,10 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
       duration: const Duration(seconds: 1),
       vsync: this,
     );
+
+    _searchController.addListener(() {
+      _applyFilters();
+    });
   }
 
   @override

@@ -107,7 +107,8 @@ class _SearchBarPersonalState extends State<SearchBarPersonal> {
   }
 
   void _showCategories(BuildContext context) {
-    const tileHeight = 56.0; // Default ListTile height
+    const tileHeight = 26.0;
+    const messageHeight = 60.0;
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -116,24 +117,31 @@ class _SearchBarPersonalState extends State<SearchBarPersonal> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return SizedBox(
-              height: _categories.length * tileHeight,
-              child: ListView(
-                children: _categories.map((String category) {
-                  return CheckboxListTile(
-                    title: Text(category),
-                    value: _categoryFilters[category]!,
-                    activeColor: Colors.black,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _categoryFilters[category] = value!;
-                      });
-                      widget.onFilterChanged(_categoryFilters);
-                    },
-                  );
-                }).toList(),
-              ),
-            );
+            if (_categories.isEmpty) {
+              return const SizedBox(
+                height: messageHeight,
+                child: Center(child: Text("No categories found")),
+              );
+            } else {
+              return SizedBox(
+                height: _categories.length * tileHeight,
+                child: ListView(
+                  children: _categories.map((String category) {
+                    return CheckboxListTile(
+                      title: Text(category),
+                      value: _categoryFilters[category]!,
+                      activeColor: Colors.black,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _categoryFilters[category] = value!;
+                        });
+                        widget.onFilterChanged(_categoryFilters);
+                      },
+                    );
+                  }).toList(),
+                ),
+              );
+            }
           },
         );
       },

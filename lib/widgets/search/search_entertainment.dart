@@ -73,7 +73,7 @@ class _SearchBarEntertainmentState extends State<SearchBarEntertainment> {
       ),
       builder: (BuildContext context) {
         return SizedBox(
-          height: tileHeight * 3,
+          height: tileHeight * 4,
           child: Column(
             children: <Widget>[
               ListTile(
@@ -112,7 +112,8 @@ class _SearchBarEntertainmentState extends State<SearchBarEntertainment> {
   }
 
   void _showCategories(BuildContext context) {
-    const tileHeight = 56.0; // Default ListTile height
+    const tileHeight = 26.0;
+    const messageHeight = 60.0;
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -121,24 +122,31 @@ class _SearchBarEntertainmentState extends State<SearchBarEntertainment> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return SizedBox(
-              height: _categories.length * tileHeight,
-              child: ListView(
-                children: _categories.map((String category) {
-                  return CheckboxListTile(
-                    title: Text(category),
-                    value: _categoryFilters[category]!,
-                    activeColor: Colors.black,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _categoryFilters[category] = value!;
-                      });
-                      widget.onFilterChanged(_categoryFilters);
-                    },
-                  );
-                }).toList(),
-              ),
-            );
+            if (_categories.isEmpty) {
+              return const SizedBox(
+                height: messageHeight,
+                child: Center(child: Text("No authors found")),
+              );
+            } else {
+              return SizedBox(
+                height: _categories.length * tileHeight,
+                child: ListView(
+                  children: _categories.map((String category) {
+                    return CheckboxListTile(
+                      title: Text(category),
+                      value: _categoryFilters[category]!,
+                      activeColor: Colors.black,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _categoryFilters[category] = value!;
+                        });
+                        widget.onFilterChanged(_categoryFilters);
+                      },
+                    );
+                  }).toList(),
+                ),
+              );
+            }
           },
         );
       },
