@@ -66,7 +66,7 @@ class MyInputField extends StatelessWidget {
                     style: TextStyle(color: Colors.black, overflow: overflow),
                     keyboardType: inputType,
                     minLines: minLines,
-                    maxLines: 1, // here we set maxLines to 1
+                    maxLines: null,
                     textInputAction: inputAction,
                     decoration: InputDecoration(
                       hintText: hint,
