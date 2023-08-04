@@ -38,17 +38,21 @@ class NoteRestaurant extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        note["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Text(
+                          note["title"] ?? "No Title",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      const SizedBox(width: 15),
-                      Text(
-                        note["type"] ?? "",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          note["type"] ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -75,7 +79,7 @@ class NoteRestaurant extends StatelessWidget {
             ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

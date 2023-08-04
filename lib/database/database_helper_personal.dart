@@ -30,10 +30,10 @@ class PersonalDatabaseHelper implements DatabaseHelperCommon {
     return db.query("personal", where: "id = ?", whereArgs: [id], limit: 1);
   }
 
-  Future<List<String>> getTypes(String password) async {
+  Future<List<String>> getCategories(String password) async {
     final db = await DatabaseHelper.db(password);
-    final result = await db.rawQuery('SELECT DISTINCT type FROM personal WHERE type IS NOT NULL');
-    return List<String>.from(result.map((item) => item['type']));
+    final result = await db.rawQuery("SELECT DISTINCT category FROM personal WHERE category IS NOT NULL");
+    return List<String>.from(result.map((item) => item["category"]));
   }
 
   @override

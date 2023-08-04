@@ -49,7 +49,7 @@ class NotePersonal extends StatelessWidget {
                     const SizedBox(width: 5),
                     Expanded(
                       child: Text(
-                        note["type"] ?? "",
+                        note["category"] ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -57,17 +57,22 @@ class NotePersonal extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5.0),
-                Text(
-                  note["description"] ?? "",
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
+                note["description"] == "" ? Container() : Row(
+                  children: [
+                    Text(
+                      note["description"] ?? "",
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 5.0),
               ],
             ),
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

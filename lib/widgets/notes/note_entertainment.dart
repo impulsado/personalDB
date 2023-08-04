@@ -74,7 +74,7 @@ class NoteEntertainment extends StatelessWidget {
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

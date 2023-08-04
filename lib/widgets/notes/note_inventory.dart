@@ -57,10 +57,14 @@ class NoteInventory extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5.0),
-                Text(
-                  note["notes"] ?? "",
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
+                note["notes"] == "" ? Container() : Row(
+                  children: [
+                    Text(
+                      note["notes"] ?? "",
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5.0),
               ],
@@ -68,7 +72,7 @@ class NoteInventory extends StatelessWidget {
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

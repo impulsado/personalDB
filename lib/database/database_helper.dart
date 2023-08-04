@@ -102,8 +102,8 @@ class DatabaseHelper {
   static final Map<String, List<String>> searchColumns = {
     "Ideas": ["title", "category", "description"],
     "Cooking": ["title", "duration", "ingredients", "recipe", "price"],
-    "Health": ["title", "type", "description"],
-    "Personal": ["title", "type", "description"],
+    "Health": ["title", "category", "description"],
+    "Personal": ["title", "category", "description"],
     "Restaurant": ["title", "location", "type", "price", "notes"],
     "WishList": ["title", "link", "price", "priority", "notes"],
     "Passwords": ["title", "username", "link", "notes"],
@@ -161,7 +161,7 @@ class DatabaseHelper {
         CREATE TABLE health(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          type TEXT,
+          category TEXT,
           description TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -170,7 +170,7 @@ class DatabaseHelper {
         CREATE TABLE personal(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          type TEXT,
+          category TEXT,
           date DATE,
           description TEXT,
           trust TEXT,

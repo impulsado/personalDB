@@ -26,9 +26,9 @@ class PersonalDetailPage extends StatefulWidget {
 class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat('dd-MM-yyyy');
+  final DateFormat _dateFormatter = DateFormat("dd-MM-yyyy");
   final TextEditingController _trustController = TextEditingController();
   late final PersonalDatabaseHelper dbHelper;
 
@@ -77,7 +77,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     return initialData["title"] != _titleController.text ||
         initialData["description"] != _descriptionController.text ||
         initialData["date"] != _dateController.text ||
-        initialData["type"] != _typeController.text ||
+        initialData["category"] != _categoryController.text ||
         initialData["trust"] != _trustController.text;
   }
 
@@ -86,7 +86,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
       "title": _titleController.text,
       "description": _descriptionController.text,
       "date": _dateController.text,
-      "type": _typeController.text,
+      "category": _categoryController.text,
       "trust": _trustController.text,
     };
   }
@@ -96,7 +96,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     _titleController.dispose();
     _descriptionController.dispose();
     //_dateFormatter.dispose();
-    _typeController.dispose();
+    _categoryController.dispose();
     _trustController.dispose();
     super.dispose();
   }
@@ -105,12 +105,9 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_typeController.text.isEmpty) {
+    } else if (_categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a type")));
-    } else if (_descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter a description")));
+          const SnackBar(content: Text("Please enter a category")));
     } else {
       _saveNote(context);
     }
@@ -128,7 +125,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
       "title": _titleController.text,
       "description": _descriptionController.text,
       "date": formattedDate,
-      "type": _typeController.text,
+      "category": _categoryController.text,
       "trust": _trustController.text
     };
     if (widget.id != null) {
@@ -139,7 +136,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     _titleController.clear();
     _descriptionController.clear();
     _dateController.clear();
-    _typeController.clear();
+    _categoryController.clear();
     _trustController.clear();
 
     _updateInitialData();
@@ -161,7 +158,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _dateController.text = items[0]["date"] ?? "";
-          _typeController.text = items[0]["type"] ?? "";
+          _categoryController.text = items[0]["category"] ?? "";
           _trustController.text = items[0]["trust"] ?? "";
           _isLoading = false;
         });
@@ -214,11 +211,11 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
                             Expanded(
                               flex: 5,
                               child: FieldAutocomplete(
-                                controller: _typeController,
-                                label: "Type",
+                                controller: _categoryController,
+                                label: "Category",
                                 dbHelper: PersonalDatabaseHelper(),
                                 loadItemsFunction: () async {
-                                  return await PersonalDatabaseHelper().getTypes(MyApp.dbPassword!);
+                                  return await PersonalDatabaseHelper().getCategories(MyApp.dbPassword!);
                                 },
                               ),
                             ),

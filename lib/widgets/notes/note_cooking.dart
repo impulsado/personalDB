@@ -69,14 +69,20 @@ class NoteCooking extends StatelessWidget {
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5.0),
-                Row(
+                note["duration"] == "" && note["price"] == "€"
+                    ? Container()
+                    : Row(
                   children: [
                     Text(
                       note["duration"] ?? "",
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(width: 15),
                     Text(
                       note["price"] ?? "",
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -103,7 +109,7 @@ class NoteCooking extends StatelessWidget {
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),

@@ -50,7 +50,7 @@ class NoteContacts extends StatelessWidget {
                     const SizedBox(width: 5),
                     Expanded(
                       child: Text(
-                        note["label"] ?? "",
+                        note["label"] ?? "No label defined",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -81,7 +81,7 @@ class NoteContacts extends StatelessWidget {
 
   String _formatRemindMe(String? remindMe) {
     if (remindMe == null || remindMe == "Do not remind me") {
-      return remindMe ?? '';
+      return remindMe ?? "No Remind Me defined";
     }
     return "Remind me every $remindMe";
   }

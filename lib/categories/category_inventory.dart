@@ -6,6 +6,9 @@ import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/detail/detail_factory.dart';
 import 'package:personaldb/widgets/refresh_notes.dart';
 import 'package:personaldb/widgets/notes/note_inventory.dart';
+import 'package:personaldb/widgets/search/search_inventory.dart';
+import 'package:personaldb/main.dart';
+import 'package:personaldb/database/database_helper_inventory.dart';
 
 void main() {
   runApp(const MyAppInventory());
@@ -37,24 +40,38 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
   List<Map<String, dynamic>> _notes = [];
   bool _isLoading = true;
   late AnimationController _controller;
+  final _searchController = TextEditingController();
+  final _focusNode = FocusNode();
+  bool _isAscending = true;
+  List<Map<String, dynamic>> _allNotes = [];
 
   Future<void> _refreshNotes() async {
     try {
-      _notes = await refreshNotes(widget.myCategory.title ?? "Error");
-      if (_notes.isEmpty) {
-        //print("No items found in the database");
-      }
-      setState(() {
-        _isLoading = false;
-      });
+      _allNotes = await refreshNotes(widget.myCategory.title ?? "Error");
+
+      _applyFilters();
       _controller.reset();
       _controller.forward();
     } catch (e) {
-      //print("Error occurred while refreshing notes: $e");
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _applyFilters({Map<String, bool>? filters}) {
+    if (filters == null || filters.values.every((isSelected) => isSelected)) {
+      _notes = List<Map<String, dynamic>>.from(_allNotes);
+    } else {
+      _notes = _allNotes.where((note) {
+        String category = note["location"];
+        return filters[category] ?? false;
+      }).toList();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -70,6 +87,8 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
   @override
   void dispose() {
     _controller.dispose();
+    _searchController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -89,46 +108,80 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
     return const Center(child: CircularProgressIndicator());
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      backgroundColor: widget.myCategory.bgColor ?? Colors.white,
+      body: SafeArea(
+        child: _isLoading ? _buildLoading() : _buildNoteList(),
+      ),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
   Widget _buildNoteList() {
-    if (_notes.isEmpty) {
-      return Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+          bottomLeft: Radius.circular(0.0),
+          bottomRight: Radius.circular(0.0),
+        ),
+      ),
+      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: SearchBarInventory(
+              searchController: _searchController,
+              focusNode: _focusNode,
+              enableOrdering: true,
+              loadItemsFunction: () async {
+                return await InventoryDatabaseHelper().getLocations(MyApp.dbPassword!);
+              },
+              onOrderSelected: (String result) {
+                setState(() {
+                  _isAscending = !_isAscending;
+                  switch (result) {
+                    case "Title":
+                      _notes.sort((a, b) => _isAscending ? a["title"].toString().compareTo(b["title"].toString()) : b["title"].toString().compareTo(a["title"].toString()));
+                      break;
+                    case "Location":
+                      _notes.sort((a, b) => _isAscending ? a["location"].toString().compareTo(b["location"].toString()) : b["location"].toString().compareTo(a["location"].toString()));
+                      break;
+                  }
+                });
+              },
+              onFilterChanged: (Map<String, bool> filters) {
+                _applyFilters(filters: filters);
+              },
+            ),
           ),
-        ),
-        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        child: const Center(child: Text("No items available")),
-      );
-    } else {
-      return Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
+          Divider(color: Colors.grey.shade300, thickness: 1.0,),
+          Expanded(
+            child: _notes.isEmpty
+                ? const Center(child: Text("No items available"))
+                : ListView.builder(
+              itemCount: _notes.length,
+              itemBuilder: (context, index) {
+                return FadeTransition(
+                  opacity: _controller.drive(
+                      Tween<double>(begin: 0.0, end: 1.0)
+                          .chain(CurveTween(curve: Interval((index / _notes.length), 1, curve: Curves.easeOut)))
+                  ),
+                  child: _note(index),
+                );
+              },
+            ),
           ),
-        ),
-        margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        child: ListView.builder(
-          itemCount: _notes.length,
-          itemBuilder: (context, index) {
-            return FadeTransition(
-              opacity: _controller.drive(Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Interval((index / _notes.length), 1, curve: Curves.easeOut)))),
-              child: _note(index),
-            );
-          },
-        ),
-      );
-    }
+        ],
+      ),
+    );
   }
 
   Widget _note(int index) {
@@ -195,16 +248,6 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
           _refreshNotes();
         }
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.myCategory.bgColor,
-      appBar: _buildAppBar(),
-      body: _isLoading ? _buildLoading() : _buildNoteList(),
-      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 }

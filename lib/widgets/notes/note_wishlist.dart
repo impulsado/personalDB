@@ -37,30 +37,43 @@ class NoteWishlist extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 5.0),
-                Text(
-                  note["title"] ?? "No Title",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        note["title"] ?? "No Title",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        note["priority"] ?? "",
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5.0),
-                Text(
-                  note["price"] ?? "",
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
+                note["price"] == "€" ? Container() : Row(
+                  children: [
+                    Text(
+                      note["price"] ?? "",
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5.0),
-                Text(
-                  note["priority"] ?? "",
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
-                ),
               ],
             ),
           ),
           if (showDeleteButton)
             Positioned(
-              right: 16,
+              right: 11,
               top: 0,
               bottom: 0,
               child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),
