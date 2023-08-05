@@ -117,7 +117,7 @@ class _SearchBarRestaurantState extends State<SearchBarRestaurant> {
   }
 
   void _showCategories(BuildContext context) {
-    const tileHeight = 26.0;
+    const tileHeight = 60.0;
     const messageHeight = 60.0;
     showModalBottomSheet<void>(
       context: context,
