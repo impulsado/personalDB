@@ -124,12 +124,6 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter the name")));
-    } else if (_birthdayController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter the birthday")));
-    } else if (_phoneController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter the phone number")));
     } else {
       _saveNote(context);
     }
