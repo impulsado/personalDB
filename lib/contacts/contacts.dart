@@ -1,23 +1,24 @@
 // contacts.dart
 import 'package:flutter/material.dart';
-import 'package:personaldb/widgets/search_appbar.dart';
-import 'package:personaldb/widgets/button.dart';
+import 'package:personaldb/database/database_helper_contacts.dart';
 import 'package:personaldb/widgets/refresh_notes.dart';
 import 'package:personaldb/widgets/notes/note_contacts.dart';
 import 'package:personaldb/detail/detail_contacts.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/contacts/import_contacts.dart';
+import 'package:personaldb/widgets/search/search_contacts.dart';
+import 'package:personaldb/widgets/button.dart';
 
 class Contacts extends StatefulWidget {
-  const Contacts({super.key});
+  const Contacts({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ContactsState createState() => _ContactsState();
 }
 
-class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
+class _ContactsState extends State<Contacts> {
   List<Map<String, dynamic>> _contacts = [];
+  List<Map<String, dynamic>> _allContacts = [];
   bool _isLoading = true;
   bool _isAscending = true;
   final TextEditingController _searchController = TextEditingController();
@@ -26,9 +27,10 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
   Future<void> _refreshContacts() async {
     try {
       _contacts = await refreshNotes("Contacts");
-      setState(() {
-        _isLoading = false;
-      });
+      _allContacts = List<Map<String, dynamic>>.from(_contacts);
+
+      _applyFilters();
+
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -36,10 +38,46 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     }
   }
 
+  void _applyFilters({Map<String, bool>? filters}) {
+    _contacts = _applySearch(_searchController.text);
+
+    if (!(filters == null || filters.values.every((isSelected) => isSelected))) {
+      _contacts = _contacts.where((contact) {
+        String label = contact["label"];
+        return filters[label] ?? false;
+      }).toList();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+
+  List<Map<String, dynamic>> _applySearch(String searchText) {
+    if (searchText.isEmpty) {
+      return List<Map<String, dynamic>>.from(_allContacts);
+    } else {
+      return _allContacts.where((contact) {
+        return contact.values.any((value) => value.toString().contains(searchText));
+      }).toList();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _refreshContacts();
+
+    _searchController.addListener(() {
+      _applyFilters();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   int _remindMeToDays(String remindMe) {
@@ -51,9 +89,9 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
     var value = int.parse(split[0]);
     var unit = split[1];
 
-    if (unit.startsWith('week')) {
+    if (unit.startsWith("week")) {
       return value * 7;
-    } else if (unit.startsWith('month')) {
+    } else if (unit.startsWith("month")) {
       return value * 30;
     }
 
@@ -61,7 +99,7 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return SearchAppBar(
+    return SearchBarContacts(
       searchController: _searchController,
       focusNode: _searchFocusNode,
       enableOrdering: true,
@@ -80,6 +118,13 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
               break;
           }
         });
+      },
+      loadItemsFunction: () async {
+        return await ContactsDatabaseHelper().getLabels(MyApp.dbPassword!);
+      },
+      onFilterChanged: (Map<String, bool> filters) {
+        // handle the filter changes
+        _applyFilters(filters: filters);
       },
     );
   }
@@ -108,9 +153,7 @@ class _ContactsState extends State<Contacts> with TickerProviderStateMixin {
             const SizedBox(height: 32.0),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black, side: const BorderSide(
-                color: Colors.black,
-              ),
+                foregroundColor: Colors.black, side: BorderSide(color: Colors.black),
               ),
               onPressed: () async {
                 final result = await Navigator.push(
