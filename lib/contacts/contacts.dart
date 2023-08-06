@@ -144,28 +144,30 @@ class _ContactsState extends State<Contacts> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16.0),
-            const Text(
-              "Click 'Import' to import local contacts or Create them manually.",
-              style: TextStyle(fontSize: 12.0),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32.0),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black, side: BorderSide(color: Colors.black),
+            if (_allContacts.isEmpty) ...[
+              const SizedBox(height: 16.0),
+              const Text(
+                "Click 'Import' to import local contacts or Create them manually.",
+                style: TextStyle(fontSize: 12.0),
+                textAlign: TextAlign.center,
               ),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  _createRoute(ImportContactsWidget(password: MyApp.dbPassword!)),
-                );
-                if (result == "refresh") {
-                  _refreshContacts();
-                }
-              },
-              child: const Text("Import"),
-            ),
+              const SizedBox(height: 32.0),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.black, side: BorderSide(color: Colors.black),
+                ),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    _createRoute(ImportContactsWidget(password: MyApp.dbPassword!)),
+                  );
+                  if (result == "refresh") {
+                    _refreshContacts();
+                  }
+                },
+                child: const Text("Import"),
+              ),
+            ],
           ],
         ),
       );
