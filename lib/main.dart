@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "personalDB",
       theme: ThemeData(),
-      initialRoute: '/login',
-      navigatorKey: navigatorKey, // Here, you pass the navigatorKey
+      initialRoute: "/login",
+      navigatorKey: navigatorKey,
       routes: {
         "/login": (context) => const LoginScreen(),
         "/register": (context) => const RegisterScreen(),
