@@ -83,15 +83,17 @@ class NotificationHandler {
 
     if (remindMeInDays > 0) {
       await flutterLocalNotificationsPlugin.zonedSchedule(
-          0,
-          "$remindMeInDays days since last update!",
-          "Click to remember $name's topics",
-          tz.TZDateTime.now(tz.local).add(Duration(days: remindMeInDays)),
-          platformChannelSpecifics,
-          payload: contactId.toString(),
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime);
+        0,
+        "$remindMeInDays days since last update!",
+        "Click to remember $name's topics",
+        tz.TZDateTime.now(tz.local).add(Duration(days: remindMeInDays)),
+        platformChannelSpecifics,
+        payload: contactId.toString(),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      );
     }
   }
 

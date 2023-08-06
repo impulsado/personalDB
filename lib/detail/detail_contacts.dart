@@ -307,7 +307,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
                           title: "Remind Me",
                           hint: "Select when to contact again.",
                           controller: _remindMeController,
-                          options: const ["Do not remind me", "1 week", "2 week", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks", "3 months", "4 months", "5 months", "6 months",]
+                          options: const ["Do not remind me", "1 week", "2 weeks", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks", "3 months", "4 months", "5 months", "6 months",]
                       ),
                       const SizedBox(height: 10),
                       TopicsListView(contactId: widget.id),
