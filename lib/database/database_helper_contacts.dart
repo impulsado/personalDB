@@ -46,4 +46,9 @@ class ContactsDatabaseHelper implements DatabaseHelperCommon {
       debugPrint("Something went wrong when deleting an item: $err");
     }
   }
+
+  Future<List<Map<String, dynamic>>> getContactByName(String name, String password) async {
+    final db = await DatabaseHelper.db(password);
+    return db.query("contacts", where: "name = ?", whereArgs: [name], limit: 1);
+  }
 }

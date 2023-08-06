@@ -3,6 +3,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:personaldb/database/database_helper_contacts.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:intl/intl.dart';
 
 class ImportContactsWidget extends StatefulWidget {
   final String password;
@@ -97,14 +98,21 @@ class _ImportContactsWidgetState extends State<ImportContactsWidget> {
       for (var contact in contacts) {
         String displayName = contact.displayName ?? "No name";
         String phone = (contact.phones!.isNotEmpty ? contact.phones?.first.value : null) ?? "No phone";
+        String label = contact.company ?? "No label defined";
 
-        Map<String, dynamic> newContact = {
-          "name": displayName,
-          "phone": phone,
-          // Add the rest of the fields as null
-        };
+        String birthday = (contact.birthday != null) ? DateFormat("dd-MM-yyyy").format(contact.birthday!) : "";
 
-        await _dbHelper.createItem(newContact, widget.password);
+        var existingContact = await _dbHelper.getContactByName(displayName, widget.password);
+        if (existingContact.isEmpty) {
+          Map<String, dynamic> newContact = {
+            "name": displayName,
+            "phone": phone,
+            "label": label,
+            "birthday": birthday,
+          };
+
+          await _dbHelper.createItem(newContact, widget.password);
+        }
       }
 
       setState(() {
@@ -112,10 +120,9 @@ class _ImportContactsWidgetState extends State<ImportContactsWidget> {
       });
 
       // ignore: use_build_context_synchronously
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context, "refresh");
     } else {
       // Handle the fact that the user did not grant permission
-      //print('Permission to access contacts was denied.');
     }
   }
 }
