@@ -206,6 +206,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
                         loadItemsFunction: () async {
                           return await InventoryDatabaseHelper().getLocations(MyApp.dbPassword!);
                         },
+                        widthMultiplier: 0.82,
                       ),
                       const SizedBox(height: 10),
                       Row(

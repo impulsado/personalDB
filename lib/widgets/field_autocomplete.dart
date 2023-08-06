@@ -8,12 +8,15 @@ class FieldAutocomplete extends StatefulWidget {
   final String label;
   final DatabaseHelperCommon dbHelper;
   final Future<List<String>> Function() loadItemsFunction;
+  final double widthMultiplier;
 
-  const FieldAutocomplete({super.key,
+  const FieldAutocomplete({
+    super.key,
     required this.controller,
     required this.label,
     required this.dbHelper,
     required this.loadItemsFunction,
+    this.widthMultiplier = 0.5,
   });
 
   @override
@@ -34,8 +37,6 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
   _loadItems() async {
     List<String> items = await widget.loadItemsFunction();
 
-    print('Existing Items: $items');
-
     setState(() {
       _items = items;
       _isLoading = false;
@@ -49,7 +50,7 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
         : Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
         if (textEditingValue.text == "") {
-          return const Iterable<String>.empty();
+          return _items;
         }
         return _items.where((String item) {
           return item.toLowerCase().contains(textEditingValue.text.toLowerCase());
@@ -57,6 +58,31 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
       },
       onSelected: (String selection) {
         widget.controller.text = selection;
+      },
+      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4.0,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * widget.widthMultiplier,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                itemCount: options.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final option = options.elementAt(index);
+                  return ListTile(
+                    title: Text(option),
+                    onTap: () {
+                      onSelected(option);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        );
       },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
         fieldTextController.text = widget.controller.text;
@@ -71,6 +97,11 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
             controller: fieldTextController,
             onChanged: (value) {
               widget.controller.text = value;
+            },
+            onTap: () {
+              if (fieldTextController.text == "") {
+                fieldTextController.text = ""; // Trigger Autocomplete to show all options.
+              }
             },
             focusNode: focusNode,
             decoration: InputDecoration(

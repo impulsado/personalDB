@@ -198,6 +198,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
                           loadItemsFunction: () async {
                             return await HealthDatabaseHelper().getCategories(MyApp.dbPassword!);
                           },
+                          widthMultiplier: 0.82,
                         ),
                         const SizedBox(height: 10),
                         MyInputField(

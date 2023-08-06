@@ -204,6 +204,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
                         label: "Author",
                         dbHelper: dbHelper,
                         loadItemsFunction: () => dbHelper.getAuthor(MyApp.dbPassword!),
+                        widthMultiplier: 0.82,
                       ),
                       const SizedBox(height: 10),
                       MyInputField(
