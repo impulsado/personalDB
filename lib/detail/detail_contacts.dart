@@ -157,7 +157,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
       }
     } else {
       final contactId = await dbHelper.createItem(data, MyApp.dbPassword!);
-      if (_remindMeController.text != "Do not remind me") {
+      if (_remindMeController.text != "Do not remind me" && _remindMeController.text != "No Remind Me defined") {
         await NotificationHandler.scheduleNotification(
           _nameController.text,
           _remindMeController.text,
@@ -280,6 +280,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
                               hint: "Enter phone.",
                               controller: _phoneController,
                               inputType: TextInputType.number,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 15),

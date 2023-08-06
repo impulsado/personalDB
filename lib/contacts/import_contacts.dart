@@ -109,6 +109,7 @@ class _ImportContactsWidgetState extends State<ImportContactsWidget> {
             "phone": phone,
             "label": label,
             "birthday": birthday,
+            "remindMe": "No Remind Me defined",
           };
 
           await _dbHelper.createItem(newContact, widget.password);
