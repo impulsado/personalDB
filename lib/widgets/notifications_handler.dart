@@ -1,11 +1,11 @@
+// notitications_handler.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationHandler {
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> init() async {
     var initializationSettingsAndroid =
@@ -127,7 +127,7 @@ class NotificationHandler {
       importance: Importance.max,
       priority: Priority.high,
       showWhen: false,
-      icon: 'ic_launcher',
+      icon: "ic_launcher",
       color: Colors.black,
       styleInformation: BigTextStyleInformation(
         "No one will ever have access to your data. Remember your password as it cannot be recovered.",
@@ -150,4 +150,32 @@ class NotificationHandler {
         UILocalNotificationDateInterpretation.absoluteTime
     );
   }
+
+  // BIRTHDAY NOTIFICATION
+  static Future<void> scheduleBirthdayNotification(String name, DateTime birthday) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      "birthday_id",
+      "Birthday Reminder",
+      channelDescription: "Channel for birthday reminder",
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+      icon: "ic_launcher",
+      color: Colors.black,
+    );
+
+    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics,);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      "Birthday Reminder",
+      "Today is $name's birthday!",
+      tz.TZDateTime(tz.local, birthday.year, birthday.month, birthday.day, 7, 0),
+      platformChannelSpecifics,
+      payload: "Birthday for $name",
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
+
 }

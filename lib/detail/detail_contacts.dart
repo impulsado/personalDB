@@ -130,6 +130,8 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   }
 
   _saveNote(BuildContext context) async {
+    DateFormat dateFormat = DateFormat("dd-MM-yyyy");
+
     if(MyApp.dbPassword == null) {
       throw ArgumentError("Database password is null");
     }
@@ -155,6 +157,14 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
           contactId,
         );
       }
+      DateTime? birthdayDate;
+      try {
+        birthdayDate = dateFormat.parse(_birthdayController.text);
+        await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
+        print(birthdayDate);
+      } catch (e) {
+        print("FECHA TIENE ERROR");
+      }
     } else {
       final contactId = await dbHelper.createItem(data, MyApp.dbPassword!);
       if (_remindMeController.text != "Do not remind me" && _remindMeController.text != "No Remind Me defined") {
@@ -163,6 +173,14 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
           _remindMeController.text,
           contactId,
         );
+      }
+      DateTime? birthdayDate;
+      try {
+        birthdayDate = dateFormat.parse(_birthdayController.text);
+        await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
+        print("guardat");
+      } catch (e) {
+        print("FECHA TIENE ERROR");
       }
     }
 
