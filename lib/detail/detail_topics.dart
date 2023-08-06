@@ -3,6 +3,7 @@ import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/widgets/delete_button.dart';
 
 class TopicDetailPage extends StatefulWidget {
   final int? id;
@@ -54,6 +55,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
       );
 
       if (confirm == true) {
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
       }
     } else {
@@ -223,6 +225,18 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
         _contactName,
         style: const TextStyle(color: Colors.black),
       ),
+      actions: [
+        DeleteButton(
+          item: {"id": widget.id},
+          categoryName: "Topics",
+          onConfirmed: () {Navigator.of(context).pop("refresh");},
+          dialogTitle: "Delete Topic",
+          dialogContent: "Are you sure you want to delete this topic?",
+          iconData: Icons.delete_forever_outlined,
+          iconColor: Colors.black,
+        ),
+        const SizedBox(width: 10),
+      ],
     );
   }
 }

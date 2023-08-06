@@ -1,30 +1,45 @@
-// delete_note.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 
 class DeleteButton extends StatelessWidget {
-  final Map<String, dynamic> note;
+  final Map<String, dynamic> item;
   final String categoryName;
   final VoidCallback onConfirmed;
+  final String dialogTitle;
+  final String dialogContent;
+  final IconData? iconData;
+  final Color? iconColor;
 
-  const DeleteButton({Key? key, required this.note, required this.categoryName, required this.onConfirmed}) : super(key: key);
+  const DeleteButton({
+    Key? key,
+    required this.item,
+    required this.categoryName,
+    required this.onConfirmed,
+    required this.dialogTitle,
+    required this.dialogContent,
+    this.iconData,
+    this.iconColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _deleteNoteConfirmation(context),
-      child: const Icon(Icons.close),
+      onTap: () => _deleteItemConfirmation(context),
+      child: Icon(
+        iconData ?? Icons.close,
+        color: iconColor ?? Colors.black,
+      ),
     );
   }
 
-  void _deleteNoteConfirmation(BuildContext context) async {
+  void _deleteItemConfirmation(BuildContext context) async {
     final confirm = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Delete Note"),
-          content: const Text("Are you sure you want to delete this note?"),
+          title: Text(dialogTitle),
+          content: Text(dialogContent),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -41,7 +56,7 @@ class DeleteButton extends StatelessWidget {
 
     if (confirm == true) {
       final dbHelper = DatabaseHelperFactory.getDatabaseHelper(categoryName);
-      await dbHelper.deleteItem(note["id"], MyApp.dbPassword!);
+      await dbHelper.deleteItem(item["id"], MyApp.dbPassword!);
       await Future.delayed(const Duration(milliseconds: 250));
       onConfirmed();
     }

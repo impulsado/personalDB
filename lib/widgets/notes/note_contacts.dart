@@ -72,7 +72,13 @@ class NoteContacts extends StatelessWidget {
               right: 10,
               top: 0,
               bottom: 0,
-              child: DeleteButton(note: note, categoryName: categoryName, onConfirmed: onDelete!),
+              child: DeleteButton(
+                  item: note,
+                  categoryName: categoryName,
+                  onConfirmed: onDelete!,
+                  dialogTitle: "Delete Contact",
+                  dialogContent: "Are you sure you want to delete this contact?"
+              ),
             ),
         ],
       ),

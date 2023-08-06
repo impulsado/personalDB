@@ -8,7 +8,7 @@ class SearchBarContacts extends StatefulWidget implements PreferredSizeWidget {
   final Future<List<String>> Function() loadItemsFunction;
   final void Function(Map<String, bool>) onFilterChanged;
 
-  SearchBarContacts({
+  const SearchBarContacts({
     Key? key,
     required this.searchController,
     required this.focusNode,
@@ -19,6 +19,7 @@ class SearchBarContacts extends StatefulWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchBarContactsState createState() => _SearchBarContactsState();
 
   @override
@@ -34,12 +35,15 @@ class _SearchBarContactsState extends State<SearchBarContacts> {
       title: Row(
         children: [
           widget.enableOrdering
-              ? IconButton(
-            icon: const Icon(
-              Icons.sort,
-              color: Colors.black,
+              ? Transform.translate(
+            offset: const Offset(-8, 0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.sort,
+                color: Colors.black,
+              ),
+              onPressed: () => _showOrderMenu(context),
             ),
-            onPressed: () => _showOrderMenu(context),
           )
               : _buildSearchIcon(),
           Expanded(child: _buildSearchField()),
