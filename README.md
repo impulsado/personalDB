@@ -26,9 +26,9 @@ A **secure** application for storing your **personal database** on your phone, w
 </div>
 
 <div align="center">
-  <img src="screenshots/detail_contacts.jpg" alt="PersonalDB Restaurant Category" width="200">
-  <img src="screenshots/contacts.jpg" alt="PersonalDB Restaurant Detail" width="200">
-  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Detail" width="200">
+  <img src="screenshots/detail_contacts.jpg" alt="PersonalDB Restaurant Category" width="200" height="400">
+  <img src="screenshots/contacts.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
+  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
 </div>
 
 <br/>
