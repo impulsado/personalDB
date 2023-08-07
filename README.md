@@ -20,15 +20,15 @@ A **secure** application for storing your **personal database** on your phone, w
 
 ## Screenshots
 <div align="center">
-  <img src="screenshots/categories.jpg" alt="PersonalDB Homepage" width="400">
-  <img src="screenshots/detail_restaurant.jpg" alt="PersonalDB Homepage" width="400">
-  <img src="screenshots/category_restaurant.jpg" alt="PersonalDB Homepage" width="400">
+  <img src="screenshots/categories.jpg" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/detail_restaurant.jpg" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/category_restaurant.jpg" alt="PersonalDB Homepage" width="200" height="400">
 </div>
 
 <div align="center">
-  <img src="screenshots/detail_contacts.jpg" alt="PersonalDB Restaurant Category" width="400">
-  <img src="screenshots/contacts.jpg" alt="PersonalDB Restaurant Detail" width="400">
-  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Detail" width="400">
+  <img src="screenshots/detail_contacts.jpg" alt="PersonalDB Restaurant Category" width="200">
+  <img src="screenshots/contacts.jpg" alt="PersonalDB Restaurant Detail" width="200">
+  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Detail" width="200">
 </div>
 
 <br/>
