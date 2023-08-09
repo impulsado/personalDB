@@ -1,6 +1,7 @@
 # personalDB
 personalDB has been created by and for the people, completely free, that doesn't mean that the quality of this application can be considered lower.
 <br/>
+<br/>
 In this file you will find all those tasks that @impulsado (application founder) has considered. <br/>
 If you are a **User** of the application, feel free to add to this list. <br/>
 If you are a **Future Developer** who wants to help, all users will be eternally grateful. 
@@ -8,6 +9,7 @@ If you are a **Future Developer** who wants to help, all users will be eternally
 <br/>
 For more information, you can contact me as [@impulsado](https://t.me/impulsado).
 
+<br/>
 
 ## Priority tasks
 - [ ] Create automatic DB backups and send them to an Email, Google Drive folder,...
@@ -20,6 +22,7 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
     - [ ] Inventory
     - [ ] Entertainment
 
+<br/>
 
 ## Future features
 - [ ] In  settings.dart file:
@@ -28,6 +31,7 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
     - [ ] Choose Dark/Light mode
     - [ ] Choose DateFormat
 
+<br/>
 
 ## Known bugs
 - [ ] Rating stars are not aligned with Restaurant Title.
