@@ -165,9 +165,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<String?> _askCreateDatabase(BuildContext context) async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String path = appDocDir.path;
-    final newDbFile = await File("$path/personalDB.db").create();
+    final dbFilePath = "$path/personalDB.db";
+    final existingDbFile = File(dbFilePath);
+
+    if (await existingDbFile.exists()) {
+      await existingDbFile.delete();
+    }
+
+    final newDbFile = await File(dbFilePath).create();
     return newDbFile.path;
   }
+
 
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(

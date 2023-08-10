@@ -207,7 +207,7 @@ class _SettingsState extends State<Settings> {
                               width: 100,
                             ),
                             const SizedBox(height: 15),
-                            const Text("0.0.0", style: TextStyle(fontSize: 16),),
+                            const Text("1.1.0", style: TextStyle(fontSize: 16),),
                             const SizedBox(height: 15),
                             RichText(
                               text: TextSpan(
