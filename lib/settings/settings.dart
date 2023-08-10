@@ -7,6 +7,7 @@ import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/contacts/import_contacts.dart';
+import 'package:workmanager/workmanager.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -20,6 +21,13 @@ class _SettingsState extends State<Settings> {
   String _filePath = "";
   bool _inputPassword = false;
   final _passwordController = TextEditingController();
+
+  bool _emailBackupEnabled = false;
+  String _emailAddress = "";
+  static String _emailAddressStatic = "";
+  String _backupFrequency = 'Diary';
+
+  static const backupTaskId = "emailBackupTask";
 
   Future<String> onDatabaseLocation() async {
     return DatabaseHelper.dbPath ?? "No database found";
@@ -67,6 +75,84 @@ class _SettingsState extends State<Settings> {
     } catch (e) {
       _openDialog(context, "Error", "Error while importing database: $e");
     }
+  }
+
+  Future<String?> _getEmailFromUser(BuildContext context) async {
+    TextEditingController emailController = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Enter Email Address"),
+          content: TextField(
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: "example@example.com",
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(emailController.text.trim());
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _scheduleEmailBackup() {
+    final Duration initialDelay = _backupFrequency == "Diary"
+        ? const Duration(days: 1)
+        : const Duration(days: 7);
+
+    _emailAddressStatic = _emailAddress;
+
+    Workmanager().registerPeriodicTask(
+      backupTaskId,
+      "simpleTask",
+      inputData: {"email": _emailAddress},
+      frequency: initialDelay,
+      initialDelay: initialDelay,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+    );
+  }
+
+  void _cancelEmailBackup() {
+    Workmanager().cancelByTag(backupTaskId);
+  }
+
+  Future<String?> _selectBackupFrequency(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Select Backup Frequency"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text("Diary"),
+                onTap: () => Navigator.of(context).pop("Diary"),
+              ),
+              ListTile(
+                title: const Text("Weekly"),
+                onTap: () => Navigator.of(context).pop("Weekly"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   final Uri githubUrl = Uri.parse("https://github.com/impulsado/PersonalDB");
@@ -119,6 +205,47 @@ class _SettingsState extends State<Settings> {
                     context,
                     MaterialPageRoute(builder: (context) => ImportContactsWidget(password: MyApp.dbPassword!)),
                   );
+                },
+              ),
+              Divider(color: Colors.grey.shade300, thickness: 1.0,),
+              const SizedBox(height: 10.0),
+              Text("BackUps", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+              SwitchListTile(
+                title: const Text("Email Backup"),
+                value: _emailBackupEnabled,
+                onChanged: (bool value) {
+                  setState(() {
+                    _emailBackupEnabled = value;
+                  });
+                  if (value) {
+                    _scheduleEmailBackup();
+                  } else {
+                    _cancelEmailBackup();
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text("Backup Email Address"),
+                subtitle: Text(_emailAddress.isEmpty ? "Enter email address" : _emailAddress),
+                onTap: () async {
+                  String? email = await _getEmailFromUser(context);
+                  if (email != null && email.isNotEmpty) {
+                    setState(() {
+                      _emailAddress = email;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('Backup Frequency'),
+                subtitle: Text(_backupFrequency),
+                onTap: () async {
+                  String? frequency = await _selectBackupFrequency(context);
+                  if (frequency != null) {
+                    setState(() {
+                      _backupFrequency = frequency;
+                    });
+                  }
                 },
               ),
               Divider(color: Colors.grey.shade300, thickness: 1.0,),

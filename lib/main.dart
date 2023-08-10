@@ -1,15 +1,24 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:personaldb/home/home.dart';
 import 'package:personaldb/verification/register.dart';
 import 'package:personaldb/verification/login.dart';
 import 'package:personaldb/widgets/notifications_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:workmanager/workmanager.dart';
+import 'package:personaldb/settings/backup_handler.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    await BackupHandler.sendBackupEmail();
+    return Future.value(true);
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
   runApp(const MyApp());
 }
 
@@ -39,3 +48,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
