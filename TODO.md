@@ -12,9 +12,9 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 <br/>
 
 ## ‼ Priority tasks
-- [ ] Create automatic DB backups and send them to an Email, Google Drive folder,...
+- [ ] Create automatic DB backups and send them to an Email, Google Drive folder,...  @impulsado 10-08-2023
 - [ ] Check if Birthday and Remind Me notifications work correctly.
-- [ ] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").
+- [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").    @impulsado 10-08-2023
 - [ ] If contact label is null, it must assign a "null" label.
 - [ ] Use Google Maps API to location input box.
 - [ ] Label filtering not works correctly in:
@@ -27,7 +27,7 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 ## 🌺 Future features
 - [ ] In  settings.dart file:
     - [ ] Manage created labels
-    - [ ] Choose application langugage
+    - [ ] Choose application language
     - [ ] Choose Dark/Light mode
     - [ ] Choose DateFormat
 
