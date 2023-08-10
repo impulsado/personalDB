@@ -3,7 +3,7 @@
 A **secure** application for storing your **personal database** on your phone, with data encryption.
 
 <div align="center">
-  <img src="screenshots/logo.jpg" alt="PersonalDB Logo" width="350">
+  <img src="screenshots/banner.png" alt="PersonalDB Logo">
 </div>
 
 <br/>
@@ -20,12 +20,15 @@ A **secure** application for storing your **personal database** on your phone, w
 
 ## Screenshots
 <div align="center">
-  <img src="screenshots/homepage.png" alt="PersonalDB Homepage" width="400">
+  <img src="screenshots/categories.jpg" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/detail_restaurant.jpg" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/category_restaurant.jpg" alt="PersonalDB Homepage" width="200" height="400">
 </div>
 
 <div align="center">
-  <img src="screenshots/restaurant_category.png" alt="PersonalDB Restaurant Category" width="400">
-  <img src="screenshots/restaurant_detail.png" alt="PersonalDB Restaurant Detail" width="400">
+  <img src="screenshots/detail_contacts.jpg" alt="PersonalDB Restaurant Category" width="200" height="400">
+  <img src="screenshots/contacts.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
+  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
 </div>
 
 <br/>
