@@ -17,6 +17,7 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 - [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").    @impulsado 10-08-2023
 - [ ] If contact label is null, it must assign a "null" label.
 - [ ] Use Google Maps API to location input box.
+- [ ] Onboarding screens.
 - [ ] Label filtering not works correctly in:
     - [ ] Restaurant
     - [ ] Inventory
@@ -26,10 +27,12 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 
 ## 🌺 Future features
 - [ ] In  settings.dart file:
-    - [ ] Manage created labels
-    - [ ] Choose application language
-    - [ ] Choose Dark/Light mode
-    - [ ] Choose DateFormat
+    - [ ] Manage created labels.
+    - [ ] Choose application language.
+    - [ ] Choose Dark/Light mode.
+    - [ ] Choose DateFormat.
+- [ ] Unlock using fingerprint.
+- [ ] Upload Images and Files.
 
 <br/>
 
