@@ -12,16 +12,16 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 <br/>
 
 ## ‼ Priority tasks
-- [ ] Create automatic DB backups and send them to an Email, Google Drive folder,...  @impulsado 10-08-2023
 - [ ] Check if Birthday and Remind Me notifications work correctly.
-- [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").    @impulsado 10-08-2023
-- [ ] If contact label is null, it must assign a "null" label.
 - [ ] Use Google Maps API to location input box.
 - [ ] Onboard screens.
-- [ ] Label filtering not works correctly in:
-    - [ ] Restaurant
-    - [ ] Inventory
-    - [ ] Entertainment
+- [X] Create automatic DB backups and send them to an Email, Google Drive folder,...
+- [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").
+- [X] If contact label is null, it must assign a "null" label.
+- [X] Label filtering not works correctly in:
+    - [X] Restaurant
+    - [X] Inventory
+    - [X] Entertainment
 
 <br/>
 
@@ -44,9 +44,9 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 <br/>
 
 ## 🔧 Less important changes
-- [ ] Set elipis overflow to email input box in contact_details.dart
-- [ ] Change version in settings.dart
-- [ ] Improve UI of "note_wishlist.dart"
+- [X] Set ellipsis overflow to email input box in contact_details.dart
+- [X] Change version in settings.dart
+- [X] Improve UI of "note_wishlist.dart"
 
 <br/>
 
