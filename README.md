@@ -4,6 +4,10 @@ A **secure** application for storing your **personal database** on your phone, w
 
 <div align="center">
   <img src="screenshots/banner.png" alt="PersonalDB Logo">
+  <br/>
+  <a href="https://play.google.com/store/apps/details?id=org.impulsado.personaldb">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Click here to Google Play" width="200">
+  </a>
 </div>
 
 <br/>
