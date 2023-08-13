@@ -17,7 +17,7 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 - [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").    @impulsado 10-08-2023
 - [ ] If contact label is null, it must assign a "null" label.
 - [ ] Use Google Maps API to location input box.
-- [ ] Onboarding screens.
+- [ ] Onboard screens.
 - [ ] Label filtering not works correctly in:
     - [ ] Restaurant
     - [ ] Inventory
