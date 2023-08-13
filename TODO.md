@@ -12,9 +12,10 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 <br/>
 
 ## ‼ Priority tasks
-- [ ] Check if Birthday and Remind Me notifications work correctly.
-- [ ] Use Google Maps API to location input box.
 - [ ] Onboard screens.
+- [X] Check if notifications work correctly:
+  - [X] Remind Me
+  - [X] Birthday
 - [X] Create automatic DB backups and send them to an Email, Google Drive folder,...
 - [X] Delete actual DB before creating a new one (Actually creates a new file "personalDB (1).db").
 - [X] If contact label is null, it must assign a "null" label.
@@ -50,14 +51,20 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 
 <br/>
 
+## ❌ Canceled tasks
+- [ ] Use Google Maps API to location input box.  # Places API is now paid
+
+<br/>
+
 # TODO.md wiki 📚
 Short explanation of how to use this file.<br/>
 
 ```Symbology of checkboxes
-- [ ] To Do
-- [X] Done
-- [-] Canceled
-- [>] Postponed
+Priority tasks --> Required changes to be made for next update.
+Future features --> Ideas for future implementation that need research or time. 
+Known bugs --> Identified bugs that do not affect the user experience too much (they can continue using the application without any problem).
+Less important changes --> Minor changes that are usually related to the application UI.
+Canceled tasks --> Tasks that have been considered in some of the previous categories that for some reason have been cancelled. The reason for the cancellation must be specified.
 ```
 
 ```Task attributes
