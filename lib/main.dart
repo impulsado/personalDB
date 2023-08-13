@@ -18,7 +18,7 @@ void main() async {
   try {
     Workmanager().initialize(callbackDispatcher);  // GDrive Backups
     ReminderNotifications.initialize();  // Remind Me Notifications
-    BirthdayReminder.initialize();  // Inicializar BirthdayReminder
+    BirthdayReminder.initialize();  // BirthdayReminder
   } catch  (e) {
     //NOTHING
   }

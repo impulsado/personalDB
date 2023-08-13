@@ -6,6 +6,7 @@ import 'package:personaldb/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:personaldb/detail/detail_contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_auth/local_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,6 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final storage = const FlutterSecureStorage();
   final _passwordController = TextEditingController();
+  final _localAuth = LocalAuthentication();
   late Future<bool> dbExists;
   bool _obscureText = true;
 
@@ -25,6 +27,24 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     dbExists = _checkIfDatabaseExistsAndInitialized();
+    _tryBiometricLogin();
+  }
+
+  Future<void> _tryBiometricLogin() async {
+    String? storedPassword = await storage.read(key: "dbPassword");
+    if (storedPassword == null) return; // If no password is stored, don't try biometric login
+
+    bool canCheckBiometrics = await _localAuth.canCheckBiometrics;
+    if (canCheckBiometrics) {
+      bool authenticated = await _localAuth.authenticate(
+        localizedReason: "Please authenticate with your fingerprint.",
+      );
+      if (authenticated) {
+        MyApp.dbPassword = storedPassword;
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacementNamed(context, "/home");
+      }
+    }
   }
 
   Future<bool> _checkIfDatabaseExistsAndInitialized() async {
@@ -146,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await DatabaseHelper.db(password);
     MyApp.dbPassword = password;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? notificationPayload = prefs.getString('notificationPayload');
+    String? notificationPayload = prefs.getString("notificationPayload");
     if (notificationPayload != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
@@ -155,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context) => ContactsDetailPage(id: int.parse(notificationPayload)),
         ),
       );
-      await prefs.remove('notificationPayload');  // Clear the payload
+      await prefs.remove("notificationPayload");
     } else {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home");

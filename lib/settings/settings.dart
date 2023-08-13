@@ -1,5 +1,6 @@
 // settings.dart
 import 'package:flutter/material.dart';
+import 'package:personaldb/settings/conf_fingerprint.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
@@ -127,7 +128,14 @@ class _SettingsState extends State<Settings> {
                   Navigator.of(context).push(_customPageRoute(const BackupToDrive()));
                 },
               ),
-
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Configure Fingerprint"),
+                subtitle: const Text("Configure unlocking DB with fingerprint"),
+                onTap: () {
+                  Navigator.of(context).push(_customPageRoute(const FingerprintSetupScreen()));
+                },
+              ),
               Divider(color: Colors.grey.shade300, thickness: 1.0,),
               const SizedBox(height: 10.0),
               Text("View", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
