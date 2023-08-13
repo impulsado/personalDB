@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:personaldb/home/home.dart';
 import 'package:personaldb/verification/register.dart';
 import 'package:personaldb/verification/login.dart';
+import 'package:personaldb/widgets/birthday_checker.dart';
 import 'package:personaldb/widgets/notifications_handler.dart';
+import 'package:personaldb/widgets/reminder_checker.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:workmanager/workmanager.dart';
 import 'package:personaldb/settings/background_backup.dart';
@@ -12,11 +14,15 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+
   try {
-    Workmanager().initialize(callbackDispatcher);
+    Workmanager().initialize(callbackDispatcher);  // GDrive Backups
+    ReminderNotifications.initialize();  // Remind Me Notifications
+    BirthdayReminder.initialize();  // Inicializar BirthdayReminder
   } catch  (e) {
     //NOTHING
   }
+
   runApp(const MyApp());
 }
 

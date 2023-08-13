@@ -1,4 +1,4 @@
-// notitications_handler.dart
+// notifications_handler.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -8,92 +8,16 @@ class NotificationHandler {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> init() async {
-    var initializationSettingsAndroid =
-    const AndroidInitializationSettings("@mipmap/ic_launcher");
+    var initializationSettingsAndroid = const AndroidInitializationSettings("@mipmap/ic_launcher");
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid,);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: onSelectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification);
   }
 
   static Future onSelectNotification(NotificationResponse response) async {
     final payload = response.payload;
     if (payload != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('notificationPayload', payload);  // Store the payload for later use
-    }
-  }
-
-  // CONTACT NOTIFICATION
-  static Future<void> scheduleNotification(String name, String remindMeOption, int contactId) async {
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      "reminder_id",
-      "Reminder",
-      channelDescription: "Channel for reminder notification",
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: false,
-      icon: "ic_launcher",
-      color: Colors.black,
-    );
-
-    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics,);
-
-    int remindMeInDays;
-    switch (remindMeOption) {
-      case "1 week":
-        remindMeInDays = 7;
-        break;
-      case "2 weeks":
-        remindMeInDays = 14;
-        break;
-      case "3 weeks":
-        remindMeInDays = 21;
-        break;
-      case "4 weeks":
-        remindMeInDays = 28;
-        break;
-      case "5 weeks":
-        remindMeInDays = 35;
-        break;
-      case "6 weeks":
-        remindMeInDays = 42;
-        break;
-      case "7 weeks":
-        remindMeInDays = 49;
-        break;
-      case "8 weeks":
-        remindMeInDays = 56;
-        break;
-      case "3 months":
-        remindMeInDays = 90;
-        break;
-      case "4 months":
-        remindMeInDays = 120;
-        break;
-      case "5 months":
-        remindMeInDays = 150;
-        break;
-      case "6 months":
-        remindMeInDays = 180;
-        break;
-      default:
-        remindMeInDays = 0;
-        break;
-    }
-
-    if (remindMeInDays > 0) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        "$remindMeInDays days since last update!",
-        "Click to remember $name's topics",
-        tz.TZDateTime.now(tz.local).add(Duration(days: remindMeInDays)),
-        platformChannelSpecifics,
-        payload: contactId.toString(),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      );
+      await prefs.setString("notificationPayload", payload);
     }
   }
 
@@ -154,7 +78,7 @@ class NotificationHandler {
   }
 
   // BIRTHDAY NOTIFICATION
-  static Future<void> scheduleBirthdayNotification(String name, DateTime birthday) async {
+  static Future<void> showBirthdayNotification(String name) async {
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       "birthday_id",
       "Birthday Reminder",
@@ -168,16 +92,12 @@ class NotificationHandler {
 
     var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics,);
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      "Birthday Reminder",
-      "Today is $name's birthday!",
-      tz.TZDateTime(tz.local, birthday.year, birthday.month, birthday.day, 7, 0),
-      platformChannelSpecifics,
-      payload: "Birthday for $name",
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    await flutterLocalNotificationsPlugin.show(
+        0,
+        "Birthday Reminder",
+        "Today is $name's birthday!",
+        platformChannelSpecifics,
+        payload: "Birthday for $name"
     );
   }
-
 }

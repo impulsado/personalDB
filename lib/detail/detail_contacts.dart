@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personaldb/models/categories.dart';
+import 'package:personaldb/widgets/birthday_checker.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/cupertino_picker.dart';
 import 'package:personaldb/widgets/button.dart';
@@ -9,10 +10,10 @@ import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/database/database_helper_contacts.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/widgets/cupertino_date_picker.dart';
+import 'package:personaldb/widgets/reminder_checker.dart';
 import 'package:personaldb/widgets/topics_list_view.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/constants/theme.dart';
-import 'package:personaldb/widgets/notifications_handler.dart';
 
 class ContactsDetailPage extends StatefulWidget {
   final MyCategory? myCategory;
@@ -130,8 +131,6 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   }
 
   _saveNote(BuildContext context) async {
-    DateFormat dateFormat = DateFormat("dd-MM-yyyy");
-
     if(MyApp.dbPassword == null) {
       throw ArgumentError("Database password is null");
     }
@@ -151,32 +150,29 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
     if (widget.id != null) {
       final contactId = await dbHelper.updateItem(widget.id!, data, MyApp.dbPassword!);
       if (_remindMeController.text != "Do not remind me") {
-        await NotificationHandler.scheduleNotification(
+        await ReminderNotifications.scheduleNotification(
           _nameController.text,
           _remindMeController.text,
           contactId,
         );
       }
-      DateTime? birthdayDate;
-      if (_birthdayController.text.isNotEmpty) {
-        birthdayDate = dateFormat.parse(_birthdayController.text);
-        await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
-      }
+
+      DateTime birthday = parseBirthday(_birthdayController.text);
+      BirthdayReminder.scheduleBirthdayReminder(birthday, _nameController.text);
     } else {
       final contactId = await dbHelper.createItem(data, MyApp.dbPassword!);
       if (_remindMeController.text != "Do not remind me" && _remindMeController.text != "No Remind Me defined") {
-        await NotificationHandler.scheduleNotification(
+        await ReminderNotifications.scheduleNotification(
           _nameController.text,
           _remindMeController.text,
           contactId,
         );
       }
-      DateTime? birthdayDate;
-      if (_birthdayController.text.isNotEmpty) {
-        birthdayDate = dateFormat.parse(_birthdayController.text);
-        await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
-      }
+
+      DateTime birthday = parseBirthday(_birthdayController.text);
+      BirthdayReminder.scheduleBirthdayReminder(birthday, _nameController.text);
     }
+
 
     _nameController.clear();
     _birthdayController.clear();
@@ -191,6 +187,11 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
 
     // ignore: use_build_context_synchronously
     Navigator.pop(context, "refresh");
+  }
+
+  DateTime parseBirthday(String date) {
+    List<String> parts = date.split('-');
+    return DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
   }
 
   _loadNote() async {

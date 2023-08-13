@@ -34,7 +34,7 @@ class ContactsDatabaseHelper implements DatabaseHelperCommon {
   Future<List<String>> getLabels(String password) async {
     final db = await DatabaseHelper.db(password);
     final result = await db.rawQuery('SELECT DISTINCT label FROM contacts WHERE label IS NOT NULL');
-    return List<String>.from(result.map((item) => item['label']));
+    return List<String>.from(result.map((item) => item["label"]));
   }
 
   @override
