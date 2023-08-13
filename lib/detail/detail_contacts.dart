@@ -158,12 +158,9 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
         );
       }
       DateTime? birthdayDate;
-      try {
+      if (_birthdayController.text.isNotEmpty) {
         birthdayDate = dateFormat.parse(_birthdayController.text);
         await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
-        print(birthdayDate);
-      } catch (e) {
-        print("FECHA TIENE ERROR");
       }
     } else {
       final contactId = await dbHelper.createItem(data, MyApp.dbPassword!);
@@ -175,12 +172,9 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
         );
       }
       DateTime? birthdayDate;
-      try {
+      if (_birthdayController.text.isNotEmpty) {
         birthdayDate = dateFormat.parse(_birthdayController.text);
         await NotificationHandler.scheduleBirthdayNotification(_nameController.text, birthdayDate);
-        print("guardat");
-      } catch (e) {
-        print("FECHA TIENE ERROR");
       }
     }
 

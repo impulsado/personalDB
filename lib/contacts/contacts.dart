@@ -81,7 +81,7 @@ class _ContactsState extends State<Contacts> {
   }
 
   int _remindMeToDays(String remindMe) {
-    if (remindMe == "Do not remind me") {
+    if (remindMe == "Do not remind me" || remindMe == "No Remind Me defined") {
       return -1;
     }
 
@@ -154,7 +154,7 @@ class _ContactsState extends State<Contacts> {
               const SizedBox(height: 32.0),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black, side: BorderSide(color: Colors.black),
+                  foregroundColor: Colors.black, side: const BorderSide(color: Colors.black),
                 ),
                 onPressed: () async {
                   final result = await Navigator.push(

@@ -64,7 +64,7 @@ class _CategoryEntertainmentState extends State<CategoryEntertainment> with Tick
 
     if (!(filters == null || filters.values.every((isSelected) => isSelected))) {
       _notes = _notes.where((note) {
-        String category = note["category"];
+        String category = note["author"];
         return filters[category] ?? false;
       }).toList();
     }

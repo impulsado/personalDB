@@ -29,7 +29,11 @@ class MyInputField extends StatelessWidget {
   }) : super(key: key);
 
   void _launchURL(BuildContext context, String url) async {
-    final Uri userUrl = Uri.https(url);
+    if (!url.startsWith("https://") && !url.startsWith("http://")) {
+      url = "https://$url";
+    }
+
+    final Uri userUrl = Uri.parse(url);
 
     if (await canLaunchUrl(userUrl)) {
       await launchUrl(userUrl, mode: LaunchMode.externalApplication);
@@ -66,7 +70,7 @@ class MyInputField extends StatelessWidget {
                     style: TextStyle(color: Colors.black, overflow: overflow),
                     keyboardType: inputType,
                     minLines: minLines,
-                    maxLines: null,
+                    maxLines: overflow == TextOverflow.ellipsis ? 1 : null,
                     textInputAction: inputAction,
                     decoration: InputDecoration(
                       hintText: hint,

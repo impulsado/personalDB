@@ -86,7 +86,7 @@ class NoteContacts extends StatelessWidget {
   }
 
   String _formatRemindMe(String? remindMe) {
-    if (remindMe == null || remindMe == "Do not remind me") {
+    if (remindMe == null || remindMe == "No Remind Me defined") {
       return remindMe ?? "";
     }
     return "Remind me every $remindMe";

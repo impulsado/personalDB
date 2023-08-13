@@ -40,6 +40,7 @@ class NoteWishlist extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
+                      flex: 5,
                       child: Text(
                         note["title"] ?? "No Title",
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -49,22 +50,24 @@ class NoteWishlist extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Expanded(
+                      flex: 3,
                       child: Text(
                         note["priority"] ?? "",
                         maxLines: 5,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 5.0),
-                note["price"] == "€" ? Container() : Row(
-                  children: [
-                    Text(
-                      note["price"] ?? "",
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    if (note["price"] != null && note["price"] != "€")
+                      const SizedBox(width: 5),
+                    if (note["price"] != null && note["price"] != "€")
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          note["price"] ?? "",
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 5.0),

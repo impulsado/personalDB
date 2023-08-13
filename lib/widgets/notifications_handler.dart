@@ -114,8 +114,8 @@ class NotificationHandler {
 
     await flutterLocalNotificationsPlugin.show(
         0,
-        "TEST",
-        "TEST",
+        "Welcome aboard!",
+        "Discover what personalDB can do for you.",
         platformChannelSpecifics
     );
   }

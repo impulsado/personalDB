@@ -8,14 +8,21 @@ class CupertinoPickerWidget extends StatefulWidget {
   final TextEditingController controller;
   final List<String> options;
   final double pickerHeight;
+  final bool isDurationPicker;
+  final Duration? selectedDuration;
+  final ValueChanged<String>? onChanged;
 
-  const CupertinoPickerWidget({super.key,
+  const CupertinoPickerWidget({
+    Key? key,
     required this.title,
     required this.hint,
     required this.controller,
     required this.options,
     this.pickerHeight = 200.0,
-  });
+    this.isDurationPicker = false,
+    this.selectedDuration,
+    this.onChanged,
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -53,8 +60,9 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
               ),
               child: GestureDetector(
                 onTap: () => _showCupertinoPicker(),
-                child: Align(
-                  alignment: Alignment.centerLeft,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     selectedIndex >= 0 ? widget.options[selectedIndex] : widget.hint,
                     style: subHeadingStyle(color: selectedIndex >= 0 ? Colors.black : Colors.grey),
@@ -81,6 +89,9 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
               setState(() {
                 selectedIndex = index;
                 widget.controller.text = widget.options[selectedIndex];
+                if (widget.onChanged != null) {
+                  widget.onChanged!(widget.options[selectedIndex]);
+                }
               });
             },
             children: List<Widget>.generate(widget.options.length, (index) {

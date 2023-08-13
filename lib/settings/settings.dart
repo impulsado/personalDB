@@ -7,6 +7,7 @@ import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/contacts/import_contacts.dart';
+import 'package:personaldb/settings/backup_to_gdrive.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -115,12 +116,18 @@ class _SettingsState extends State<Settings> {
                 title: const Text("Import Contacts"),
                 subtitle: const Text("Import local contacts to CRM"),
                 onTap: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ImportContactsWidget(password: MyApp.dbPassword!)),
-                  );
+                  Navigator.of(context).push(_customPageRoute(ImportContactsWidget(password: MyApp.dbPassword!)));
                 },
               ),
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 0.0),
+                title: const Text("Configure Backups"),
+                subtitle: const Text("Set up automatic Google Drive backup"),
+                onTap: () {
+                  Navigator.of(context).push(_customPageRoute(const BackupToDrive()));
+                },
+              ),
+
               Divider(color: Colors.grey.shade300, thickness: 1.0,),
               const SizedBox(height: 10.0),
               Text("View", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
@@ -321,6 +328,20 @@ class _SettingsState extends State<Settings> {
           ),
         ),
       ),
+    );
+  }
+
+  PageRouteBuilder _customPageRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
     );
   }
 }

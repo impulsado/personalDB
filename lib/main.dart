@@ -4,12 +4,19 @@ import 'package:personaldb/verification/register.dart';
 import 'package:personaldb/verification/login.dart';
 import 'package:personaldb/widgets/notifications_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:workmanager/workmanager.dart';
+import 'package:personaldb/settings/background_backup.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+  try {
+    Workmanager().initialize(callbackDispatcher);
+  } catch  (e) {
+    //NOTHING
+  }
   runApp(const MyApp());
 }
 

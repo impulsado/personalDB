@@ -64,7 +64,7 @@ class _CategoryInventoryState extends State<CategoryInventory> with TickerProvid
 
     if (!(filters == null || filters.values.every((isSelected) => isSelected))) {
       _notes = _notes.where((note) {
-        String category = note["category"];
+        String category = note["location"];
         return filters[category] ?? false;
       }).toList();
     }
