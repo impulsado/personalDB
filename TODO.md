@@ -13,6 +13,8 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 
 ## ‼ Priority tasks
 - [ ] Onboard screens.
+- [ ] Upload Images and Files.
+- [X] Unlock using fingerprint.
 - [X] Check if notifications work correctly:
   - [X] Remind Me
   - [X] Birthday
@@ -32,8 +34,6 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
     - [ ] Choose application language.
     - [ ] Choose Dark/Light mode.
     - [ ] Choose DateFormat.
-- [ ] Unlock using fingerprint.
-- [ ] Upload Images and Files.
 
 <br/>
 
