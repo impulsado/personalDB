@@ -8,7 +8,8 @@ class CupertinoTimePickerWidget extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
 
-  const CupertinoTimePickerWidget({super.key,
+  const CupertinoTimePickerWidget({
+    super.key,
     required this.title,
     required this.controller,
     required this.hint,
@@ -39,26 +40,26 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.title,
-            style: subHeadingStyle(color: Colors.black),
-          ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 57,),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8.0),
-              padding: const EdgeInsets.only(left: 14),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1.0),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: GestureDetector(
-                onTap: () => _showCupertinoTimePicker(),
+    return GestureDetector(
+      onTap: () => _showCupertinoTimePicker(),
+      child: Container(
+        margin: const EdgeInsets.only(top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.title,
+              style: subHeadingStyle(color: Colors.black),
+            ),
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 57,),
+              child: Container(
+                margin: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(left: 14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 1.0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -68,8 +69,8 @@ class _CupertinoTimePickerWidgetState extends State<CupertinoTimePickerWidget> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

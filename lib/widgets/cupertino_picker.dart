@@ -25,7 +25,6 @@ class CupertinoPickerWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _CupertinoPickerWidgetState createState() => _CupertinoPickerWidgetState();
 }
 
@@ -40,26 +39,26 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.title,
-            style: subHeadingStyle(color: Colors.black),
-          ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 57,),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8.0),
-              padding: const EdgeInsets.only(left: 14),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1.0),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: GestureDetector(
-                onTap: () => _showCupertinoPicker(),
+    return GestureDetector(
+      onTap: () => _showCupertinoPicker(),
+      child: Container(
+        margin: const EdgeInsets.only(top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.title,
+              style: subHeadingStyle(color: Colors.black),
+            ),
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 57,),
+              child: Container(
+                margin: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(left: 14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 1.0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -70,8 +69,8 @@ class _CupertinoPickerWidgetState extends State<CupertinoPickerWidget> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
