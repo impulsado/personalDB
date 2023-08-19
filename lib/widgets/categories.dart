@@ -1,10 +1,12 @@
 // categories.dart
 import 'package:flutter/material.dart';
+import 'package:personaldb/categories/category_checklist.dart';
 import 'package:personaldb/categories/category_cooking.dart';
 import 'package:personaldb/categories/category_ideas.dart';
 import 'package:personaldb/categories/category_health.dart';
 import 'package:personaldb/categories/category_personal.dart';
 import 'package:personaldb/categories/category_restaurant.dart';
+import 'package:personaldb/categories/category_vehicles.dart';
 import 'package:personaldb/categories/category_wishlist.dart';
 import 'package:personaldb/categories/category_passwords.dart';
 import 'package:personaldb/categories/category_inventory.dart';
@@ -58,8 +60,14 @@ class Categories extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final spaceSize = screenWidth / 20;
-    final boxSize = (screenWidth - (3 * spaceSize)) / 3;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Aumentamos el espacio entre los ítems
+    final spaceSize = screenWidth / 30;
+    final boxSize = (screenWidth - (4 * spaceSize)) / 3.5;
+
+    // Calculamos el espacio vertical entre las filas
+    final verticalSpace = (screenHeight - (4 * boxSize)) / 14;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: spaceSize),
@@ -67,15 +75,13 @@ class Categories extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _buildRow(context, categoryList.getRange(0, 2).toList(), boxSize, spaceSize),
-            SizedBox(height: spaceSize),
-            _buildRow(context, categoryList.getRange(2, 4).toList(), boxSize, spaceSize),
-            SizedBox(height: spaceSize),
-            _buildRow(context, categoryList.getRange(4, 6).toList(), boxSize, spaceSize),
-            SizedBox(height: spaceSize),
-            _buildRow(context, categoryList.getRange(6, 8).toList(), boxSize, spaceSize),
-            SizedBox(height: spaceSize),
-            _buildRow(context, categoryList.getRange(8, 10).toList(), boxSize, spaceSize),
+            _buildRow(context, categoryList.getRange(0, 3).toList(), boxSize, spaceSize),
+            SizedBox(height: verticalSpace),
+            _buildRow(context, categoryList.getRange(3, 6).toList(), boxSize, spaceSize),
+            SizedBox(height: verticalSpace),
+            _buildRow(context, categoryList.getRange(6, 9).toList(), boxSize, spaceSize),
+            SizedBox(height: verticalSpace),
+            _buildRow(context, categoryList.getRange(9, 12).toList(), boxSize, spaceSize),
           ],
         ),
       ),
@@ -128,6 +134,12 @@ class Categories extends StatelessWidget {
             break;
           case "Entertainment":
             page = CategoryEntertainment(myCategory);
+            break;
+          case "Check List":
+            page = CategoryCheckList(myCategory);
+            break;
+          case "Vehicles":
+            page = CategoryVehicles(myCategory);
             break;
           case "Others":
             page = CategoryOthers(myCategory);

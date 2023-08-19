@@ -100,4 +100,28 @@ class NotificationHandler {
         payload: "Birthday for $name"
     );
   }
+
+  // MAINTANCE NOTIFICATION
+  static Future<void> showMaintanceNotification(String name) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      "maintance_id",
+      "Maintance Reminder",
+      channelDescription: "Channel for maintance reminder",
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+      icon: "ic_launcher",
+      color: Colors.black,
+    );
+
+    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics,);
+
+    await flutterLocalNotificationsPlugin.show(
+        0,
+        "Maintance Reminder",
+        "Remember that in 1 month you have to maintain your vehicle!",  //TODO: Change Remember Time
+        platformChannelSpecifics,
+        payload: "Birthday for $name"
+    );
+  }
 }

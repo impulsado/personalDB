@@ -18,14 +18,45 @@ class DatabaseHelper {
 
     sql.Database database = await sql.openDatabase(
       dbPath!,
-      version: 1,
+      version: 2,
       password: password,
       onCreate: (sql.Database db, int version) async {
         await createTables(db);
       },
       onUpgrade: (sql.Database db, int oldVersion, int newVersion) async {
         if (oldVersion < 2) {
-          // FUTURE CHANGES
+          await db.execute("""
+            CREATE TABLE CheckList(
+              id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              title TEXT,
+              duration TEXT,
+              price TEXT,
+              notes TEXT,
+              createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+          """);
+          await db.execute("""
+            CREATE TABLE CheckListItems(
+              id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              checklist_id INTEGER,
+              title TEXT,
+              description TEXT,
+              createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(checklist_id) REFERENCES CheckList(id)
+            )
+          """);
+          await db.execute("""
+            CREATE TABLE vehicles(
+              id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              name TEXT,
+              registration TEXT,
+              next_maintenance TEXT,
+              remindMe TEXT, 
+              location TEXT,
+              notes TEXT,
+              createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+          """);
         }
       },
     );
@@ -37,7 +68,7 @@ class DatabaseHelper {
     dbPath = path;
     sql.Database db = await sql.openDatabase(
       path,
-      version: 1,
+      version: 2,
       password: password,
       onCreate: (sql.Database db, int version) async {
         await createTables(db);
@@ -60,10 +91,10 @@ class DatabaseHelper {
         // Update the db path in DatabaseHelper to the new location
         DatabaseHelper.dbPath = newDbPath;
       } else {
-        throw Exception('Incorrect password or error while importing database.');
+        throw Exception("Incorrect password or error while importing database.");
       }
     } catch (e) {
-      throw Exception('Error while importing the database: $e');
+      throw Exception("Error while importing the database: $e");
     }
   }
 
@@ -75,7 +106,7 @@ class DatabaseHelper {
         path,
         password: password,
       );
-      await db.rawQuery('SELECT * FROM sqlite_master LIMIT 1');
+      await db.rawQuery("SELECT * FROM sqlite_master LIMIT 1");
       return true;
     } catch (e) {
       // Incorrect password. Unable to open the database.
@@ -88,7 +119,7 @@ class DatabaseHelper {
   static Future<void> exportDatabase() async {
     final dbDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> dbFiles = dbDirectory.listSync();
-    dbFiles = dbFiles.where((element) => element.path.endsWith('.db')).toList();
+    dbFiles = dbFiles.where((element) => element.path.endsWith(".db")).toList();
 
     if (dbFiles.isEmpty) {
       //print("No database file found");
@@ -96,7 +127,7 @@ class DatabaseHelper {
     }
 
     List<XFile> xFiles = dbFiles.map((file) => XFile(file.path)).toList();
-    await Share.shareXFiles(xFiles, text: 'My Database');
+    await Share.shareXFiles(xFiles, text: "My Database");
   }
 
   static final Map<String, List<String>> searchColumns = {
@@ -111,6 +142,8 @@ class DatabaseHelper {
     "Entertainment": ["title", "author", "link", "notes"],
     "Others": ["title", "description"],
     "Contacts": ["name", "birthday", "phone", "label", "address", "remindMe", "notes"],
+    "CheckList": ["title", "notes"],
+    "Vehicles": ["name", "registration", "notes"]
   };
 
   static Future<List<Map<String, dynamic>>> searchItems(String query, String password) async {
@@ -264,6 +297,38 @@ class DatabaseHelper {
           description TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY(contact_id) REFERENCES contacts(id)
+        )
+      """,
+      "CheckList": """
+        CREATE TABLE CheckList(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          title TEXT,
+          duration TEXT,
+          price TEXT,
+          notes TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      """,
+      "CheckListItems": """
+        CREATE TABLE CheckListItems(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          checklist_id INTEGER,
+          title TEXT,
+          description TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY(checklist_id) REFERENCES CheckList(id)
+        )
+      """,
+      "Vehicles": """
+        CREATE TABLE vehicles(
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          name TEXT,
+          registration TEXT,
+          next_maintenance TEXT,
+          remindMe TEXT,
+          location TEXT,
+          notes TEXT,
+          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       """,
     };

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/detail/detail_checklists.dart';
 import 'package:personaldb/detail/detail_contacts.dart';
 import 'package:personaldb/detail/detail_inventory.dart';
 import 'package:personaldb/detail/detail_passwords.dart';
+import 'package:personaldb/detail/detail_vehicles.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/detail/detail_ideas.dart';
 import 'package:personaldb/detail/detail_cooking.dart';
@@ -35,6 +37,10 @@ class DetailPageFactory {
         return EntertainmentDetailPage(myCategory, id: id);
       case "Others":
         return OthersDetailPage(myCategory, id: id);
+      case "Check List":
+        return CheckListDetailPage(myCategory, id: id);
+      case "Vehicles":
+        return VehiclesDetailPage(id: id);
       case "Contacts":
         return ContactsDetailPage(id: id);
       default:

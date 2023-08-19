@@ -13,7 +13,10 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 
 ## ‼ Priority tasks
 - [ ] Onboard screens.
-- [ ] Upload Images and Files.
+- [ ] Upload Images.
+- [X] Checklists Category.
+- [X] Vehicles Category.
+- [X] Restructure home page with new categories.
 - [X] Unlock using fingerprint.
 - [X] Check if notifications work correctly:
   - [X] Remind Me

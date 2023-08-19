@@ -11,6 +11,8 @@ import 'package:personaldb/widgets/notes/note_entertainment.dart';
 import 'package:personaldb/widgets/notes/note_others.dart';
 import 'package:personaldb/widgets/notes/note_personal.dart';
 import 'package:personaldb/widgets/notes/note_ideas.dart';
+import 'package:personaldb/widgets/notes/note_checklists.dart';
+import 'package:personaldb/widgets/notes/note_vehicles.dart';
 
 class SearchResultItem extends StatelessWidget {
   final Map<String, dynamic> note;
@@ -24,6 +26,7 @@ class SearchResultItem extends StatelessWidget {
   });
 
   Widget _buildNoteWidget() {
+    print(note["category_name"]);
     switch (note["category_name"]) {
       case "Ideas":
         return NoteIdeas(
@@ -97,6 +100,20 @@ class SearchResultItem extends StatelessWidget {
         );
       case "Contacts":
         return NoteContacts(
+          note: note,
+          backgroundColor: backgroundColor,
+          categoryName: note["category_name"],
+          showDeleteButton: false,
+        );
+      case "CheckList":
+        return NoteCheckList(
+          note: note,
+          backgroundColor: backgroundColor,
+          categoryName: note["category_name"],
+          showDeleteButton: false,
+        );
+      case "Vehicles":
+        return NoteVehicles(
           note: note,
           backgroundColor: backgroundColor,
           categoryName: note["category_name"],

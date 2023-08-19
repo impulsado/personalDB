@@ -21,7 +21,7 @@ const Color kPurple = Color(0xFFC69FD2);
 const Color kPurpleDark = Color(0xFFAA6AB9);
 
 // Restaurants
-const Color kBlueLight = Color(0xFFC2D1E0);
+const Color kBlueLight = Color(0xFFC2D6E6);
 const Color kBlue = Color(0xFF85A8BF);
 const Color kBlueDark = Color(0xFF537F8F);
 
@@ -36,9 +36,15 @@ const Color kRed = Color(0xFFFF9999);
 const Color kRedDark = Color(0xFFFF6666);
 
 // Others
+const Color kGrayLight = Color(0xFFE6E6E6);
+const Color kGray = Color(0xFFBFBFBF);
+const Color kGrayDark = Color(0xFF727272);
+
+/*
 const Color kGrayLight = Color(0xFFD8D8D8);
 const Color kGray = Color(0xFFB3B3B3);
 const Color kGrayDark = Color(0xFF727272);
+*/
 
 // Password
 const Color kDarkBlueLight = Color(0xFF8793B2);
@@ -49,6 +55,16 @@ const Color kDarkBlueDark = Color(0xFF303F60);
 const Color kBrownLight = Color(0xFFE6CEA8);
 const Color kBrown = Color(0xFFD4A86A);
 const Color kBrownDark = Color(0xFFB48B5A);
+
+// Check List
+const Color kTurquoiseLight = Color(0xFFB0E3DE);
+const Color kTurquoise = Color(0xFF7DC4B3);
+const Color kTurquoiseDark = Color(0xFF4A9E89);
+
+// Vehicles
+const Color kMetalLight = Color(0xFFAFB3BA);
+const Color kMetal = Color(0xFF8A919D);
+const Color kMetalDark = Color(0xFF5B6069);
 
 // Dark Mode
 const Color kDark = Color(0xFF121212);
