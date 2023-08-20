@@ -64,7 +64,7 @@ class _ItemsListViewState extends State<ItemsListView> {
               ),
               child: widget.checklistId == null ? const Center(
                 child: Text(
-                  "Create the Check List before adding items.",
+                  "Create the check list before adding items.",
                   style: TextStyle(color: Colors.grey, fontSize: 16.0),
                 ),
               ) : Padding(

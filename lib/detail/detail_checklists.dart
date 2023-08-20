@@ -37,7 +37,9 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
     dbHelper = DatabaseHelperFactory.getDatabaseHelper("Check List") as CheckListDatabaseHelper;
+
     checklistId = widget.id ?? 0;
     _loadNote();
   }
@@ -217,7 +219,7 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
                           ],
                         ),
                         const SizedBox(width: 15),
-                        ItemsListView(checklistId: checklistId),
+                        ItemsListView(checklistId: widget.id),
                         const SizedBox(width: 15),
                         MyInputField(
                           title: "Notes",

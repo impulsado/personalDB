@@ -254,7 +254,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       LocationPicker(
                         initialCoordinates: _locationController.text,
                         onLocationPicked: (coordinates) {

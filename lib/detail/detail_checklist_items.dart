@@ -124,7 +124,7 @@ class _CheckListItemsDetailPageState extends State<CheckListItemsDetailPage> wit
       throw ArgumentError("Database password is null");
     }
 
-    final dbHelperChecklistsItems = DatabaseHelperFactory.getDatabaseHelper("Check List Items");
+    final dbHelperChecklistsItems = DatabaseHelperFactory.getDatabaseHelper("Check List");
     List<Map<String, dynamic>> checklist = await dbHelperChecklistsItems.getItem(widget.checklistId, MyApp.dbPassword!);
 
     if (checklist.isNotEmpty) {
@@ -134,7 +134,7 @@ class _CheckListItemsDetailPageState extends State<CheckListItemsDetailPage> wit
     }
 
     if (widget.id != null) {
-      final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Check List");
+      final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Check List Items");
       List<Map<String, dynamic>> items = await dbHelper.getItem(widget.id!, MyApp.dbPassword!);
 
       if (items.isNotEmpty) {
