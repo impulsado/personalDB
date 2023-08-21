@@ -9,6 +9,7 @@ import 'package:personaldb/widgets/cupertino_date_picker.dart';
 import 'package:personaldb/widgets/field_autocomplete.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/widgets/photo_uploader.dart';
 
 class IdeasDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -26,8 +27,11 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat('dd-MM-yyyy');
+  final TextEditingController _asset1Controller = TextEditingController();
+  final TextEditingController _asset2Controller = TextEditingController();
+  final DateFormat _dateFormatter = DateFormat("dd-MM-yyyy");
   late final IdeasDatabaseHelper dbHelper;
+  late PhotoUploader _photoUploader;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
@@ -36,6 +40,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _photoUploader = PhotoUploader(controller1: _asset1Controller, controller2: _asset2Controller, appBarBackgroundColor: widget.myCategory.bgColor);
 
     // Initialize the dbHelper
     dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error") as IdeasDatabaseHelper;
@@ -74,6 +79,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     return initialData["title"] != _titleController.text ||
         initialData["category"] != _categoryController.text ||
         initialData["date"] != _dateController.text ||
+        initialData["asset1"] != _asset1Controller.text ||
+        initialData["asset2"] != _asset2Controller.text ||
         initialData["description"] != _descriptionController.text;
   }
 
@@ -82,6 +89,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
       "title": _titleController.text,
       "category": _categoryController.text,
       "date": _dateController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "description": _descriptionController.text,
     };
   }
@@ -91,6 +100,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     _titleController.dispose();
     _categoryController.dispose();
     _dateController.dispose();
+    _asset1Controller.dispose();
+    _asset2Controller.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -120,6 +131,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
       "title": _titleController.text,
       "category": _categoryController.text,
       "date": _dateController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "description": _descriptionController.text,
     };
     if (widget.id != null) {
@@ -130,6 +143,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     _titleController.clear();
     _categoryController.clear();
     _dateController.clear();
+    _asset1Controller.clear();
+    _asset2Controller.clear();
     _descriptionController.clear();
 
     _updateInitialData();
@@ -152,6 +167,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
           _titleController.text = items[0]["title"] ?? "";
           _categoryController.text = items[0]["category"] ?? "";
           _dateController.text = items[0]["date"] ?? "";
+          _asset1Controller.text = items[0]["asset1"] ?? "";
+          _asset2Controller.text = items[0]["asset2"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
         });
@@ -223,6 +240,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+                        _photoUploader,
                         const SizedBox(height: 10),
                         MyInputField(
                           title: "Description",

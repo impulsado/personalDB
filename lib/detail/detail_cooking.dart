@@ -7,6 +7,7 @@ import 'package:personaldb/widgets/star_rating.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/widgets/cupertino_time_picker.dart';
+import 'package:personaldb/widgets/photo_uploader.dart';
 
 class CookingDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -28,6 +29,9 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   final TextEditingController _recipeController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
+  final TextEditingController _asset1Controller = TextEditingController();
+  final TextEditingController _asset2Controller = TextEditingController();
+  late PhotoUploader _photoUploader;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
@@ -36,6 +40,7 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _photoUploader = PhotoUploader(controller1: _asset1Controller, controller2: _asset2Controller, appBarBackgroundColor: widget.myCategory.bgColor);
     _loadNote();
   }
 
@@ -73,6 +78,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         initialData["ingredients"] != _ingredientsController.text ||
         initialData["recipe"] != _recipeController.text ||
         initialData["price"] != _priceController.text ||
+        initialData["asset1"] != _asset1Controller.text ||
+        initialData["asset2"] != _asset2Controller.text ||
         initialData["rate"] != _rateController.text;
   }
 
@@ -84,6 +91,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       "ingredients": _ingredientsController.text,
       "recipe": _recipeController.text,
       "price": _priceController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "rate": _rateController.text,
     };
   }
@@ -96,6 +105,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
     _ingredientsController.dispose();
     _recipeController.dispose();
     _priceController.dispose();
+    _asset1Controller.dispose();
+    _asset2Controller.dispose();
     _rateController.dispose();
     super.dispose();
   }
@@ -131,6 +142,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
       "recipe": _recipeController.text,
       "price": "${_priceController.text}€",
       "rate": _rateController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
     };
 
     if (widget.id != null) {
@@ -145,6 +158,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
     _ingredientsController.clear();
     _recipeController.clear();
     _priceController.clear();
+    _asset1Controller.clear();
+    _asset2Controller.clear();
     _rateController.clear();
 
     _updateInitialData();
@@ -164,13 +179,13 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
 
       if (items.isNotEmpty) {
         setState(() {
-          //print("Price value: ${items[0]["price"]}");
-          //print("Data loaded: ${items[0]}");
           _titleController.text = items[0]["title"] ?? "";
           _durationController.text = items[0]["duration"] ?? "";
           _difficultyController.text = items[0]["difficulty"] ?? "";
           _ingredientsController.text = items[0]["ingredients"] ?? "";
           _recipeController.text = items[0]["recipe"] ?? "";
+          _asset1Controller.text = items[0]["asset1"] ?? "";
+          _asset2Controller.text = items[0]["asset2"] ?? "";
           _priceController.text = items[0]["price"] != null ? items[0]["price"].replaceAll('€', '') : "";
           _rateController.text = items[0]["rate"] ?? "";
           _isLoading = false;
@@ -249,6 +264,9 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
                           height: 50,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 20),
+                        _photoUploader,
+                        const SizedBox(height: 10),
                         MyInputField(
                           title: "Recipe",
                           hint: "Enter recipe here.",

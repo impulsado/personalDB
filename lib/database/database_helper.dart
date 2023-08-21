@@ -57,6 +57,16 @@ class DatabaseHelper {
               createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
           """);
+          await db.execute("ALTER TABLE ideas ADD COLUMN asset1 TEXT");
+          await db.execute("ALTER TABLE ideas ADD COLUMN asset2 TEXT");
+          await db.execute("ALTER TABLE cooking ADD COLUMN asset1 TEXT");
+          await db.execute("ALTER TABLE cooking ADD COLUMN asset2 TEXT");
+          await db.execute("ALTER TABLE passwords ADD COLUMN asset1 TEXT");
+          await db.execute("ALTER TABLE passwords ADD COLUMN asset2 TEXT");
+          await db.execute("ALTER TABLE inventory ADD COLUMN asset1 TEXT");
+          await db.execute("ALTER TABLE inventory ADD COLUMN asset2 TEXT");
+          await db.execute("ALTER TABLE others ADD COLUMN asset1 TEXT");
+          await db.execute("ALTER TABLE others ADD COLUMN asset2 TEXT");
         }
       },
     );
@@ -131,16 +141,16 @@ class DatabaseHelper {
   }
 
   static final Map<String, List<String>> searchColumns = {
-    "Ideas": ["title", "category", "description"],
-    "Cooking": ["title", "duration", "ingredients", "recipe", "price"],
+    "Ideas": ["title", "category", "asset1", "asset2", "description"],
+    "Cooking": ["title", "duration", "ingredients", "asset1", "asset2", "recipe", "price"],
     "Health": ["title", "category", "description"],
     "Personal": ["title", "category", "description"],
     "Restaurant": ["title", "location", "type", "price", "notes"],
     "WishList": ["title", "link", "price", "priority", "notes"],
-    "Passwords": ["title", "username", "link", "notes"],
-    "Inventory": ["item", "quantity", "price", "location", "notes"],
+    "Passwords": ["title", "username", "link", "asset1", "asset2", "notes"],
+    "Inventory": ["item", "quantity", "price", "location", "asset1", "asset2", "notes"],
     "Entertainment": ["title", "author", "link", "notes"],
-    "Others": ["title", "description"],
+    "Others": ["title", "asset1", "asset2", "description"],
     "Contacts": ["name", "birthday", "phone", "label", "address", "remindMe", "notes"],
     "CheckList": ["title", "notes"],
     "Vehicles": ["name", "registration", "notes"]
@@ -173,6 +183,8 @@ class DatabaseHelper {
           title TEXT,
           date DATE,
           category TEXT,
+          asset1 TEXT,
+          asset2 TEXT,
           description TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -184,6 +196,8 @@ class DatabaseHelper {
           duration TEXT,
           difficulty TEXT,
           ingredients TEXT,
+          asset1 TEXT,
+          asset2 TEXT,
           recipe TEXT,
           price TEXT,
           rate TEXT,
@@ -240,6 +254,8 @@ class DatabaseHelper {
           username TEXT,
           password TEXT,
           link TEXT,
+          asset1 TEXT,
+          asset2 TEXT,
           notes TEXT,
           lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -252,6 +268,8 @@ class DatabaseHelper {
           quantity TEXT,
           price TEXT,
           location TEXT,
+          asset1 TEXT,
+          asset2 TEXT,
           notes TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -271,6 +289,8 @@ class DatabaseHelper {
         CREATE TABLE others(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
+          asset1 TEXT,
+          asset2 TEXT,
           description TEXT
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )

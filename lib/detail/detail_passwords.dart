@@ -6,6 +6,7 @@ import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/main.dart';
 import 'package:personaldb/widgets/password_input_field.dart';
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/widgets/photo_uploader.dart';
 
 class PasswordsDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -24,6 +25,9 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _asset1Controller = TextEditingController();
+  final TextEditingController _asset2Controller = TextEditingController();
+  late PhotoUploader _photoUploader;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
@@ -32,6 +36,7 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _photoUploader = PhotoUploader(controller1: _asset1Controller, controller2: _asset2Controller, appBarBackgroundColor: widget.myCategory.bgColor);
 
     _loadNote();
   }
@@ -68,6 +73,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
         initialData["username"] != _usernameController.text ||
         initialData["password"] != _passwordController.text ||
         initialData["link"] != _linkController.text ||
+        initialData["asset1"] != _asset1Controller.text ||
+        initialData["asset2"] != _asset2Controller.text ||
         initialData["notes"] != _notesController.text;
   }
 
@@ -77,6 +84,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
       "username": _usernameController.text,
       "password": _passwordController.text,
       "link": _linkController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "notes": _notesController.text,
     };
   }
@@ -87,6 +96,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
     _usernameController.dispose();
     _passwordController.dispose();
     _linkController.dispose();
+    _asset1Controller.dispose();
+    _asset2Controller.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -117,6 +128,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
       "username": _usernameController.text,
       "password": _passwordController.text,
       "link": _linkController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "notes": _notesController.text,
     };
 
@@ -129,6 +142,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
     _usernameController.clear();
     _passwordController.clear();
     _linkController.clear();
+    _asset1Controller.clear();
+    _asset2Controller.clear();
     _notesController.clear();
 
     _updateInitialData();
@@ -152,6 +167,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
           _usernameController.text = items[0]["username"] ?? "";
           _passwordController.text = items[0]["password"] ?? "";
           _linkController.text = items[0]["link"] ?? "";
+          _asset1Controller.text = items[0]["asset1"] ?? "";
+          _asset2Controller.text = items[0]["asset2"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
           _isLoading = false;
         });
@@ -219,6 +236,8 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
                           isLink: true,
                           height: 50,
                           overflow: TextOverflow.ellipsis,),
+                        const SizedBox(height: 20),
+                        _photoUploader,
                         const SizedBox(height: 10),
                         MyInputField(
                           title: "Notes",

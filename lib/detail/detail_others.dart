@@ -4,6 +4,7 @@ import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
 import 'package:personaldb/main.dart';
+import 'package:personaldb/widgets/photo_uploader.dart';
 
 class OthersDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -19,6 +20,9 @@ class OthersDetailPage extends StatefulWidget {
 class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _asset1Controller = TextEditingController();
+  final TextEditingController _asset2Controller = TextEditingController();
+  late PhotoUploader _photoUploader;
 
   bool _isLoading = true;
   Map<String, dynamic> initialData = {};
@@ -26,6 +30,7 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
   @override
   void initState() {
     super.initState();
+    _photoUploader = PhotoUploader(controller1: _asset1Controller, controller2: _asset2Controller, appBarBackgroundColor: widget.myCategory.bgColor);
     WidgetsBinding.instance.addObserver(this);
 
     _loadNote();
@@ -60,12 +65,16 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
+        initialData["asset1"] != _asset1Controller.text ||
+        initialData["asset2"] != _asset2Controller.text ||
         initialData["description"] != _descriptionController.text;
   }
 
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "description": _descriptionController.text,
     };
   }
@@ -73,6 +82,8 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
   @override
   void dispose() {
     _titleController.dispose();
+    _asset1Controller.dispose();
+    _asset2Controller.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -97,6 +108,8 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
     final data = {
       "title": _titleController.text,
+      "asset1": _asset1Controller.text,
+      "asset2": _asset2Controller.text,
       "description": _descriptionController.text,
     };
 
@@ -106,6 +119,8 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
       await dbHelper.createItem(data, MyApp.dbPassword!);
     }
     _titleController.clear();
+    _asset1Controller.clear();
+    _asset2Controller.clear();
     _descriptionController.clear();
 
     _updateInitialData();
@@ -126,6 +141,8 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
+          _asset1Controller.text = items[0]["asset1"] ?? "";
+          _asset2Controller.text = items[0]["asset2"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _isLoading = false;
         });
@@ -173,6 +190,8 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
                           height: 50,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 20),
+                        _photoUploader,
                         const SizedBox(height: 10),
                         MyInputField(
                           title: "Description",
