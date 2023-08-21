@@ -4,10 +4,9 @@ import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
 import 'package:personaldb/widgets/button.dart';
 import 'package:personaldb/database/database_helper_factory.dart';
-import 'package:personaldb/widgets/items_list_view.dart';
+import 'package:personaldb/widgets/checklist_items.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/main.dart';
-import 'package:personaldb/widgets/cupertino_time_picker.dart';
 
 class CheckListDetailPage extends StatefulWidget {
   final MyCategory myCategory;
@@ -23,8 +22,6 @@ class CheckListDetailPage extends StatefulWidget {
 
 class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _durationController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   late int checklistId;
   late final CheckListDatabaseHelper dbHelper;
@@ -73,16 +70,12 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
-        initialData["duration"] != _durationController.text ||
-        initialData["price"] != _priceController.text ||
         initialData["notes"] != _notesController.text;
   }
 
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
-      "duration": _durationController.text,
-      "price": _priceController.text,
       "notes": _notesController.text,
     };
   }
@@ -90,8 +83,6 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
   @override
   void dispose() {
     _titleController.dispose();
-    _durationController.dispose();
-    _priceController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -113,8 +104,6 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Check List");
     final data = {
       "title": _titleController.text,
-      "duration": _durationController.text,
-      "price": "${_priceController.text}€",
       "notes": _notesController.text,
     };
 
@@ -125,8 +114,6 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
     }
 
     _titleController.clear();
-    _durationController.clear();
-    _priceController.clear();
     _notesController.clear();
 
     _updateInitialData();
@@ -147,8 +134,6 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
-          _durationController.text = items[0]["duration"] ?? "";
-          _priceController.text = items[0]["price"] != null ? items[0]["price"].replaceAll("€", "") : "";
           _notesController.text = items[0]["notes"] ?? "";
           _isLoading = false;
         });
@@ -196,30 +181,8 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
                           height: 50,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: CupertinoTimePickerWidget(
-                                title: "Duration",
-                                hint: "Select duration.",
-                                controller: _durationController,
-                              ),
-                            ),
-                            const SizedBox(width: 26),
-                            Flexible(
-                              flex: 1,
-                              child: MyInputField(
-                                title: "Price",
-                                hint: "Enter price here.",
-                                controller: _priceController,
-                                inputType: TextInputType.number,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 15),
-                        ItemsListView(checklistId: widget.id),
+                        const SizedBox(width: 25),
+                        CheckListWidget(checkListId: checklistId, password: MyApp.dbPassword!),
                         const SizedBox(width: 15),
                         MyInputField(
                           title: "Notes",

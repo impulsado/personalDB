@@ -29,8 +29,6 @@ class DatabaseHelper {
             CREATE TABLE CheckList(
               id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
               title TEXT,
-              duration TEXT,
-              price TEXT,
               notes TEXT,
               createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
@@ -41,6 +39,7 @@ class DatabaseHelper {
               checklist_id INTEGER,
               title TEXT,
               description TEXT,
+              isCompleted INTEGER NOT NULL DEFAULT 0,
               createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
               FOREIGN KEY(checklist_id) REFERENCES CheckList(id)
             )
@@ -323,8 +322,6 @@ class DatabaseHelper {
         CREATE TABLE CheckList(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           title TEXT,
-          duration TEXT,
-          price TEXT,
           notes TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -334,6 +331,7 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           checklist_id INTEGER,
           title TEXT,
+          isCompleted INTEGER NOT NULL DEFAULT 0,
           description TEXT,
           createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY(checklist_id) REFERENCES CheckList(id)
