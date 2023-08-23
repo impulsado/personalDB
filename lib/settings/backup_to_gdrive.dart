@@ -1,17 +1,24 @@
 // backup_to_gdrive.dart
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart' as crypto;
+import 'package:flutter/material.dart' hide Key;
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:googleapis/drive/v2.dart' as drive;
 import 'package:google_sign_in/google_sign_in.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:personaldb/constants/theme.dart';
+import 'package:personaldb/main.dart';
 import 'package:personaldb/widgets/cupertino_picker.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/settings/authenticated_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:personaldb/settings/background_backup.dart';
+import 'package:archive/archive.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BackupToDrive extends StatefulWidget {
   const BackupToDrive({super.key});
@@ -23,7 +30,7 @@ class BackupToDrive extends StatefulWidget {
 
 class _BackupToDriveState extends State<BackupToDrive> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [drive.DriveApi.driveFileScope]);
-  final TextEditingController _backupFrequencyController = TextEditingController();
+  final TextEditingController _backupFrequencyController = TextEditingController(text: "Daily");
   bool _isLoggedIn = false;
   String? _folderId;
   DateTime? _lastBackupTime;
@@ -37,14 +44,19 @@ class _BackupToDriveState extends State<BackupToDrive> {
   _loadPreferences() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      String backupFrequency = prefs.getString("backupFrequency") ?? "Daily";
       setState(() {
         _isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
         _folderId = prefs.getString("folderId");
-        _backupFrequencyController.text = prefs.getString("backupFrequency") ?? _backupFrequencyController.text;
+        _backupFrequencyController.text = backupFrequency;
         _lastBackupTime = prefs.getString("lastBackupTime") != null
             ? DateTime.parse(prefs.getString("lastBackupTime")!)
             : null;
       });
+      if (backupFrequency == "Daily") {
+        prefs.setString("backupFrequency", "Daily");
+        _scheduleBackup();
+      }
     } catch (e) {
       //NOTHING
     }
@@ -124,27 +136,89 @@ class _BackupToDriveState extends State<BackupToDrive> {
         final authHeaders = await account.authHeaders;
         final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
         final driveApi = drive.DriveApi(authenticateClient);
+
+        // Get the database file
+        final dbFile = File(DatabaseHelper.dbPath ?? "");
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+
+        // Get the assets folder
+        final assetsDir = Directory("${appDocDir.path}/assets");
+
+        // Compress and encrypt the files
+        final zipFile = await compressFiles(dbFile, assetsDir, "${appDocDir.path}/compressed.zip");
+        final encryptedFile = await encryptFile(zipFile, MyApp.dbPassword!);
+
+        // Upload to Google Drive
         final fileToUpload = drive.File();
-        fileToUpload.title = "personalDB_${DateTime.now().toIso8601String()}";
+        final formattedDate = DateTime.now().toLocal().toString().split(".")[0].substring(0, 16);
+        final formattedString = formattedDate.replaceAll(" ", "_").replaceAll("-", "_").replaceAll(":", "_");
+        fileToUpload.title = "personalDB_$formattedString.enc";
         fileToUpload.parents = [drive.ParentReference(id: folderId)];
-        final filePath = DatabaseHelper.dbPath ?? "";
-        final content = File(filePath).openRead();
-        Future<int> tempLength = File(filePath).length();
-        int contentLength = await tempLength;
+        final content = encryptedFile.openRead();
+        final contentLength = await encryptedFile.length();
         await driveApi.files.insert(fileToUpload, uploadMedia: drive.Media(content, contentLength));
+
         setState(() {
           _lastBackupTime = DateTime.now();
         });
         _savePreferences();
         // ignore: use_build_context_synchronously
-        _showErrorMessage(context, "Database backup completed successfully");
+        _showSuccessMessage(context, "Database and assets backup completed successfully");
       }
     } catch (e) {
-      //NOTHING
+      // Handle error
     }
   }
 
-  void _showErrorMessage(BuildContext context, String message) {
+  Future<File> compressFiles(File dbFile, Directory assetsDir, String outputPath) async {
+    final archive = Archive();
+
+    // Add database file
+    final dbBytes = await dbFile.readAsBytes();
+    archive.addFile(ArchiveFile("personalDB.db", dbBytes.length, dbBytes));
+
+    // Compress assets folder
+    final assetsFiles = assetsDir.listSync(recursive: true).whereType<File>();
+    for (final assetFile in assetsFiles) {
+      final relativePath = assetFile.path.replaceFirst(assetsDir.path, "");
+      final bytes = await assetFile.readAsBytes();
+      if (relativePath.endsWith(".jpg") ||
+          relativePath.endsWith(".jpeg") ||
+          relativePath.endsWith(".png") ||
+          relativePath.endsWith(".bmp") ||
+          relativePath.endsWith(".gif") ||
+          relativePath.endsWith(".webp") ||
+          relativePath.endsWith(".heif") ||
+          relativePath.endsWith(".tiff")) {
+        archive.addFile(ArchiveFile(relativePath, bytes.length, bytes));
+      }
+
+    }
+
+    final zipEncoder = ZipEncoder();
+    final zipData = zipEncoder.encode(archive);
+    final outputFile = File(outputPath);
+    await outputFile.writeAsBytes(zipData!);
+
+    return outputFile;
+  }
+
+  Future<File> encryptFile(File file, String password) async {
+    final bytes = await file.readAsBytes();
+
+    // Hash the password using SHA-256 to get a 256-bit key
+    final keyBytes = crypto.sha256.convert(utf8.encode(password)).bytes;
+    final key = encrypt.Key(Uint8List.fromList(keyBytes)); // Convert to Uint8List
+
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final encryptedData = encrypter.encryptBytes(bytes, iv: iv);
+    final outputFile = File("${file.path}.enc");
+    await outputFile.writeAsBytes(encryptedData.bytes);
+    return outputFile;
+  }
+
+  void _showSuccessMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -177,7 +251,7 @@ class _BackupToDriveState extends State<BackupToDrive> {
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: const Text(
                         "You need to grant access to Google Drive for backups. \n"
-                        "This permission is called 'drive.files' and it only has access to those files that have been generated by this application.\n\n",
+                            "This permission is called 'drive.files' and it only has access to those files that have been generated by this application.\n\n",
                         style: TextStyle(fontSize: 14.0),
                         textAlign: TextAlign.center,
                       ),
@@ -269,7 +343,7 @@ class _BackupToDriveState extends State<BackupToDrive> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Last Backup: ${_lastBackupTime!.toLocal().toString().split('.')[0]}",
+                "Last Backup: ${_lastBackupTime!.toLocal().toString().split('.')[0].substring(0, 16)}",
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
                 textAlign: TextAlign.center,
               ),

@@ -89,16 +89,8 @@ class DatabaseHelper {
   static Future<void> importDb(String path, String password) async {
     try {
       if (await validatePassword(path, password)) {
-        Directory appDocDir = await getApplicationDocumentsDirectory();
-        String appStoragePath = appDocDir.path;
-
-        // Create a new file in the app storage with the same name as the imported file
-        File importedDbFile = File(path);
-        String newDbPath = '$appStoragePath/${importedDbFile.path.split('/').last}';
-        await importedDbFile.copy(newDbPath);
-
-        // Update the db path in DatabaseHelper to the new location
-        DatabaseHelper.dbPath = newDbPath;
+        DatabaseHelper.dbPath = path;
+        await DatabaseHelper.db(password);
       } else {
         throw Exception("Incorrect password or error while importing database.");
       }
