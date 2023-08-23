@@ -53,7 +53,7 @@ class _BackupToDriveState extends State<BackupToDrive> {
             ? DateTime.parse(prefs.getString("lastBackupTime")!)
             : null;
       });
-      if (backupFrequency == "Daily") {
+      if (_isLoggedIn && backupFrequency == "Daily") {
         prefs.setString("backupFrequency", "Daily");
         _scheduleBackup();
       }
@@ -129,7 +129,48 @@ class _BackupToDriveState extends State<BackupToDrive> {
     }
   }
 
+  Future<void> _checkAndDeleteOldBackups(String? folderId) async {
+    try {
+      final GoogleSignInAccount? account = await _googleSignIn.signInSilently();
+      if (account != null && folderId != null) {
+        final authHeaders = await account.authHeaders;
+        final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
+        final driveApi = drive.DriveApi(authenticateClient);
+
+        final files = await driveApi.files.list(q: "'$folderId' in parents and mimeType != 'application/vnd.google-apps.folder'");
+
+        final encFiles = files.items?.where((file) => file.title?.endsWith('.enc') ?? false).toList() ?? [];
+
+        if (encFiles.length > 8) {
+          encFiles.sort((a, b) => a.createdDate!.compareTo(b.createdDate!));
+          for (int i = 0; i < encFiles.length - 8; i++) {
+            await driveApi.files.delete(encFiles[i].id!);
+          }
+        }
+      }
+    } catch (e) {
+      // NOTHIGN
+    }
+  }
+
   Future<void> _uploadFileToDrive(String? folderId) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(valueColor:AlwaysStoppedAnimation<Color>(Colors.black)),
+              SizedBox(width: 10),
+              Text("Backing up..."),
+            ],
+          ),
+        );
+      },
+    );
+
     try {
       final GoogleSignInAccount? account = await _googleSignIn.signInSilently();
       if (account != null) {
@@ -158,16 +199,22 @@ class _BackupToDriveState extends State<BackupToDrive> {
         final contentLength = await encryptedFile.length();
         await driveApi.files.insert(fileToUpload, uploadMedia: drive.Media(content, contentLength));
 
+        await _checkAndDeleteOldBackups(folderId);
+
         setState(() {
           _lastBackupTime = DateTime.now();
         });
         _savePreferences();
-        // ignore: use_build_context_synchronously
-        _showSuccessMessage(context, "Database and assets backup completed successfully");
       }
     } catch (e) {
       // Handle error
+    } finally {
+      Navigator.of(context).pop();
     }
+
+    // Mostrar mensaje de éxito
+    // ignore: use_build_context_synchronously
+    _showSuccessMessage(context, "Database and assets backup completed successfully");
   }
 
   Future<File> compressFiles(File dbFile, Directory assetsDir, String outputPath) async {

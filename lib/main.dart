@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:personaldb/home/home.dart';
 import 'package:personaldb/verification/register.dart';
 import 'package:personaldb/verification/login.dart';
@@ -25,28 +23,7 @@ void main() async {
     //NOTHING
   }
 
-  await listFilesInAppDirectory(); // Llama a la función para listar los archivos
-
   runApp(const MyApp());
-}
-
-Future<void> listFilesInAppDirectory() async {
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final assetsDir = Directory('${appDocDir.path}/assets');
-
-  print('Listing all files in the app directory:');
-  await for (var entity in appDocDir.list(followLinks: false)) {
-    print(entity.path);
-  }
-
-  if (await assetsDir.exists()) {
-    print('Listing all files in the assets directory:');
-    await for (var entity in assetsDir.list(followLinks: false)) {
-      print(entity.path);
-    }
-  } else {
-    print('Assets directory does not exist.');
-  }
 }
 
 class MyApp extends StatelessWidget {
