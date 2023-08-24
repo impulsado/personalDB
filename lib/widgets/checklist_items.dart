@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/constants/colors.dart';
 import 'package:personaldb/constants/theme.dart';
 import 'package:personaldb/database/database_helper_checklist_items.dart';
 import 'package:personaldb/detail/detail_checklist_items.dart';
@@ -10,6 +11,7 @@ class CheckListWidget extends StatefulWidget {
   const CheckListWidget({Key? key, required this.checkListId, required this.password}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _CheckListWidgetState createState() => _CheckListWidgetState();
 }
 
@@ -108,9 +110,9 @@ class _CheckListWidgetState extends State<CheckListWidget> {
                     padding: const EdgeInsets.all(8.0),
                     child: FloatingActionButton(
                       mini: true,
-                      backgroundColor: Colors.black,
+                      backgroundColor: kTurquoiseLight,
                       onPressed: () => _navigateToDetail(null),
-                      child: const Icon(Icons.add, size: 20),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black,),
                     ),
                   ),
                 ),

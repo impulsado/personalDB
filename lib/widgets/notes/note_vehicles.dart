@@ -26,7 +26,7 @@ class NoteVehicles extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -39,6 +39,7 @@ class NoteVehicles extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
+                      flex: 7,
                       child: Text(
                         note["name"] ?? "No Name",
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -48,8 +49,9 @@ class NoteVehicles extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Expanded(
+                      flex: 3,
                       child: Text(
-                        note["next_maintance"] ?? "",
+                        note["next_maintenance"] ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

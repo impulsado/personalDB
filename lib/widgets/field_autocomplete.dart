@@ -92,6 +92,8 @@ class _FieldAutocompleteState extends State<FieldAutocomplete> {
           hint: "Enter ${widget.label.toLowerCase()} here.",
           controller: fieldTextController,
           height: 50,
+          minLines: 1,
+          overflow: TextOverflow.ellipsis,
           child: TextFormField(
             cursorColor: Colors.grey,
             controller: fieldTextController,

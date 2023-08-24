@@ -54,16 +54,20 @@ class _SearchResultsState extends State<SearchResults> {
         } else if (snapshot.data!.isEmpty) {
           return const Center(child: Text("No results found."));
         } else {
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              var item = snapshot.data![index];
-              return SearchResultItem(
-                note: item,
-                backgroundColor: getCategoryColor(item["category_name"]),
-                onTap: (item) => onTap(item),
-              );
-            },
+          return GlowingOverscrollIndicator(
+            axisDirection: AxisDirection.down,
+            color: Colors.black,
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var item = snapshot.data![index];
+                return SearchResultItem(
+                  note: item,
+                  backgroundColor: getCategoryColor(item["category_name"]),
+                  onTap: (item) => onTap(item),
+                );
+              },
+            ),
           );
         }
       },

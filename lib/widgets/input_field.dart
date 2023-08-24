@@ -47,6 +47,8 @@ class MyInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isNumber = inputType == TextInputType.number;
+
     return Container(
       margin: const EdgeInsets.only(top:16),
       child: Column(
@@ -61,40 +63,27 @@ class MyInputField extends StatelessWidget {
               margin: const EdgeInsets.only(top:8.0),
               padding: const EdgeInsets.only(left:14),
               decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1.0), borderRadius: BorderRadius.circular(12)),
-              child: Stack(
-                children: [
-                  child ?? TextFormField(
-                    autofocus: false,
-                    cursorColor: Colors.grey,
-                    controller: controller,
-                    style: TextStyle(color: Colors.black, overflow: overflow),
-                    keyboardType: inputType,
-                    minLines: minLines,
-                    maxLines: overflow == TextOverflow.ellipsis ? 1 : null,
-                    textInputAction: inputAction,
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: TextStyle(color: Colors.grey, overflow: overflow),
-                      focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
-                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
-                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
-                    ),
-                    textAlignVertical: TextAlignVertical.center,
-                  ),
-                  if (isLink)
-                    Positioned(
-                      right: 4,
-                      top: 0,
-                      bottom: 0,
-                      child: InkWell(
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.link, color: Colors.black,),
-                        ),
-                        onTap: () => _launchURL(context, controller.text),
-                      ),
-                    ),
-                ],
+              child: TextFormField(
+                autofocus: false,
+                cursorColor: Colors.grey,
+                controller: controller,
+                style: TextStyle(color: Colors.black, overflow: isNumber ? TextOverflow.ellipsis : overflow),
+                keyboardType: inputType,
+                minLines: minLines,
+                maxLines: isNumber ? 1 : (overflow == TextOverflow.ellipsis ? 1 : null),
+                textInputAction: inputAction,
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: TextStyle(color: Colors.grey, overflow: isNumber ? TextOverflow.ellipsis : overflow),
+                  focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
+                  enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
+                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0)),
+                  suffixIcon: isLink ? IconButton(
+                    icon: const Icon(Icons.link, color: Colors.black),
+                    onPressed: () => _launchURL(context, controller.text),
+                  ) : null,
+                ),
+                textAlignVertical: TextAlignVertical.center,
               ),
             ),
           ),

@@ -53,7 +53,7 @@ class NoteCooking extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -66,41 +66,51 @@ class NoteCooking extends StatelessWidget {
                 const SizedBox(height: 5.0),
                 Text(
                   note["title"] ?? "No Title",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5.0),
-                note["duration"] == "" && note["price"] == "€"
-                    ? Container()
-                    : Row(
+                Row(
                   children: [
-                    Text(
-                      note["duration"] ?? "",
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
+                    Expanded(
+                      child: Text(
+                        note["duration"] ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(width: 15),
-                    Text(
-                      note["price"] ?? "",
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        note["price"] ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 5.0),
                 Row(
                   children: [
-                    DifficultyRating(
-                      initialValue: double.parse(note["difficulty"] ?? "0"),
-                      onChanged: (value) {},
-                      itemSize: 20,
-                      isReadOnly: true,
+                    Expanded(
+                      flex: 5,
+                      child: DifficultyRating(
+                        initialValue: double.parse(note["difficulty"] ?? "0"),
+                        onChanged: (value) {},
+                        itemSize: 20,
+                        isReadOnly: true,
+                      ),
                     ),
-                    const SizedBox(width: 15),
-                    StarRating(
-                      initialValue: double.parse(note["rate"] ?? "0"),
-                      onChanged: (value) {},
-                      itemSize: 20,
-                      isReadOnly: true,
+                    const SizedBox(width: 5),
+                    Expanded(
+                      flex: 5,
+                      child: StarRating(
+                        initialValue: double.parse(note["rate"] ?? "0"),
+                        onChanged: (value) {},
+                        itemSize: 20,
+                        isReadOnly: true,
+                      ),
                     ),
                   ],
                 ),

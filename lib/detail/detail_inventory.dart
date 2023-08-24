@@ -206,61 +206,64 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Item",
-                        hint: "Enter item here.",
-                        controller: _itemController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      FieldAutocomplete(
-                        controller: _locationController,
-                        label: "Location",
-                        dbHelper: InventoryDatabaseHelper(),
-                        loadItemsFunction: () async {
-                          return await InventoryDatabaseHelper().getLocations(MyApp.dbPassword!);
-                        },
-                        widthMultiplier: 0.82,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: MyInputField(
-                              title: "Quantity",
-                              hint: "Enter quantity here.",
-                              controller: _quantityController,
-                              inputType: TextInputType.number,
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.orange,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Item",
+                          hint: "Enter item here.",
+                          controller: _itemController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        FieldAutocomplete(
+                          controller: _locationController,
+                          label: "Location",
+                          dbHelper: InventoryDatabaseHelper(),
+                          loadItemsFunction: () async {
+                            return await InventoryDatabaseHelper().getLocations(MyApp.dbPassword!);
+                          },
+                          widthMultiplier: 0.82,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: MyInputField(
+                                title: "Quantity",
+                                hint: "Enter quantity here.",
+                                controller: _quantityController,
+                                inputType: TextInputType.number,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 5,
-                            child: MyInputField(
-                              title: "Price",
-                              hint: "Enter price here.",
-                              controller: _priceController,
-                              inputType: TextInputType.number,
+                            const SizedBox(width: 15),
+                            Flexible(
+                              flex: 5,
+                              child: MyInputField(
+                                title: "Price",
+                                hint: "Enter price here.",
+                                controller: _priceController,
+                                inputType: TextInputType.number,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      _photoUploader,
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 25),
+                        _photoUploader,
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -271,8 +274,8 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

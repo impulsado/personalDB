@@ -195,56 +195,63 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: FieldAutocomplete(
-                                controller: _categoryController,
-                                label: "Category",
-                                dbHelper: PersonalDatabaseHelper(),
-                                loadItemsFunction: () async {
-                                  return await PersonalDatabaseHelper().getCategories(MyApp.dbPassword!);
-                                },
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.purple,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: FieldAutocomplete(
+                                  controller: _categoryController,
+                                  label: "Category",
+                                  dbHelper: PersonalDatabaseHelper(),
+                                  loadItemsFunction: () async {
+                                    return await PersonalDatabaseHelper().getCategories(MyApp.dbPassword!);
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              flex: 3,
-                              child: CupertinoDatePickerField(
-                                controller: _dateController,
-                                dateFormatter: _dateFormatter,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                flex: 3,
+                                child: CupertinoDatePickerField(
+                                  controller: _dateController,
+                                  dateFormatter: _dateFormatter,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MyInputField(
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MyInputField(
                             title: "Description",
                             hint: "Enter description here.",
                             controller: _descriptionController,
                             height: 200,
                             inputType: TextInputType.multiline,
                             inputAction: TextInputAction.newline,
-                        ),
-                        const SizedBox(height: 27),
-                        Text("Trust", style: subHeadingStyle(color: Colors.black)),
-                        const SizedBox(height: 5),
-                        Center(
-                          child: TrustCounter(controller: _trustController),
-                        ),
-                      ],
+                          ),
+                          const SizedBox(height: 27),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Trust", style: subHeadingStyle(color: Colors.black)),
+                              const SizedBox(height:10),
+                              Center(child: TrustCounter(controller: _trustController)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -257,8 +264,8 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
           key: const ValueKey("personal"),
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

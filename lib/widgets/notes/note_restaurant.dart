@@ -27,56 +27,63 @@ class NoteRestaurant extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
           Container(
-              margin: const EdgeInsets.only(right: 50.0, left: 13.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          note["title"] ?? "No Title",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+            margin: const EdgeInsets.only(right: 50.0, left: 13.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Text(
+                        note["title"] ?? "No Title",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(width: 5),
-                      Expanded(
-                        child: Text(
-                          note["type"] ?? "",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        note["type"] ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 5.0),
-                  Row(
-                    children: [
-                      StarRating(
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5.0),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: StarRating(
                         initialValue: double.parse(note["rate"] ?? "0"),
                         onChanged: (value) {},
                         itemSize: 20,
                         isReadOnly: true,
                       ),
-                      const SizedBox(width: 15),
-                      Text(
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
                         note["price"] ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(width: 5),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ),
           if (showDeleteButton)
             Positioned(
               right: 11,

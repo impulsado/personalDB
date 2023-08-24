@@ -129,7 +129,7 @@ class _TopicsListViewState extends State<TopicsListView> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0, bottom: 10.0),
                         child: FloatingActionButton.small(
-                          backgroundColor: Colors.black,
+                          backgroundColor: Colors.grey,
                           onPressed: () async {
                             final result = await Navigator.push(
                               context,
@@ -153,10 +153,7 @@ class _TopicsListViewState extends State<TopicsListView> {
                               _loadTopics();
                             }
                           },
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
+                          child: const Icon(Icons.add, color: Colors.black,),
                         ),
                       ),
                     ),

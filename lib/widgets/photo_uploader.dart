@@ -162,27 +162,37 @@ class _PhotoUploaderState extends State<PhotoUploader> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Center(
-                    child: image == null
-                        ? const Text(
-                        "Upload a photo", style: TextStyle(color: Colors.grey))
-                        : ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10),
-                      leading: const Icon(Icons.image),
-                      title: Text(
-                        _imageNames[index] ?? "",
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: () => _deleteImage(index),
-                      ),
+                  child: image == null
+                      ? const Padding(
+                    padding: EdgeInsets.only(left: 15.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Upload a photo", style: TextStyle(color: Colors.grey)),
+                    ),
+                  )
+                      : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(Icons.image, color: Colors.grey),
+                        Expanded(
+                          child: Text(
+                            _imageNames[index] ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.black),
+                          onPressed: () => _deleteImage(index),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 5),
             ],
           ),
         );

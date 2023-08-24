@@ -207,8 +207,8 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
       floatingActionButton: MyButton(
         label: "Submit",
         onTap: () => _submitNote(context),
-        bgColor: Colors.black,
-        iconColor: Colors.white,
+        bgColor: Colors.grey,
+        iconColor: Colors.black,
       ),
     );
   }
@@ -235,7 +235,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> with WidgetsBindingOb
           iconData: Icons.delete_forever_outlined,
           iconColor: Colors.black,
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 30),
       ],
     );
   }

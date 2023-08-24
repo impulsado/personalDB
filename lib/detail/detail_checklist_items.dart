@@ -174,26 +174,30 @@ class _CheckListItemsDetailPageState extends State<CheckListItemsDetailPage> wit
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          overflow: TextOverflow.ellipsis,
-                          height: 50),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Description",
-                        hint: "Enter description here.",
-                        controller: _descriptionController,
-                        height: 200,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                    ],
+                child: GlowingOverscrollIndicator(
+                  axisDirection: AxisDirection.down,
+                  color: kTurquoise,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            overflow: TextOverflow.ellipsis,
+                            height: 50),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Description",
+                          hint: "Enter description here.",
+                          controller: _descriptionController,
+                          height: 200,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -205,8 +209,8 @@ class _CheckListItemsDetailPageState extends State<CheckListItemsDetailPage> wit
       floatingActionButton: MyButton(
         label: "Submit",
         onTap: () => _submitNote(context),
-        bgColor: Colors.black,
-        iconColor: Colors.white,
+        bgColor: kTurquoiseLight,
+        iconColor: Colors.black,
       ),
     );
   }
@@ -233,7 +237,7 @@ class _CheckListItemsDetailPageState extends State<CheckListItemsDetailPage> wit
           iconData: Icons.delete_forever_outlined,
           iconColor: Colors.black,
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 30),
       ],
     );
   }

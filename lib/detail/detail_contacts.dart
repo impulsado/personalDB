@@ -125,6 +125,9 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter the name")));
+    } else if (_birthdayController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter the birthday")));
     } else {
       _saveNote(context);
     }
@@ -190,7 +193,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   }
 
   DateTime parseBirthday(String date) {
-    List<String> parts = date.split('-');
+    List<String> parts = date.split("-");
     return DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
   }
 
@@ -249,92 +252,96 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Name",
-                        hint: "Enter full name here.",
-                        controller: _nameController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 4,
-                            child: CupertinoDatePickerField(
-                              title: "Birthday",
-                              hint: "Select birthday.",
-                              controller: _birthdayController,
-                              dateFormatter: _birthdayFormatter,
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.black,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Name",
+                          hint: "Enter full name here.",
+                          controller: _nameController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 4,
+                              child: CupertinoDatePickerField(
+                                title: "Birthday",
+                                hint: "Select birthday.",
+                                controller: _birthdayController,
+                                dateFormatter: _birthdayFormatter,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 6,
-                            child: FieldAutocomplete(
-                              controller: _labelController,
-                              label: "Label",
-                              dbHelper: ContactsDatabaseHelper(),
-                              loadItemsFunction: () async {
-                                return await ContactsDatabaseHelper().getLabels(MyApp.dbPassword!);
-                              },
+                            const SizedBox(width: 15),
+                            Flexible(
+                              flex: 6,
+                              child: FieldAutocomplete(
+                                controller: _labelController,
+                                label: "Label",
+                                dbHelper: ContactsDatabaseHelper(),
+                                loadItemsFunction: () async {
+                                  return await ContactsDatabaseHelper().getLabels(MyApp.dbPassword!);
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 4,
-                            child: MyInputField(
-                              title: "Phone",
-                              hint: "Enter phone.",
-                              controller: _phoneController,
-                              inputType: TextInputType.number,
-                              overflow: TextOverflow.ellipsis,
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 4,
+                              child: MyInputField(
+                                title: "Phone",
+                                hint: "Enter phone.",
+                                controller: _phoneController,
+                                inputType: TextInputType.number,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 6,
-                            child: MyInputField(
-                              title: "Email",
-                              hint: "Enter email here.",
-                              controller: _emailController,
-                              overflow: TextOverflow.ellipsis,
+                            const SizedBox(width: 15),
+                            Flexible(
+                              flex: 6,
+                              child: MyInputField(
+                                title: "Email",
+                                hint: "Enter email here.",
+                                controller: _emailController,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Address",
-                        hint: "Enter address here.",
-                        controller: _addressController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      CupertinoPickerWidget(
-                          title: "Remind Me",
-                          hint: "Select when to contact again.",
-                          controller: _remindMeController,
-                          options: const ["Do not remind me", "1 week", "2 weeks", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks", "3 months", "4 months", "5 months", "6 months",]
-                      ),
-                      const SizedBox(height: 10),
-                      TopicsListView(contactId: widget.id),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Address",
+                          hint: "Enter address here.",
+                          controller: _addressController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        CupertinoPickerWidget(
+                            title: "Remind Me",
+                            hint: "Select when to contact again.",
+                            controller: _remindMeController,
+                            options: const ["Do not remind me", "1 week", "2 weeks", "3 weeks", "4 weeks", "5 weeks", "6 weeks", "7 weeks", "8 weeks", "3 months", "4 months", "5 months", "6 months",]
+                        ),
+                        const SizedBox(height: 10),
+                        TopicsListView(contactId: widget.id),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -345,8 +352,8 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: Colors.black,
-          iconColor: Colors.white,
+          bgColor: Colors.grey,
+          iconColor: Colors.black,
         ),
       ),
     );

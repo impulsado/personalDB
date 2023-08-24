@@ -179,29 +179,33 @@ class _OthersDetailPageState extends State<OthersDetailPage> with WidgetsBinding
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 20),
-                        _photoUploader,
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Description",
-                          hint: "Enter description here.",
-                          controller: _descriptionController,
-                          height: 200,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                      ],
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.black,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 20),
+                          _photoUploader,
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Description",
+                            hint: "Enter description here.",
+                            controller: _descriptionController,
+                            height: 200,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

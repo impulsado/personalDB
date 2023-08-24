@@ -170,17 +170,21 @@ class _CategoryOthersState extends State<CategoryOthers> with TickerProviderStat
           Expanded(
             child: _notes.isEmpty
                 ? const Center(child: Text("No items available"))
-                : ListView.builder(
-              itemCount: _notes.length,
-              itemBuilder: (context, index) {
-                return FadeTransition(
-                  opacity: _controller.drive(
-                      Tween<double>(begin: 0.0, end: 1.0)
-                          .chain(CurveTween(curve: Interval((index / _notes.length), 1, curve: Curves.easeOut)))
-                  ),
-                  child: _note(index),
-                );
-              },
+                : GlowingOverscrollIndicator(
+                axisDirection: AxisDirection.down,
+                color: Colors.black,
+                child: ListView.builder(
+                itemCount: _notes.length,
+                itemBuilder: (context, index) {
+                  return FadeTransition(
+                    opacity: _controller.drive(
+                        Tween<double>(begin: 0.0, end: 1.0)
+                            .chain(CurveTween(curve: Interval((index / _notes.length), 1, curve: Curves.easeOut)))
+                    ),
+                    child: _note(index),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -214,7 +218,7 @@ class _CategoryOthersState extends State<CategoryOthers> with TickerProviderStat
         }
       },
       child: NoteOthers(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.white,
         note: _notes[index],
         onDelete: () {
           _refreshNotes();
@@ -227,8 +231,8 @@ class _CategoryOthersState extends State<CategoryOthers> with TickerProviderStat
   Widget _buildFloatingActionButton() {
     return MyButton(
       label: "+ Add Note",
-      bgColor: widget.myCategory.bgColor ?? Colors.black,
-      iconColor: widget.myCategory.iconColor ?? Colors.white,
+      bgColor: widget.myCategory.bgColor ?? Colors.white,
+      iconColor: Colors.black,
       onTap: () async {
         final result = await Navigator.push(
           context,

@@ -106,8 +106,15 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: const Text(
-                        "Setting a fingerprint does not make the application more secure. \n"
-                            "You can set it up for convenience, but you should know that you are more likely to forget your password, and it cannot be recovered.\n\n",
+                        "Setting a fingerprint does NOT make the application MORE SECURE. \n",
+                        style: TextStyle(fontSize: 12.0),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: const Text(
+                        "You can set it up for convenience, but you should know that you are more likely to forget your password, and it cannot be recovered.\n\n",
                         style: TextStyle(fontSize: 14.0),
                         textAlign: TextAlign.center,
                       ),

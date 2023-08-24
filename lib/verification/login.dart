@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:io';
+import 'package:personaldb/constants/colors.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/main.dart';
 import 'package:path_provider/path_provider.dart';
@@ -100,22 +101,22 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset("assets/images/icon.jpg", height: 250.0, width: 250.0),
+          Image.asset("assets/images/icon.png", height: 250.0, width: 250.0),
           const SizedBox(height: 30.0),
           TextField(
-            cursorColor: Colors.black,
+            cursorColor: Colors.grey,
             controller: _passwordController,
             obscureText: _obscureText,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
+              border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 0.0),),
               focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
               labelText: "Password",
               labelStyle: const TextStyle(color: Colors.black),
               suffixIcon: IconButton(
                 icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
-                color: Colors.black,
+                color: Colors.grey,
                 onPressed: () {
                   setState(() {
                     _obscureText = !_obscureText;
@@ -128,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 20.0),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: kGreen,
               minimumSize: const Size(double.infinity, 50),
             ),
             onPressed: () => _login(context),

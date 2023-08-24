@@ -13,6 +13,7 @@ class Contacts extends StatefulWidget {
   const Contacts({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ContactsState createState() => _ContactsState();
 }
 
@@ -172,36 +173,40 @@ class _ContactsState extends State<Contacts> {
         ),
       );
     } else {
-      return ListView.builder(
-        itemCount: _contacts.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () async {
-              final result = await Navigator.push(
-                context,
-                _createRoute(ContactsDetailPage(id: _contacts[index]["id"])),
-              );
-              if (result == "refresh") {
-                _refreshContacts();
-              }
-            },
-            child: NoteContacts(
-              backgroundColor: Colors.grey.shade100,
-              note: _contacts[index],
-              onDelete: () {
-                _refreshContacts();
+      return GlowingOverscrollIndicator(
+        axisDirection: AxisDirection.down,
+        color: Colors.black,
+        child: ListView.builder(
+          itemCount: _contacts.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  _createRoute(ContactsDetailPage(id: _contacts[index]["id"])),
+                );
+                if (result == "refresh") {
+                  _refreshContacts();
+                }
               },
-              categoryName: "Contacts",
-            ),
-          );
-        },
+              child: NoteContacts(
+                backgroundColor: Colors.white,
+                note: _contacts[index],
+                onDelete: () {
+                  _refreshContacts();
+                },
+                categoryName: "Contacts",
+              ),
+            );
+          },
+        ),
       );
     }
   }
 
   Widget _buildFloatingActionButton() {
     return MyButton(
-      label: "+ Add Contact",
+      icon: Icons.person_add,
       bgColor: Colors.black,
       iconColor: Colors.white,
       onTap: () async {

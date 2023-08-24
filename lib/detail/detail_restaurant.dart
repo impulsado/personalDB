@@ -202,80 +202,85 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Title",
-                        hint: "Enter title here.",
-                        controller: _titleController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Location",
-                        hint: "Enter Google Maps link here.",
-                        controller: _locationController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: FieldAutocomplete(
-                              controller: _typeController,
-                              label: "Type",
-                              dbHelper: RestaurantDatabaseHelper(),
-                              loadItemsFunction: () async {
-                                return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CupertinoPickerWidget(
-                                  title: "Price",
-                                  hint: "Select price.",
-                                  controller: _priceController,
-                                  options: const ["0€ - 10€", "10€ - 15€", "15€ - 20€", "+ 20€"],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                      const SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.blue,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Location",
+                          hint: "Enter Google Maps link here.",
+                          controller: _locationController,
+                          overflow: TextOverflow.ellipsis,
+                          isLink: true,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
                           children: [
-                            Text("Rate", style: subHeadingStyle(color: Colors.black)),
-                            StarRating(
-                              initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
-                              onChanged: (value) {
-                                setState(() {
-                                  _rateController.text = value.toString();
-                                });
-                              },
+                            Flexible(
+                              flex: 5,
+                              child: FieldAutocomplete(
+                                controller: _typeController,
+                                label: "Type",
+                                dbHelper: RestaurantDatabaseHelper(),
+                                loadItemsFunction: () async {
+                                  return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                            Flexible(
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CupertinoPickerWidget(
+                                    title: "Price",
+                                    hint: "Select price.",
+                                    controller: _priceController,
+                                    options: const ["0€ - 10€", "10€ - 15€", "15€ - 20€", "+ 20€"],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Rate", style: subHeadingStyle(color: Colors.black)),
+                              StarRating(
+                                initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rateController.text = value.toString();
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -286,8 +291,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

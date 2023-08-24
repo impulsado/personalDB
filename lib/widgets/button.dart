@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:personaldb/constants/theme.dart';
 
 class MyButton extends StatelessWidget {
-  final String label;
+  final String? label;
+  final IconData? icon;
   final Function()? onTap;
   final Color bgColor;
   final Color iconColor;
 
   const MyButton({
     Key? key,
-    required this.label,
+    this.label,
+    this.icon,
     required this.onTap,
     required this.bgColor,
     required this.iconColor,
-  }) : super(key: key);
+  }) : assert(label != null || icon != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +25,13 @@ class MyButton extends StatelessWidget {
       child: Hero(
         tag: key.toString(),
         child: Container(
-          width: 120,
+          width: icon != null ? 60 : 120,
           height: 60,
           alignment: Alignment.center,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: bgColor),
-          child: Text(label, style: subHeadingStyle(color: iconColor),),
+          child: icon == null
+              ? Text(label!, style: subHeadingStyle(color: iconColor))
+              : Icon(icon, color: iconColor),
         ),
       ),
     );

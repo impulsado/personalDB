@@ -26,7 +26,7 @@ class NoteWishlist extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -50,10 +50,10 @@ class NoteWishlist extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Text(
                         note["priority"] ?? "",
-                        maxLines: 5,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -61,10 +61,10 @@ class NoteWishlist extends StatelessWidget {
                       const SizedBox(width: 5),
                     if (note["price"] != null && note["price"] != "€")
                       Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: Text(
                           note["price"] ?? "",
-                          maxLines: 5,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

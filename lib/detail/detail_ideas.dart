@@ -205,55 +205,59 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: FieldAutocomplete(
-                                controller: _categoryController,
-                                label: "Category",
-                                dbHelper: IdeasDatabaseHelper(),
-                                loadItemsFunction: () async {
-                                  return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
-                                },
+                  child: GlowingOverscrollIndicator(
+                  axisDirection: AxisDirection.down,
+                  color: Colors.yellowAccent,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: FieldAutocomplete(
+                                  controller: _categoryController,
+                                  label: "Category",
+                                  dbHelper: IdeasDatabaseHelper(),
+                                  loadItemsFunction: () async {
+                                    return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              flex: 3,
-                              child: CupertinoDatePickerField(
-                                controller: _dateController,
-                                dateFormatter: _dateFormatter,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                flex: 3,
+                                child: CupertinoDatePickerField(
+                                  controller: _dateController,
+                                  dateFormatter: _dateFormatter,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        _photoUploader,
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Description",
-                          hint: "Enter description here.",
-                          controller: _descriptionController,
-                          height: 200,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          _photoUploader,
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Description",
+                            hint: "Enter description here.",
+                            controller: _descriptionController,
+                            height: 200,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 ),
               ],
             ),
@@ -263,8 +267,8 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart' hide Key;
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:personaldb/constants/colors.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:personaldb/main.dart';
@@ -51,24 +52,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset("assets/images/icon.jpg", height: 250.0, width: 250.0),
+          Image.asset("assets/images/icon.png", height: 250.0, width: 250.0),
           const SizedBox(height: 30.0),
           _inputPassword
               ? TextField(
             obscureText: _obscureText,
             controller: _passwordController,
-            cursorColor: Colors.black,
+            cursorColor: Colors.grey,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0),),
+              border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 0.0),),
               focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
               labelText: "Password",
               labelStyle: const TextStyle(color: Colors.black),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.black,
+                  color: Colors.grey,
                 ),
                 onPressed: () {
                   setState(() {
@@ -84,14 +85,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             margin: const EdgeInsets.only(top: 10.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: kYellowLight,
               ),
               onPressed: () {
                 setState(() {
                   _inputPassword = true;
                 });
               },
-              child: const Text("Create New Database", style: TextStyle(color: Colors.white)),
+              child: const Text("Create New Database", style: TextStyle(color: Colors.black)),
             ),
           ),
           Container(
@@ -100,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             margin: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: _inputPassword ? kGreenLight : kGrayLight,
               ),
               onPressed: _inputPassword
                   ? () async {
@@ -117,9 +118,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   : () async {
                 await _selectDatabase(context);
               },
-              child: Text(_inputPassword ? "Confirm" : "Import Existing Database", style: const TextStyle(color: Colors.white)),
+              child: Text(
+                _inputPassword ? "Confirm" : "Import Existing Database",
+                style: TextStyle(color: _inputPassword ? Colors.black : kGrayDark),
+              ),
             ),
           ),
+
 
         ],
       ),

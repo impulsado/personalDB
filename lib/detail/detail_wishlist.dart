@@ -190,62 +190,67 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Title",
-                        hint: "Enter title here.",
-                        controller: _titleController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Website",
-                        hint: "Enter website link here.",
-                        controller: _linkController,
-                        isLink: true,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CupertinoPickerWidget(
-                                  title: "Priority",
-                                  hint: "Select priority.",
-                                  controller: _priorityController,
-                                  options: const ["High", "Medium", "Low"],
-                                ),
-                              ],
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.orange,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Website",
+                          hint: "Enter website link here.",
+                          controller: _linkController,
+                          isLink: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CupertinoPickerWidget(
+                                    title: "Priority",
+                                    hint: "Select priority.",
+                                    controller: _priorityController,
+                                    options: const ["High", "Medium", "Low"],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 5,
-                            child: MyInputField(
-                              title: "Price",
-                              hint: "Enter price here.",
-                              controller: _priceController,
-                              inputType: TextInputType.number,
+                            const SizedBox(width: 15),
+                            Flexible(
+                              flex: 5,
+                              child: MyInputField(
+                                title: "Price",
+                                hint: "Enter price here.",
+                                controller: _priceController,
+                                inputType: TextInputType.number,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                      ],
+                    ),
                   ),
+
                 ),
               ],
             ),
@@ -255,8 +260,8 @@ class _WishlistDetailPageState extends State<WishlistDetailPage> with WidgetsBin
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

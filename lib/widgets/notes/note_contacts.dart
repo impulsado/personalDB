@@ -26,7 +26,7 @@ class NoteContacts extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -86,8 +86,10 @@ class NoteContacts extends StatelessWidget {
   }
 
   String _formatRemindMe(String? remindMe) {
-    if (remindMe == null || remindMe == "No Remind Me defined") {
-      return remindMe ?? "";
+    if (remindMe == null || remindMe.isEmpty) {
+      return "No Remind Me defined";
+    } else if (remindMe == "Do not remind me") {
+      return remindMe;
     }
     return "Remind me every $remindMe";
   }

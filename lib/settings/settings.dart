@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:personaldb/settings/conf_fingerprint.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/constants/theme.dart';
@@ -19,9 +18,6 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  String _filePath = "";
-  bool _inputPassword = false;
-  final _passwordController = TextEditingController();
 
   Future<String> onDatabaseLocation() async {
     return DatabaseHelper.dbPath ?? "No database found";
@@ -48,27 +44,6 @@ class _SettingsState extends State<Settings> {
         );
       },
     );
-  }
-
-  Future<void> _selectDatabase(BuildContext context) async {
-    final newFilePath = await FilePicker.platform.pickFiles(type: FileType.any);
-    if (newFilePath != null && newFilePath.files.single.path != null) {
-      _filePath = newFilePath.files.single.path!;
-      setState(() {
-        _inputPassword = true;
-      });
-    }
-  }
-
-  Future<void> _importDatabaseWithPassword(BuildContext context, String password) async {
-    try {
-      await DatabaseHelper.importDb(_filePath, password);
-      MyApp.dbPassword = password;
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, "/home");
-    } catch (e) {
-      _openDialog(context, "Error", "Error while importing database: $e");
-    }
   }
 
   final Uri githubUrl = Uri.parse("https://github.com/impulsado/PersonalDB");
@@ -157,51 +132,6 @@ class _SettingsState extends State<Settings> {
               ),
               Divider(color: Colors.grey.shade300, thickness: 1.0,),
               const SizedBox(height: 10.0),
-              Text("Database", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
-              ListTile(
-                contentPadding: const EdgeInsets.only(left: 0.0),
-                title: const Text("Export"),
-                subtitle: const Text("Export database for migration or security purposes"),
-                onTap: () async {
-                  await DatabaseHelper.exportDatabase();
-                },
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.only(left: 0.0),
-                title: const Text("Restore"),
-                subtitle: const Text("Restore a different database with your notes"),
-                onTap: () {
-                  _inputPassword
-                      ? showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Enter password"),
-                        content: TextField(
-                          obscureText: true,
-                          controller: _passwordController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Password",
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              _importDatabaseWithPassword(context, _passwordController.text);
-                            },
-                            child: const Text("OK"),
-                          ),
-                        ],
-                      );
-                    },
-                  )
-                      : _selectDatabase(context);
-                },
-              ),
-              Divider(color: Colors.grey.shade300, thickness: 1.0,),
-              const SizedBox(height: 10.0),
               Text("Information", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
               ListTile(
                 contentPadding: const EdgeInsets.only(left: 0.0),
@@ -217,7 +147,7 @@ class _SettingsState extends State<Settings> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             const Image(
-                              image: AssetImage("assets/images/icon.jpg"),
+                              image: AssetImage("assets/images/icon.png"),
                               height: 100,
                               width: 100,
                             ),
@@ -232,7 +162,7 @@ class _SettingsState extends State<Settings> {
                                     style: Theme.of(context).textTheme.bodyLarge,
                                   ),
                                   TextSpan(
-                                    text: "Github",
+                                    text: "GitHub",
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()..onTap = () {
                                       launchUrl(githubUrl, mode: LaunchMode.externalApplication);

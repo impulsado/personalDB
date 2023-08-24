@@ -26,7 +26,7 @@ class NotePersonal extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -57,14 +57,13 @@ class NotePersonal extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5.0),
-                note["description"] == "" ? Container() : Row(
-                  children: [
-                    Text(
-                      note["description"] ?? "",
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                Visibility(
+                  visible: note["description"] != "",
+                  child: Text(
+                    note["description"] ?? "",
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(height: 5.0),
               ],

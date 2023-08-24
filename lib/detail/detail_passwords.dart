@@ -205,49 +205,53 @@ class _PasswordsDetailPageState extends State<PasswordsDetailPage> with WidgetsB
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Username",
-                          hint: "Enter username here.",
-                          controller: _usernameController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,),
-                        const SizedBox(height: 10),
-                        MyPasswordField(
-                          title: "Password",
-                          hint: "Enter password here.",
-                          controller: _passwordController),
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Website",
-                          hint: "Enter website here.",
-                          controller: _linkController,
-                          isLink: true,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,),
-                        const SizedBox(height: 20),
-                        _photoUploader,
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Notes",
-                          hint: "Enter notes here.",
-                          controller: _notesController,
-                          height: 200,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                      ],
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.blueAccent,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Username",
+                            hint: "Enter username here.",
+                            controller: _usernameController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,),
+                          const SizedBox(height: 10),
+                          MyPasswordField(
+                              title: "Password",
+                              hint: "Enter password here.",
+                              controller: _passwordController),
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Website",
+                            hint: "Enter website here.",
+                            controller: _linkController,
+                            isLink: true,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,),
+                          const SizedBox(height: 20),
+                          _photoUploader,
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Notes",
+                            hint: "Enter notes here.",
+                            controller: _notesController,
+                            height: 200,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

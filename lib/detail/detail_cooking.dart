@@ -223,97 +223,103 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: CupertinoTimePickerWidget(
-                                title: "Duration",
-                                hint: "Select duration.",
-                                controller: _durationController,
-                              ),
-                            ),
-                            const SizedBox(width: 26),
-                            Flexible(
-                              flex: 1,
-                              child: MyInputField(
-                                title: "Price",
-                                hint: "Enter price here.",
-                                controller: _priceController,
-                                inputType: TextInputType.number,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        MyInputField(
-                          title: "Ingredients",
-                          hint: "Enter ingredients here.",
-                          controller: _ingredientsController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 20),
-                        _photoUploader,
-                        const SizedBox(height: 10),
-                        MyInputField(
-                          title: "Recipe",
-                          hint: "Enter recipe here.",
-                          controller: _recipeController,
-                          height: 150,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.pinkAccent,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
                             children: [
-                              const SizedBox(height: 16),
-                              Text("Difficulty", style: subHeadingStyle(
-                                  color: Colors.black)),
-                              StarRating(
-                                icon: const Icon(
-                                    Icons.local_fire_department, size: 15, color: Colors.red),
-                                initialValue: _difficultyController.text.isNotEmpty ? double.parse(_difficultyController.text) : 0.0,
-                                itemSize: 41.5,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _difficultyController.text = value.toString();
-                                  });
-                                },
+                              Flexible(
+                                flex: 1,
+                                child: CupertinoTimePickerWidget(
+                                  title: "Duration",
+                                  hint: "Select duration.",
+                                  controller: _durationController,
+                                ),
                               ),
-                              const SizedBox(height: 16),
-                              Text("Rate", style: subHeadingStyle(color: Colors.black)),
-                              Align(
-                                alignment: Alignment.center,
-                                child: StarRating(
-                                  initialValue: _rateController.text
-                                      .isNotEmpty
-                                      ? double.parse(_rateController.text)
-                                      : 0.0,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _rateController.text = value.toString();
-                                    });
-                                  },
+                              const SizedBox(width: 26),
+                              Flexible(
+                                flex: 1,
+                                child: MyInputField(
+                                  title: "Price",
+                                  hint: "Enter price here.",
+                                  controller: _priceController,
+                                  inputType: TextInputType.number,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Ingredients",
+                            hint: "Enter ingredients here.",
+                            controller: _ingredientsController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 25),
+                          _photoUploader,
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Recipe",
+                            hint: "Enter recipe here.",
+                            controller: _recipeController,
+                            height: 150,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 10),
+                                Text("Difficulty", style: subHeadingStyle(color: Colors.black)),
+                                StarRating(
+                                  icon: const Icon(
+                                      Icons.local_fire_department, size: 15, color: Colors.red),
+                                  initialValue: _difficultyController.text.isNotEmpty ? double.parse(_difficultyController.text) : 0.0,
+                                  itemSize: 41.5,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _difficultyController.text = value.toString();
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                Text("Rate", style: subHeadingStyle(color: Colors.black)),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: StarRating(
+                                    initialValue: _rateController.text
+                                        .isNotEmpty
+                                        ? double.parse(_rateController.text)
+                                        : 0.0,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _rateController.text = value.toString();
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 80),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -325,8 +331,8 @@ class _CookingDetailPageState extends State<CookingDetailPage> with WidgetsBindi
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

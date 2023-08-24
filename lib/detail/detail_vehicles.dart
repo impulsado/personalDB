@@ -29,7 +29,7 @@ class VehiclesDetailPage extends StatefulWidget {
 class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBindingObserver {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _registrationController = TextEditingController();
-  final TextEditingController _nextMaintanceController = TextEditingController();
+  final TextEditingController _nextMaintenanceController = TextEditingController();
   final TextEditingController _remindMeController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
@@ -80,7 +80,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
   bool _isFormModified() {
     return initialData["name"] != _nameController.text ||
         initialData["registration"] != _registrationController.text ||
-        initialData["next_maintenance"] != _nextMaintanceController.text ||
+        initialData["next_maintenance"] != _nextMaintenanceController.text ||
         initialData["remindMe"] != _remindMeController.text ||
         initialData["location"] != _locationController.text ||
         initialData["notes"] != _notesController.text;
@@ -90,7 +90,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
     initialData = {
       "name": _nameController.text,
       "registration": _registrationController.text,
-      "next_maintenance": _nextMaintanceController.text,
+      "next_maintenance": _nextMaintenanceController.text,
       "remindMe": _remindMeController.text,
       "location": _locationController.text,
       "notes": _notesController.text,
@@ -101,7 +101,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
   void dispose() {
     _nameController.dispose();
     _registrationController.dispose();
-    _nextMaintanceController.dispose();
+    _nextMaintenanceController.dispose();
     _remindMeController.dispose();
     _locationController.dispose();
     _notesController.dispose();
@@ -126,7 +126,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
     final data = {
       "name": _nameController.text,
       "registration": _registrationController.text,
-      "next_maintenance": _nextMaintanceController.text,
+      "next_maintenance": _nextMaintenanceController.text,
       "remindMe": _remindMeController.text,
       "location": _locationController.text,
       "notes": _notesController.text,
@@ -147,7 +147,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
 
     _nameController.clear();
     _registrationController.clear();
-    _nextMaintanceController.clear();
+    _nextMaintenanceController.clear();
     _remindMeController.clear();
     _locationController.clear();
     _notesController.clear();
@@ -177,7 +177,7 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
         setState(() {
           _nameController.text = items[0]["name"] ?? "";
           _registrationController.text = items[0]["registration"] ?? "";
-          _nextMaintanceController.text = items[0]["next_maintance"] ?? "";
+          _nextMaintenanceController.text = items[0]["next_maintenance"] ?? "";
           _remindMeController.text = items[0]["remindMe"] ?? "";
           _locationController.text = items[0]["location"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
@@ -216,62 +216,66 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Name",
-                        hint: "Enter full name here.",
-                        controller: _nameController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      MyInputField(
-                        title: "Registration",
-                        hint: "Enter registration here.",
-                        controller: _registrationController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      //const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: CupertinoDatePickerField(
-                              title: "Next Maintance",
-                              hint: "Select next maintance.",
-                              controller: _nextMaintanceController,
-                              dateFormatter: _maintanceFormatter,
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.black,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Name",
+                          hint: "Enter full name here.",
+                          controller: _nameController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        MyInputField(
+                          title: "Registration",
+                          hint: "Enter registration here.",
+                          controller: _registrationController,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        //const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: CupertinoDatePickerField(
+                                title: "Next Maintenance",
+                                hint: "Select next maintance.",
+                                controller: _nextMaintenanceController,
+                                dateFormatter: _maintanceFormatter,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Flexible(
-                            flex: 5,
-                            child: CupertinoPickerWidget(
-                                title: "Remind Me",
-                                hint: "Remember me in",
-                                controller: _remindMeController,
-                                options: const ["Do not remind me", "1 day before", "1 week before", "2 weeks before", "1 month before", "2 months before",]
-                            )
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      LocationPicker(
-                        initialCoordinates: _locationController.text,
-                        onLocationPicked: (coordinates) {
-                          _locationController.text = coordinates;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                            const SizedBox(width: 15),
+                            Flexible(
+                                flex: 5,
+                                child: CupertinoPickerWidget(
+                                    title: "Remind Me",
+                                    hint: "Remember me in",
+                                    controller: _remindMeController,
+                                    options: const ["Do not remind me", "1 day before", "1 week before", "2 weeks before", "1 month before", "2 months before",]
+                                )
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        LocationPicker(
+                          initialCoordinates: _locationController.text,
+                          onLocationPicked: (coordinates) {
+                            _locationController.text = coordinates;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -282,8 +286,8 @@ class _VehiclesDetailPageState extends State<VehiclesDetailPage> with WidgetsBin
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: Colors.black,
-          iconColor: Colors.white,
+          bgColor: kMetalLight,
+          iconColor: Colors.black,
         ),
       ),
     );

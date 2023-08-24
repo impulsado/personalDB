@@ -5,6 +5,7 @@ import 'package:personaldb/widgets/categories.dart';
 import 'package:personaldb/contacts/contacts.dart';
 import 'package:personaldb/search/search.dart';
 import 'package:personaldb/main.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() {
   runApp(const HomeApp());
@@ -50,36 +51,55 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _currentIndex < _screens.length ? _screens[_currentIndex] : const CircularProgressIndicator(),
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.transparent,
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
   Widget _buildBottomNavigationBar() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.2), spreadRadius: 5, blurRadius: 10)],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-        child: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          currentIndex: _currentIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey.withOpacity(0.5),
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: const [
-            BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_rounded, size: 30)),
-            BottomNavigationBarItem(label: "Contacts", icon: Icon(Icons.contacts_outlined, size: 30)),
-            BottomNavigationBarItem(label: "Search", icon: Icon(Icons.search, size: 30)),
-          ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 10, 15, 15),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+            child: GNav(
+              haptic: false,
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: Colors.black,
+              iconSize: 24,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              duration: const Duration(milliseconds: 400),
+              tabActiveBorder: Border.all(color: Colors.black, width: 1),
+              color: Colors.grey[500],
+              tabs: const [
+                GButton(
+                  icon: Icons.home_rounded,
+                  text: "Home",
+                ),
+                GButton(
+                  icon: Icons.contacts_outlined,
+                  text: "CRM",
+                ),
+                GButton(
+                  icon: Icons.search,
+                  text: "Search",
+                ),
+              ],
+              selectedIndex: _currentIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+          ),
         ),
       ),
     );

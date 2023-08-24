@@ -27,7 +27,7 @@ class Categories extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Categories", style: headingStyle(color: Colors.black)),
+        title: Text("personalDB", style: headingStyle(color: Colors.black)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
@@ -62,11 +62,9 @@ class Categories extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Aumentamos el espacio entre los ítems
     final spaceSize = screenWidth / 30;
     final boxSize = (screenWidth - (4 * spaceSize)) / 3.5;
 
-    // Calculamos el espacio vertical entre las filas
     final verticalSpace = (screenHeight - (4 * boxSize)) / 14;
 
     return Padding(
@@ -157,6 +155,14 @@ class Categories extends StatelessWidget {
         decoration: BoxDecoration(
           color: myCategory.bgColor,
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(4, 4),
+              blurRadius: 5,
+              spreadRadius: 0,
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +187,7 @@ class Categories extends StatelessWidget {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(0.0, 1.0);
+        var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.easeInOut;
 
@@ -194,4 +200,5 @@ class Categories extends StatelessWidget {
       },
     );
   }
+
 }

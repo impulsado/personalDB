@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personaldb/constants/colors.dart';
 import 'package:personaldb/database/database_helper_checklists.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
@@ -170,29 +171,33 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          title: "Title",
-                          hint: "Enter title here.",
-                          controller: _titleController,
-                          height: 50,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(width: 25),
-                        CheckListWidget(checkListId: checklistId, password: MyApp.dbPassword!),
-                        const SizedBox(width: 15),
-                        MyInputField(
-                          title: "Notes",
-                          hint: "Enter notes here.",
-                          controller: _notesController,
-                          height: 150,
-                          inputType: TextInputType.multiline,
-                          inputAction: TextInputAction.newline,
-                        ),
-                      ],
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: kTurquoise,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
+                            title: "Title",
+                            hint: "Enter title here.",
+                            controller: _titleController,
+                            height: 50,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          CheckListWidget(checkListId: checklistId, password: MyApp.dbPassword!),
+                          const SizedBox(height: 10),
+                          MyInputField(
+                            title: "Notes",
+                            hint: "Enter notes here.",
+                            controller: _notesController,
+                            height: 150,
+                            inputType: TextInputType.multiline,
+                            inputAction: TextInputAction.newline,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -204,8 +209,8 @@ class _CheckListDetailPageState extends State<CheckListDetailPage> with WidgetsB
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

@@ -40,7 +40,7 @@ class _LocationPickerState extends State<LocationPicker> {
       if (fineStatus.isGranted) {
         try {
           Position position = await Geolocator.getCurrentPosition();
-          String newCoordinates = "${position.latitude},${position.longitude}";
+          String newCoordinates = "${position.latitude}, ${position.longitude}";
 
           if (newCoordinates != _coordinates) {
             setState(() {

@@ -26,7 +26,7 @@ class NoteCheckList extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
       ),
       child: Stack(
         children: [
@@ -37,38 +37,11 @@ class NoteCheckList extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 5.0),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        note["title"] ?? "No Title",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        note["duration"] ?? "",
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (note["price"] != null && note["price"] != "€")
-                      const SizedBox(width: 5),
-                    if (note["price"] != null && note["price"] != "€")
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          note["price"] ?? "",
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                  ],
+                Text(
+                  note["title"] ?? "No Title",
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 5.0),
               ],

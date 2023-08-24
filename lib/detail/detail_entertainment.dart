@@ -190,58 +190,63 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      MyInputField(
-                        title: "Title",
-                        hint: "Enter title here.",
-                        controller: _titleController,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 10),
-                      FieldAutocomplete(
-                        controller: _authorController,
-                        label: "Author",
-                        dbHelper: dbHelper,
-                        loadItemsFunction: () => dbHelper.getAuthor(MyApp.dbPassword!),
-                        widthMultiplier: 0.82,
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Link",
-                        hint: "Link",
-                        controller: _linkController,
-                        overflow: TextOverflow.ellipsis,
-                        isLink: true,
-                      ),
-                      const SizedBox(height: 10),
-                      MyInputField(
-                        title: "Notes",
-                        hint: "Enter notes here.",
-                        controller: _notesController,
-                        height: 150,
-                        inputType: TextInputType.multiline,
-                        inputAction: TextInputAction.newline,
-                      ),
-                      const SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Rate', style: subHeadingStyle(color: Colors.black)),
-                            StarRating(
-                              initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
-                              onChanged: (value) {
-                                setState(() {
-                                  _rateController.text = value.toString();
-                                });
-                              },
-                            ),
-                          ],
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.redAccent,
+                    child: ListView(
+                      children: [
+                        MyInputField(
+                          title: "Title",
+                          hint: "Enter title here.",
+                          controller: _titleController,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        FieldAutocomplete(
+                          controller: _authorController,
+                          label: "Author",
+                          dbHelper: dbHelper,
+                          loadItemsFunction: () => dbHelper.getAuthor(MyApp.dbPassword!),
+                          widthMultiplier: 0.82,
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Link",
+                          hint: "Link",
+                          controller: _linkController,
+                          overflow: TextOverflow.ellipsis,
+                          isLink: true,
+                        ),
+                        const SizedBox(height: 10),
+                        MyInputField(
+                          title: "Notes",
+                          hint: "Enter notes here.",
+                          controller: _notesController,
+                          height: 150,
+                          inputType: TextInputType.multiline,
+                          inputAction: TextInputAction.newline,
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Rate", style: subHeadingStyle(color: Colors.black)),
+                              StarRating(
+                                initialValue: _rateController.text.isNotEmpty ? double.parse(_rateController.text) : 0.0,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rateController.text = value.toString();
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 80),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -252,8 +257,8 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
-          iconColor: widget.myCategory.iconColor ?? Colors.white,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
+          iconColor: Colors.black,
         ),
       ),
     );

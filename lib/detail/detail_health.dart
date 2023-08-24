@@ -179,37 +179,41 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.green,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyInputField(
                             title: "Title",
                             hint: "Enter title here.",
                             controller: _titleController,
                             height: 50,
                             overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 10),
-                        FieldAutocomplete(
-                          controller: _categoryController,
-                          label: "Category",
-                          dbHelper: HealthDatabaseHelper(),
-                          loadItemsFunction: () async {
-                            return await HealthDatabaseHelper().getCategories(MyApp.dbPassword!);
-                          },
-                          widthMultiplier: 0.82,
-                        ),
-                        const SizedBox(height: 10),
-                        MyInputField(
+                          ),
+                          const SizedBox(height: 10),
+                          FieldAutocomplete(
+                            controller: _categoryController,
+                            label: "Category",
+                            dbHelper: HealthDatabaseHelper(),
+                            loadItemsFunction: () async {
+                              return await HealthDatabaseHelper().getCategories(MyApp.dbPassword!);
+                            },
+                            widthMultiplier: 0.82,
+                          ),
+                          const SizedBox(height: 10),
+                          MyInputField(
                             title: "Description",
                             hint: "Enter description here.",
                             controller: _descriptionController,
                             height: 200,
                             inputType: TextInputType.multiline,
                             inputAction: TextInputAction.newline,
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -221,7 +225,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
         floatingActionButton: MyButton(
           label: "Submit",
           onTap: () => _submitNote(context),
-          bgColor: widget.myCategory.bgColor ?? Colors.black,
+          bgColor: widget.myCategory.bgColor ?? Colors.white,
           iconColor: Colors.black,
         ),
       ),

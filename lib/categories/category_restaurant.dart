@@ -247,7 +247,7 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> with TickerProv
         }
       },
       child: NoteRestaurant(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.white,
         note: _notes[index],
         onDelete: () {
           _refreshNotes();
@@ -260,8 +260,8 @@ class _CategoryRestaurantState extends State<CategoryRestaurant> with TickerProv
   Widget _buildFloatingActionButton() {
     return MyButton(
       label: "+ Add Note",
-      bgColor: widget.myCategory.bgColor ?? Colors.black,
-      iconColor: widget.myCategory.iconColor ?? Colors.white,
+      bgColor: widget.myCategory.bgColor ?? Colors.white,
+      iconColor: Colors.black,
       onTap: () async {
         final result = await Navigator.push(
           context,
