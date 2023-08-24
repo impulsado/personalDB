@@ -13,7 +13,8 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 
 ## ‼ Priority tasks
 - [ ] Onboard screens.
-- [ ] Upload Images.
+- [X] Change all app assets (logo and profile_pic).
+- [X] Upload Images.
 - [X] Checklists Category.
 - [X] Vehicles Category.
 - [X] Restructure home page with new categories.
