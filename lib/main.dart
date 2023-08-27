@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "personalDB",
-      theme: ThemeData(),
       initialRoute: "/login",
       navigatorKey: navigatorKey,
       routes: {
