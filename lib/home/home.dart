@@ -9,6 +9,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() {
   runApp(const HomeApp());
+
 }
 
 class HomeApp extends StatelessWidget {

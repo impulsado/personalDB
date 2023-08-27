@@ -6,6 +6,7 @@ import 'package:personaldb/database/database_helper.dart';
 import 'package:personaldb/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:personaldb/detail/detail_contacts.dart';
+import 'package:personaldb/settings/backup_to_gdrive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -42,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (authenticated) {
         MyApp.dbPassword = storedPassword;
+        BackupToDrive.performBackup();
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, "/home");
       }
@@ -168,6 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
     MyApp.dbPassword = password;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? notificationPayload = prefs.getString("notificationPayload");
+
+
+
     if (notificationPayload != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
@@ -179,11 +184,10 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.remove("notificationPayload");
     } else {
       // ignore: use_build_context_synchronously
+      BackupToDrive.performBackup();
       Navigator.pushReplacementNamed(context, "/home");
     }
   }
-
-
 
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(

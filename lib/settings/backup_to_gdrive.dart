@@ -26,6 +26,128 @@ class BackupToDrive extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _BackupToDriveState createState() => _BackupToDriveState();
+
+  static Future<void> performBackup() async {
+    await _commonBackupProcedure();
+  }
+}
+
+Future<void> _commonBackupProcedure() async {
+  GoogleSignIn googleSignIn = GoogleSignIn(scopes: [drive.DriveApi.driveFileScope]);
+  final prefs = await SharedPreferences.getInstance();
+  final isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+  final folderId = prefs.getString("folderId");
+
+  if (isLoggedIn && folderId != null) {
+    try {
+      final GoogleSignInAccount? account = await googleSignIn.signInSilently();
+      if (account != null) {
+        final authHeaders = await account.authHeaders;
+        final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
+        final driveApi = drive.DriveApi(authenticateClient);
+
+        // Get the database file
+        final dbFile = File(DatabaseHelper.dbPath ?? "");
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+
+        // Get the assets folder
+        final assetsDir = Directory("${appDocDir.path}/assets");
+
+        // Compress and encrypt the files
+        final zipFile = await compressFiles(dbFile, assetsDir, "${appDocDir.path}/compressed.zip");
+        final encryptedFile = await encryptFile(zipFile, MyApp.dbPassword!);
+
+        // Upload to Google Drive
+        final fileToUpload = drive.File();
+        final formattedDate = DateTime.now().toLocal().toString().split(".")[0].substring(0, 16);
+        final formattedString = formattedDate.replaceAll(" ", "_").replaceAll("-", "_").replaceAll(":", "_");
+        fileToUpload.title = "personalDB_$formattedString.enc";
+        fileToUpload.parents = [drive.ParentReference(id: folderId)];
+        final content = encryptedFile.openRead();
+        final contentLength = await encryptedFile.length();
+        await driveApi.files.insert(fileToUpload, uploadMedia: drive.Media(content, contentLength));
+
+        await _checkAndDeleteOldBackups(folderId, googleSignIn);
+
+        // Update last backup time
+        prefs.setString("lastBackupTime", DateTime.now().toIso8601String());
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+}
+
+Future<void> _checkAndDeleteOldBackups(String? folderId, GoogleSignIn googleSignIn) async {
+  try {
+    final GoogleSignInAccount? account = await googleSignIn.signInSilently();
+    if (account != null && folderId != null) {
+      final authHeaders = await account.authHeaders;
+      final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
+      final driveApi = drive.DriveApi(authenticateClient);
+
+      final files = await driveApi.files.list(q: "'$folderId' in parents and mimeType != 'application/vnd.google-apps.folder'");
+
+      final encFiles = files.items?.where((file) => file.title?.endsWith('.enc') ?? false).toList() ?? [];
+
+      if (encFiles.length > 8) {
+        encFiles.sort((a, b) => a.createdDate!.compareTo(b.createdDate!));
+        for (int i = 0; i < encFiles.length - 8; i++) {
+          await driveApi.files.delete(encFiles[i].id!);
+        }
+      }
+    }
+  } catch (e) {
+    // NOTHIGN
+  }
+}
+
+Future<File> compressFiles(File dbFile, Directory assetsDir, String outputPath) async {
+  final archive = Archive();
+
+  // Add database file
+  final dbBytes = await dbFile.readAsBytes();
+  archive.addFile(ArchiveFile("personalDB.db", dbBytes.length, dbBytes));
+
+  // Compress assets folder
+  final assetsFiles = assetsDir.listSync(recursive: true).whereType<File>();
+  for (final assetFile in assetsFiles) {
+    final relativePath = assetFile.path.replaceFirst(assetsDir.path, "");
+    final bytes = await assetFile.readAsBytes();
+    if (relativePath.endsWith(".jpg") ||
+        relativePath.endsWith(".jpeg") ||
+        relativePath.endsWith(".png") ||
+        relativePath.endsWith(".bmp") ||
+        relativePath.endsWith(".gif") ||
+        relativePath.endsWith(".webp") ||
+        relativePath.endsWith(".heif") ||
+        relativePath.endsWith(".tiff")) {
+      archive.addFile(ArchiveFile(relativePath, bytes.length, bytes));
+    }
+
+  }
+
+  final zipEncoder = ZipEncoder();
+  final zipData = zipEncoder.encode(archive);
+  final outputFile = File(outputPath);
+  await outputFile.writeAsBytes(zipData!);
+
+  return outputFile;
+}
+
+Future<File> encryptFile(File file, String password) async {
+  final bytes = await file.readAsBytes();
+
+  // Hash the password using SHA-256 to get a 256-bit key
+  final keyBytes = crypto.sha256.convert(utf8.encode(password)).bytes;
+  final key = encrypt.Key(Uint8List.fromList(keyBytes)); // Convert to Uint8List
+
+  final iv = encrypt.IV.fromLength(16);
+  final encrypter = encrypt.Encrypter(encrypt.AES(key));
+  final encryptedData = encrypter.encryptBytes(bytes, iv: iv);
+  final outputFile = File("${file.path}.enc");
+  await outputFile.writeAsBytes(encryptedData.bytes);
+  return outputFile;
 }
 
 class _BackupToDriveState extends State<BackupToDrive> {
@@ -96,6 +218,34 @@ class _BackupToDriveState extends State<BackupToDrive> {
     }
   }
 
+  void _signOutGoogleAccount() async {
+    await _googleSignIn.signOut();
+    setState(() {
+      _isLoggedIn = false;
+      _folderId = null;
+      _lastBackupTime = null;
+    });
+    _removeBackup();
+  }
+
+  void _removeBackup() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove("backupFrequency");
+      prefs.remove("isLoggedIn");
+      prefs.remove("folderId");
+      prefs.remove("lastBackupTime");
+      setState(() {
+        _isLoggedIn = false;
+        _folderId = null;
+        _lastBackupTime = null;
+        _backupFrequencyController.text = "";
+      });
+    } catch (e) {
+      // NOTHING
+    }
+  }
+
   Duration _getDurationFromFrequency() {
     switch (_backupFrequencyController.text) {
       case "Daily":
@@ -129,146 +279,8 @@ class _BackupToDriveState extends State<BackupToDrive> {
     }
   }
 
-  Future<void> _checkAndDeleteOldBackups(String? folderId) async {
-    try {
-      final GoogleSignInAccount? account = await _googleSignIn.signInSilently();
-      if (account != null && folderId != null) {
-        final authHeaders = await account.authHeaders;
-        final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
-        final driveApi = drive.DriveApi(authenticateClient);
-
-        final files = await driveApi.files.list(q: "'$folderId' in parents and mimeType != 'application/vnd.google-apps.folder'");
-
-        final encFiles = files.items?.where((file) => file.title?.endsWith('.enc') ?? false).toList() ?? [];
-
-        if (encFiles.length > 8) {
-          encFiles.sort((a, b) => a.createdDate!.compareTo(b.createdDate!));
-          for (int i = 0; i < encFiles.length - 8; i++) {
-            await driveApi.files.delete(encFiles[i].id!);
-          }
-        }
-      }
-    } catch (e) {
-      // NOTHIGN
-    }
-  }
-
   Future<void> _uploadFileToDrive(String? folderId) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(valueColor:AlwaysStoppedAnimation<Color>(Colors.black)),
-              SizedBox(width: 10),
-              Text("Backing up..."),
-            ],
-          ),
-        );
-      },
-    );
-
-    try {
-      final GoogleSignInAccount? account = await _googleSignIn.signInSilently();
-      if (account != null) {
-        final authHeaders = await account.authHeaders;
-        final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
-        final driveApi = drive.DriveApi(authenticateClient);
-
-        // Get the database file
-        final dbFile = File(DatabaseHelper.dbPath ?? "");
-        Directory appDocDir = await getApplicationDocumentsDirectory();
-
-        // Get the assets folder
-        final assetsDir = Directory("${appDocDir.path}/assets");
-
-        // Compress and encrypt the files
-        final zipFile = await compressFiles(dbFile, assetsDir, "${appDocDir.path}/compressed.zip");
-        final encryptedFile = await encryptFile(zipFile, MyApp.dbPassword!);
-
-        // Upload to Google Drive
-        final fileToUpload = drive.File();
-        final formattedDate = DateTime.now().toLocal().toString().split(".")[0].substring(0, 16);
-        final formattedString = formattedDate.replaceAll(" ", "_").replaceAll("-", "_").replaceAll(":", "_");
-        fileToUpload.title = "personalDB_$formattedString.enc";
-        fileToUpload.parents = [drive.ParentReference(id: folderId)];
-        final content = encryptedFile.openRead();
-        final contentLength = await encryptedFile.length();
-        await driveApi.files.insert(fileToUpload, uploadMedia: drive.Media(content, contentLength));
-
-        await _checkAndDeleteOldBackups(folderId);
-
-        setState(() {
-          _lastBackupTime = DateTime.now();
-        });
-        _savePreferences();
-      }
-    } catch (e) {
-      // Handle error
-    } finally {
-      Navigator.of(context).pop();
-    }
-
-    // Mostrar mensaje de éxito
-    // ignore: use_build_context_synchronously
-    _showSuccessMessage(context, "Database and assets backup completed successfully");
-  }
-
-  Future<File> compressFiles(File dbFile, Directory assetsDir, String outputPath) async {
-    final archive = Archive();
-
-    // Add database file
-    final dbBytes = await dbFile.readAsBytes();
-    archive.addFile(ArchiveFile("personalDB.db", dbBytes.length, dbBytes));
-
-    // Compress assets folder
-    final assetsFiles = assetsDir.listSync(recursive: true).whereType<File>();
-    for (final assetFile in assetsFiles) {
-      final relativePath = assetFile.path.replaceFirst(assetsDir.path, "");
-      final bytes = await assetFile.readAsBytes();
-      if (relativePath.endsWith(".jpg") ||
-          relativePath.endsWith(".jpeg") ||
-          relativePath.endsWith(".png") ||
-          relativePath.endsWith(".bmp") ||
-          relativePath.endsWith(".gif") ||
-          relativePath.endsWith(".webp") ||
-          relativePath.endsWith(".heif") ||
-          relativePath.endsWith(".tiff")) {
-        archive.addFile(ArchiveFile(relativePath, bytes.length, bytes));
-      }
-
-    }
-
-    final zipEncoder = ZipEncoder();
-    final zipData = zipEncoder.encode(archive);
-    final outputFile = File(outputPath);
-    await outputFile.writeAsBytes(zipData!);
-
-    return outputFile;
-  }
-
-  Future<File> encryptFile(File file, String password) async {
-    final bytes = await file.readAsBytes();
-
-    // Hash the password using SHA-256 to get a 256-bit key
-    final keyBytes = crypto.sha256.convert(utf8.encode(password)).bytes;
-    final key = encrypt.Key(Uint8List.fromList(keyBytes)); // Convert to Uint8List
-
-    final iv = encrypt.IV.fromLength(16);
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    final encryptedData = encrypter.encryptBytes(bytes, iv: iv);
-    final outputFile = File("${file.path}.enc");
-    await outputFile.writeAsBytes(encryptedData.bytes);
-    return outputFile;
-  }
-
-  void _showSuccessMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    await _commonBackupProcedure();
   }
 
   @override
@@ -361,27 +373,34 @@ class _BackupToDriveState extends State<BackupToDrive> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child:
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            side: const BorderSide(
+                              color: Colors.black,
+                            ),
                           ),
-                          foregroundColor: Colors.black,
-                          side: const BorderSide(
-                            color: Colors.black,
-                          ),
+                          onPressed: () async {
+                            await _uploadFileToDrive(_folderId);
+                            setState(() {});
+                          },
+                          child: const Text("Sync Now"),
                         ),
-                        onPressed: () async {
-                          await _uploadFileToDrive(_folderId);
-                          setState(() {});
-                        },
-                        child: const Text("Sync Now"),
-                      ),
+                        const SizedBox(width: 16.0),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            elevation: 0,
+                          ),
+                          onPressed: _signOutGoogleAccount,
+                          child: const Text("Sign Out"),
+                        ),
+                      ],
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),

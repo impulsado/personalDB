@@ -42,17 +42,7 @@ class _PhotoUploaderState extends State<PhotoUploader> {
   }
 
 
-  Future<void> _createAssetsFolder() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String assetsFolderPath = "${appDocDir.path}/assets";
-    final assetsFolder = Directory(assetsFolderPath);
-    if (!await assetsFolder.exists()) {
-      await assetsFolder.create();
-    }
-  }
-
   Future<void> _pickImage(int index) async {
-    await _createAssetsFolder();
     final pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery);
 

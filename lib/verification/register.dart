@@ -46,6 +46,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  Future<void> _createAssetsFolder() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String assetsFolderPath = "${appDocDir.path}/assets";
+    final assetsFolder = Directory(assetsFolderPath);
+    if (!await assetsFolder.exists()) {
+      await assetsFolder.create();
+    }
+  }
+
   Widget _registerForm() {
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -142,6 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       MyApp.dbPassword = password;
       NotificationHandler.testNotification();
       NotificationHandler.privacyNotification();
+      await _createAssetsFolder();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
