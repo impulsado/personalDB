@@ -8,7 +8,6 @@ class FingerprintSetupScreen extends StatefulWidget {
   const FingerprintSetupScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _FingerprintSetupScreenState createState() => _FingerprintSetupScreenState();
 }
 
@@ -40,24 +39,21 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
 
       if (authenticated) {
         await _secureStorage.write(key: "dbPassword", value: MyApp.dbPassword);
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Fingerprint successfully configured")),
         );
-        // ignore: use_build_context_synchronously
         Navigator.pop(context);
       } else {
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Authentication failed")),
         );
       }
     } else {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Biometric authentication not available")),
       );
     }
+    _checkFingerprintConfigured();
   }
 
   Future<void> _removeFingerprint() async {
@@ -65,11 +61,9 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
     setState(() {
       _isFingerprintConfigured = false;
     });
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Fingerprint configuration removed")),
     );
-    // ignore: use_build_context_synchronously
     Navigator.pop(context);
   }
 
@@ -95,10 +89,10 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (_isFingerprintConfigured)
+                  if (_isFingerprintConfigured) ...[
                     const Text(
                       "You already have your fingerprint configured. \n"
-                      "Removing it means only being able to unlock the database with the password. \n\n",
+                          "Removing it means only being able to unlock the database with the password. \n\n",
                       style: TextStyle(fontSize: 14.0),
                       textAlign: TextAlign.center,
                     ),
@@ -108,6 +102,15 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        elevation: 0,
+                      ),
+                      onPressed: _removeFingerprint,
+                      child: const Text("Remove"),
+                    ),
+                  ],
                   if (!_isFingerprintConfigured) ...[
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -159,15 +162,6 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                       ],
                     ),
                   ],
-                  if (_isFingerprintConfigured)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        elevation: 0,
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("Remove"),
-                    ),
                 ],
               ),
             ),
