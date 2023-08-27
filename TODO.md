@@ -12,7 +12,6 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
 <br/>
 
 ## ‼ Priority tasks
-- [ ] Onboard screens.
 - [X] Change all app assets (logo and profile_pic).
 - [X] Upload Images.
 - [X] Checklists Category.
@@ -38,6 +37,8 @@ For more information, you can contact me as [@impulsado](https://t.me/impulsado)
     - [ ] Choose application language.
     - [ ] Choose Dark/Light mode.
     - [ ] Choose DateFormat.
+- [ ] Onboard screens.
+- [ ] Set Status Bar color the same as the category color.
 
 <br/>
 
