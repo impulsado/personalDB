@@ -24,23 +24,23 @@ A **secure** application for storing your **personal database** on your phone, w
 
 ## Screenshots
 <div align="center">
-  <img src="screenshots/organize.jpg" alt="PersonalDB Homepage" width="200" height="400">
-  <img src="screenshots/user-friendly.jpg" alt="PersonalDB Homepage" width="200" height="400">
-  <img src="screenshots/simple.jpg" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/organize.png" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/user-friendly.png" alt="PersonalDB Homepage" width="200" height="400">
+  <img src="screenshots/simple.png" alt="PersonalDB Homepage" width="200" height="400">
 </div>
 
 <div align="center">
-  <img src="screenshots/search.jpg" alt="PersonalDB Restaurant Category" width="200" height="400">
-  <img src="screenshots/personal.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
-  <img src="screenshots/secure.jpg" alt="PersonalDB Restaurant Detail" width="200" height="400">
+  <img src="screenshots/search.png" alt="PersonalDB Restaurant Category" width="200" height="400">
+  <img src="screenshots/personal.png" alt="PersonalDB Restaurant Detail" width="200" height="400">
+  <img src="screenshots/secure.png" alt="PersonalDB Restaurant Detail" width="200" height="400">
 </div>
 
 <br/>
 
 ## Team
-⭐ CEO: [@impulsado](https://www.instagram.com/impulsado/)
-💻 Programmer: [@chatGPT](https://twitter.com/OpenAI)
-🛠 Tester: [@dam6](https://github.com/dam6)
+⭐ CEO: [@impulsado](https://www.instagram.com/impulsado/)<br/>
+💻 Programmer: [@chatGPT](https://twitter.com/OpenAI)<br/>
+🛠 Tester: [@dam6](https://github.com/dam6)<br/>
 🖌 Digital Designer: [@challlsss_](https://www.instagram.com/challlsss_/)
 
 <br/>
