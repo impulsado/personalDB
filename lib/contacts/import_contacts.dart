@@ -54,7 +54,7 @@ class _ImportContactsWidgetState extends State<ImportContactsWidget> {
               ),
               const SizedBox(height: 32.0),
               if (_isLoading)
-                const CircularProgressIndicator(),
+                const CircularProgressIndicator(color: Colors.black),
               if (!_isLoading)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

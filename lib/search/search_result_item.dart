@@ -26,7 +26,6 @@ class SearchResultItem extends StatelessWidget {
   });
 
   Widget _buildNoteWidget() {
-    print(note["category_name"]);
     switch (note["category_name"]) {
       case "Ideas":
         return NoteIdeas(

@@ -1,3 +1,4 @@
+// detail_ideas.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personaldb/models/categories.dart';
@@ -25,11 +26,11 @@ class IdeasDetailPage extends StatefulWidget {
 class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _asset1Controller = TextEditingController();
   final TextEditingController _asset2Controller = TextEditingController();
   final DateFormat _dateFormatter = DateFormat("dd-MM-yyyy");
+  String selectedCategory = "";
   late final IdeasDatabaseHelper dbHelper;
   late PhotoUploader _photoUploader;
 
@@ -77,7 +78,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
-        initialData["category"] != _categoryController.text ||
+        initialData["category"] != selectedCategory ||
         initialData["date"] != _dateController.text ||
         initialData["asset1"] != _asset1Controller.text ||
         initialData["asset2"] != _asset2Controller.text ||
@@ -87,7 +88,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "date": _dateController.text,
       "asset1": _asset1Controller.text,
       "asset2": _asset2Controller.text,
@@ -98,7 +99,6 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
   @override
   void dispose() {
     _titleController.dispose();
-    _categoryController.dispose();
     _dateController.dispose();
     _asset1Controller.dispose();
     _asset2Controller.dispose();
@@ -110,7 +110,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_categoryController.text.isEmpty) {
+    } else if (selectedCategory.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a category")));
     } else if (_descriptionController.text.isEmpty) {
@@ -129,7 +129,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
     final data = {
       "title": _titleController.text,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "date": _dateController.text,
       "asset1": _asset1Controller.text,
       "asset2": _asset2Controller.text,
@@ -141,7 +141,6 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
       await dbHelper.createItem(data,MyApp.dbPassword!);
     }
     _titleController.clear();
-    _categoryController.clear();
     _dateController.clear();
     _asset1Controller.clear();
     _asset2Controller.clear();
@@ -165,7 +164,7 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
-          _categoryController.text = items[0]["category"] ?? "";
+          selectedCategory = items[0]["category"] ?? "";
           _dateController.text = items[0]["date"] ?? "";
           _asset1Controller.text = items[0]["asset1"] ?? "";
           _asset2Controller.text = items[0]["asset2"] ?? "";
@@ -225,9 +224,13 @@ class _IdeasDetailPageState extends State<IdeasDetailPage> with WidgetsBindingOb
                               Expanded(
                                 flex: 5,
                                 child: FieldAutocomplete(
-                                  controller: _categoryController,
                                   label: "Category",
-                                  dbHelper: IdeasDatabaseHelper(),
+                                  initialValue: selectedCategory,
+                                  onSelected: (String value) {
+                                    setState(() {
+                                      selectedCategory = value;
+                                    });
+                                  },
                                   loadItemsFunction: () async {
                                     return await IdeasDatabaseHelper().getCategories(MyApp.dbPassword!);
                                   },

@@ -90,6 +90,8 @@ class NoteContacts extends StatelessWidget {
       return "No Remind Me defined";
     } else if (remindMe == "Do not remind me") {
       return remindMe;
+    } else if (remindMe == "No Remind Me defined") {
+      return remindMe;
     }
     return "Remind me every $remindMe";
   }

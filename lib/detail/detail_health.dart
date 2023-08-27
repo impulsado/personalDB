@@ -21,8 +21,8 @@ class HealthDetailPage extends StatefulWidget {
 
 class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  String selectedCategory = "";
   late final HealthDatabaseHelper dbHelper;
 
   bool _isLoading = true;
@@ -68,14 +68,14 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
-        initialData["category"] != _categoryController.text ||
+        initialData["category"] != selectedCategory ||
         initialData["description"] != _descriptionController.text;
   }
 
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "description": _descriptionController.text,
     };
   }
@@ -83,7 +83,6 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
   @override
   void dispose() {
     _titleController.dispose();
-    _categoryController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -92,7 +91,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_categoryController.text.isEmpty) {
+    } else if (selectedCategory.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a category")));
     } else if (_descriptionController.text.isEmpty) {
@@ -111,7 +110,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
     final data = {
       "title": _titleController.text,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "description": _descriptionController.text,
     };
 
@@ -122,7 +121,6 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
     }
     _titleController.clear();
     _descriptionController.clear();
-    _categoryController.clear();
 
     _updateInitialData();
 
@@ -143,7 +141,7 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
-          _categoryController.text = items[0]["category"] ?? "";
+          selectedCategory = items[0]["category"] ?? "";
           _isLoading = false;
         });
       }
@@ -195,13 +193,16 @@ class _HealthDetailPageState extends State<HealthDetailPage> with WidgetsBinding
                           ),
                           const SizedBox(height: 10),
                           FieldAutocomplete(
-                            controller: _categoryController,
                             label: "Category",
-                            dbHelper: HealthDatabaseHelper(),
+                            initialValue: selectedCategory,
+                            onSelected: (String value) {
+                              setState(() {
+                                selectedCategory = value;
+                              });
+                            },
                             loadItemsFunction: () async {
                               return await HealthDatabaseHelper().getCategories(MyApp.dbPassword!);
                             },
-                            widthMultiplier: 0.82,
                           ),
                           const SizedBox(height: 10),
                           MyInputField(

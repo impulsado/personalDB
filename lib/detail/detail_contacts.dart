@@ -32,11 +32,11 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
   final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _labelController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _remindMeController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final DateFormat _birthdayFormatter = DateFormat("dd-MM-yyyy");
+  String selectedLabel = "";
   late int contactId;
   late final ContactsDatabaseHelper dbHelper;
 
@@ -89,7 +89,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
         initialData["birthday"] != _birthdayController.text ||
         initialData["email"] != _emailController.text ||
         initialData["phone"] != _phoneController.text ||
-        initialData["label"] != _labelController.text ||
+        initialData["label"] != selectedLabel ||
         initialData["address"] != _addressController.text ||
         initialData["remindMe"] != _remindMeController.text ||
         initialData["notes"] != _notesController.text;
@@ -101,7 +101,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
       "birthday": _birthdayController.text,
       "email": _emailController.text,
       "phone": _phoneController.text,
-      "label": _labelController.text,
+      "label": selectedLabel,
       "address": _addressController.text,
       "remindMe": _remindMeController.text,
       "notes": _notesController.text,
@@ -114,7 +114,6 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
     _birthdayController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _labelController.dispose();
     _addressController.dispose();
     _remindMeController.dispose();
     _notesController.dispose();
@@ -138,13 +137,15 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
       throw ArgumentError("Database password is null");
     }
 
+    String labelValue = selectedLabel.isEmpty ? "No label defined" : selectedLabel;
+
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper("Contacts");
     final data = {
       "name": _nameController.text,
       "birthday": _birthdayController.text,
       "email": _emailController.text,
       "phone": _phoneController.text,
-      "label": _labelController.text,
+      "label": labelValue,
       "address": _addressController.text,
       "remindMe": _remindMeController.text,
       "notes": _notesController.text,
@@ -181,7 +182,6 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
     _birthdayController.clear();
     _emailController.clear();
     _phoneController.clear();
-    _labelController.clear();
     _addressController.clear();
     _remindMeController.clear();
     _notesController.clear();
@@ -213,7 +213,7 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
           _birthdayController.text = items[0]["birthday"] ?? "";
           _emailController.text = items[0]["email"] ?? "";
           _phoneController.text = items[0]["phone"] ?? "";
-          _labelController.text = items[0]["label"] ?? "";
+          selectedLabel = items[0]["label"] ?? "";
           _addressController.text = items[0]["address"] ?? "";
           _remindMeController.text = items[0]["remindMe"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
@@ -279,9 +279,13 @@ class _ContactsDetailPageState extends State<ContactsDetailPage> with WidgetsBin
                             Flexible(
                               flex: 6,
                               child: FieldAutocomplete(
-                                controller: _labelController,
                                 label: "Label",
-                                dbHelper: ContactsDatabaseHelper(),
+                                initialValue: selectedLabel,
+                                onSelected: (String value) {
+                                  setState(() {
+                                    selectedLabel = value;
+                                  });
+                                },
                                 loadItemsFunction: () async {
                                   return await ContactsDatabaseHelper().getLabels(MyApp.dbPassword!);
                                 },

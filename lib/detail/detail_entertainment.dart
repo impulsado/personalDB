@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:personaldb/models/categories.dart';
 import 'package:personaldb/widgets/input_field.dart';
@@ -22,10 +23,10 @@ class EntertainmentDetailPage extends StatefulWidget {
   
 class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _authorController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
+  String selectedAuthor = "";
   late final EntertainmentDatabaseHelper dbHelper;
 
   bool _isLoading = true;
@@ -71,7 +72,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
 
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
-        initialData["author"] != _authorController.text ||
+        initialData["author"] != selectedAuthor ||
         initialData["link"] != _linkController.text ||
         initialData["notes"] != _notesController.text ||
         initialData["rate"] != _rateController.text;
@@ -80,7 +81,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   void _updateInitialData() {
     initialData = {
       "title": _titleController.text,
-      "author": _authorController.text,
+      "author": selectedAuthor,
       "link": _linkController.text,
       "notes": _notesController.text,
       "rate": _rateController.text,
@@ -90,7 +91,6 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
   @override
   void dispose() {
     _titleController.dispose();
-    _authorController.dispose();
     _linkController.dispose();
     _notesController.dispose();
     _rateController.dispose();
@@ -117,7 +117,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
     final dbHelper = DatabaseHelperFactory.getDatabaseHelper(widget.myCategory.title ?? "Error");
     final data = {
       "title": _titleController.text,
-      "author": _authorController.text,
+      "author": selectedAuthor,
       "link": _linkController.text,
       "notes": _notesController.text,
       "rate": _rateController.text,
@@ -128,7 +128,6 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
       await dbHelper.createItem(data, MyApp.dbPassword!);
     }
     _titleController.clear();
-    _authorController.clear();
     _linkController.clear();
     _notesController.clear();
     _rateController.clear();
@@ -151,7 +150,7 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
       if (items.isNotEmpty) {
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
-          _authorController.text = items[0]["author"] ?? "";
+          selectedAuthor = items[0]["author"] ?? "";
           _linkController.text = items[0]["link"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
           _rateController.text = items[0]["rate"] ?? "";
@@ -203,11 +202,14 @@ class _EntertainmentDetailPageState extends State<EntertainmentDetailPage> with 
                         ),
                         const SizedBox(height: 10),
                         FieldAutocomplete(
-                          controller: _authorController,
                           label: "Author",
-                          dbHelper: dbHelper,
+                          initialValue: selectedAuthor,
+                          onSelected: (String value) {
+                            setState(() {
+                              selectedAuthor = value;
+                            });
+                          },
                           loadItemsFunction: () => dbHelper.getAuthor(MyApp.dbPassword!),
-                          widthMultiplier: 0.82,
                         ),
                         const SizedBox(height: 10),
                         MyInputField(

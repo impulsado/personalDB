@@ -97,11 +97,17 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                 children: [
                   if (_isFingerprintConfigured)
                     const Text(
-                      "Fingerprint is already configured. \n"
-                      "You can remove it anytime.",
+                      "You already have your fingerprint configured. \n"
+                      "Removing it means only being able to unlock the database with the password. \n\n",
+                      style: TextStyle(fontSize: 14.0),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Text(
+                      "Do you want to remove your fingerprint?",
                       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 32.0),
                   if (!_isFingerprintConfigured) ...[
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -154,14 +160,12 @@ class _FingerprintSetupScreenState extends State<FingerprintSetupScreen> {
                     ),
                   ],
                   if (_isFingerprintConfigured)
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        side: const BorderSide(
-                          color: Colors.black,
-                        ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        elevation: 0,
                       ),
-                      onPressed: _removeFingerprint,
+                      onPressed: () => Navigator.pop(context),
                       child: const Text("Remove"),
                     ),
                 ],

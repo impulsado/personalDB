@@ -60,7 +60,7 @@ class _ContactsState extends State<Contacts> {
       return List<Map<String, dynamic>>.from(_allContacts);
     } else {
       return _allContacts.where((contact) {
-        return contact.values.any((value) => value.toString().contains(searchText));
+        return contact.values.any((value) => value.toString().toLowerCase().contains(searchText.toLowerCase()));
       }).toList();
     }
   }
@@ -142,7 +142,7 @@ class _ContactsState extends State<Contacts> {
           children: [
             const Text(
               "No contacts available",
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18.0),
               textAlign: TextAlign.center,
             ),
             if (_allContacts.isEmpty) ...[

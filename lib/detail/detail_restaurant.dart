@@ -25,10 +25,10 @@ class RestaurantDetailPage extends StatefulWidget {
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
+  String selectedType = "";
   late final RestaurantDatabaseHelper dbHelper;
 
   bool _isLoading = true;
@@ -75,7 +75,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
   bool _isFormModified() {
     return initialData["title"] != _titleController.text ||
         initialData["location"] != _locationController.text ||
-        initialData["type"] != _typeController.text ||
+        initialData["type"] != selectedType ||
         initialData["price"] != _priceController.text ||
         initialData["notes"] != _notesController.text ||
         initialData["rate"] != _rateController.text;
@@ -85,7 +85,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
     initialData = {
       "title": _titleController.text,
       "location": _locationController.text,
-      "type": _typeController.text,
+      "type": selectedType,
       "price": _priceController.text,
       "notes": _notesController.text,
       "rate": _rateController.text,
@@ -96,7 +96,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
   void dispose() {
     _titleController.dispose();
     _locationController.dispose();
-    _typeController.dispose();
     _priceController.dispose();
     _notesController.dispose();
     _rateController.dispose();
@@ -127,7 +126,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
     final data = {
       "title": _titleController.text,
       "location": _locationController.text,
-      "type": _typeController.text,
+      "type": selectedType,
       "price": _priceController.text,
       "notes": _notesController.text,
       "rate": _rateController.text,
@@ -139,7 +138,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
     }
     _titleController.clear();
     _locationController.clear();
-    _typeController.clear();
     _priceController.clear();
     _notesController.clear();
     _rateController.clear();
@@ -163,7 +161,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
         setState(() {
           _titleController.text = items[0]["title"] ?? "";
           _locationController.text = items[0]["location"] ?? "";
-          _typeController.text = items[0]["type"] ?? "";
+          selectedType = items[0]["type"] ?? "";
           _priceController.text = items[0]["price"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
           _rateController.text = items[0]["rate"] ?? "";
@@ -227,9 +225,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Widget
                             Flexible(
                               flex: 5,
                               child: FieldAutocomplete(
-                                controller: _typeController,
                                 label: "Type",
-                                dbHelper: RestaurantDatabaseHelper(),
+                                initialValue: selectedType,
+                                onSelected: (String value) {
+                                  setState(() {
+                                    selectedType = value;
+                                  });
+                                },
                                 loadItemsFunction: () async {
                                   return await RestaurantDatabaseHelper().getTypes(MyApp.dbPassword!);
                                 },

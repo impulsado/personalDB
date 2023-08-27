@@ -97,7 +97,7 @@ class _SearchResultsState extends State<SearchResults> {
       case "Others":
         return kGrayLight;
       case "Contacts":
-        return Colors.grey.shade100;
+        return Colors.white;
       case "CheckList":
         return kTurquoiseLight;
       case "Vehicles":

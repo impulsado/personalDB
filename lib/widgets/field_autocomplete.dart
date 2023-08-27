@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:personaldb/widgets/input_field.dart';
-import 'package:personaldb/database/database_helper_common.dart';
-import 'package:personaldb/constants/theme.dart';
 
 class FieldAutocomplete extends StatefulWidget {
-  final TextEditingController controller;
   final String label;
-  final DatabaseHelperCommon dbHelper;
+  final String initialValue;
+  final Function(String) onSelected;
   final Future<List<String>> Function() loadItemsFunction;
-  final double widthMultiplier;
 
   const FieldAutocomplete({
-    super.key,
-    required this.controller,
+    Key? key,
     required this.label,
-    required this.dbHelper,
+    required this.initialValue,
+    required this.onSelected,
     required this.loadItemsFunction,
-    this.widthMultiplier = 0.5,
-  });
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -25,95 +20,142 @@ class FieldAutocomplete extends StatefulWidget {
 }
 
 class _FieldAutocompleteState extends State<FieldAutocomplete> {
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final GlobalKey _textFormFieldKey = GlobalKey();
   List<String> _items = [];
-  bool _isLoading = true;
+  OverlayEntry? _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
 
   @override
   void initState() {
     super.initState();
+    _controller.text = widget.initialValue;
     _loadItems();
+    _controller.addListener(() {
+      widget.onSelected(_controller.text);
+    });
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _updateOverlay(_items);
+      } else {
+        if (_overlayEntry != null) {
+          _overlayEntry!.remove();
+          _overlayEntry = null;
+        }
+      }
+    });
   }
 
   _loadItems() async {
     List<String> items = await widget.loadItemsFunction();
-
     setState(() {
       _items = items;
-      _isLoading = false;
     });
+  }
+
+  void _updateOverlay(List<String> suggestions) {
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+    }
+
+    if (suggestions.isNotEmpty) {
+      final RenderBox renderBox = _textFormFieldKey.currentContext!.findRenderObject() as RenderBox;
+      final size = renderBox.size;
+
+      _overlayEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return Positioned(
+            width: size.width + 10,
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              offset: const Offset(0.0, 50.0),
+              child: Material(
+                elevation: 4.0,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  children: suggestions.map<Widget>((String suggestion) {
+                    return ListTile(
+                      title: Text(suggestion),
+                      onTap: () {
+                        _controller.text = suggestion;
+                        widget.onSelected(suggestion);
+                        _overlayEntry!.remove();
+                        _overlayEntry = null;
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      Overlay.of(context).insert(_overlayEntry!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const CircularProgressIndicator()
-        : Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text == "") {
-          return _items;
-        }
-        return _items.where((String item) {
-          return item.toLowerCase().contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      onSelected: (String selection) {
-        widget.controller.text = selection;
-      },
-      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Material(
-            elevation: 4.0,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * widget.widthMultiplier,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                itemCount: options.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final option = options.elementAt(index);
-                  return ListTile(
-                    title: Text(option),
-                    onTap: () {
-                      onSelected(option);
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.label, style: const TextStyle(color: Colors.black, fontSize: 16)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: 50.0,
+            ),
+            child: GestureDetector(
+              onTap: () => _updateOverlay(_items),
+              child: CompositedTransformTarget(
+                link: _layerLink,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(left: 14),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
+                    key: _textFormFieldKey,
+                    focusNode: _focusNode,
+                    autofocus: false,
+                    cursorColor: Colors.grey,
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: "Enter ${widget.label.toLowerCase()} here.",
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      focusedErrorBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 0),
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 0),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 0),
+                      ),
+                    ),
+                    textAlignVertical: TextAlignVertical.center,
+                    onChanged: (String value) {
+                      final suggestions = _items.where((String item) {
+                        return item.toLowerCase().contains(value.toLowerCase());
+                      }).toList();
+
+                      _updateOverlay(suggestions);
                     },
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ),
-        );
-      },
-      fieldViewBuilder: (BuildContext context, TextEditingController fieldTextController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
-        fieldTextController.text = widget.controller.text;
-        fieldTextController.selection = widget.controller.selection;
-        return MyInputField(
-          title: widget.label,
-          hint: "Enter ${widget.label.toLowerCase()} here.",
-          controller: fieldTextController,
-          height: 50,
-          minLines: 1,
-          overflow: TextOverflow.ellipsis,
-          child: TextFormField(
-            cursorColor: Colors.grey,
-            controller: fieldTextController,
-            onChanged: (value) {
-              widget.controller.text = value;
-            },
-            onTap: () {
-              if (fieldTextController.text == "") {
-                fieldTextController.text = ""; // Trigger Autocomplete to show all options.
-              }
-            },
-            focusNode: focusNode,
-            decoration: InputDecoration(
-              hintText: "Enter ${widget.label.toLowerCase()} here.",
-              hintStyle: subHeadingStyle(color: Colors.grey),
-              border: InputBorder.none,
-            ),
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

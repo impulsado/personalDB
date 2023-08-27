@@ -10,7 +10,6 @@ class BirthdayReminder {
 
   static void scheduleBirthdayReminder(DateTime birthday, String contactName) {
     final initialDelay = _calculateInitialDelay(birthday);
-    print(initialDelay);
     Workmanager().registerOneOffTask(
       'birthdayReminder_$contactName',
       _birthdayReminderTask,

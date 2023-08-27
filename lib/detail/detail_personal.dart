@@ -26,10 +26,11 @@ class PersonalDetailPage extends StatefulWidget {
 class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat("dd-MM-yyyy");
   final TextEditingController _trustController = TextEditingController();
+  final DateFormat _dateFormatter = DateFormat("dd-MM-yyyy");
+  String selectedCategory = "";
+
   late final PersonalDatabaseHelper dbHelper;
 
   bool _isLoading = true;
@@ -77,7 +78,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     return initialData["title"] != _titleController.text ||
         initialData["description"] != _descriptionController.text ||
         initialData["date"] != _dateController.text ||
-        initialData["category"] != _categoryController.text ||
+        initialData["category"] != selectedCategory ||
         initialData["trust"] != _trustController.text;
   }
 
@@ -86,7 +87,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
       "title": _titleController.text,
       "description": _descriptionController.text,
       "date": _dateController.text,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "trust": _trustController.text,
     };
   }
@@ -95,8 +96,6 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    //_dateFormatter.dispose();
-    _categoryController.dispose();
     _trustController.dispose();
     super.dispose();
   }
@@ -105,7 +104,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a title")));
-    } else if (_categoryController.text.isEmpty) {
+    } else if (selectedCategory.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a category")));
     } else {
@@ -125,7 +124,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
       "title": _titleController.text,
       "description": _descriptionController.text,
       "date": formattedDate,
-      "category": _categoryController.text,
+      "category": selectedCategory,
       "trust": _trustController.text
     };
     if (widget.id != null) {
@@ -136,7 +135,6 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
     _titleController.clear();
     _descriptionController.clear();
     _dateController.clear();
-    _categoryController.clear();
     _trustController.clear();
 
     _updateInitialData();
@@ -158,7 +156,7 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
           _titleController.text = items[0]["title"] ?? "";
           _descriptionController.text = items[0]["description"] ?? "";
           _dateController.text = items[0]["date"] ?? "";
-          _categoryController.text = items[0]["category"] ?? "";
+          selectedCategory = items[0]["category"] ?? "";
           _trustController.text = items[0]["trust"] ?? "";
           _isLoading = false;
         });
@@ -214,9 +212,13 @@ class _PersonalDetailPageState extends State<PersonalDetailPage> with WidgetsBin
                               Expanded(
                                 flex: 5,
                                 child: FieldAutocomplete(
-                                  controller: _categoryController,
                                   label: "Category",
-                                  dbHelper: PersonalDatabaseHelper(),
+                                  initialValue: selectedCategory,
+                                  onSelected: (String value) {
+                                    setState(() {
+                                      selectedCategory = value;
+                                    });
+                                  },
                                   loadItemsFunction: () async {
                                     return await PersonalDatabaseHelper().getCategories(MyApp.dbPassword!);
                                   },

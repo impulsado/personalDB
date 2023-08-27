@@ -22,12 +22,12 @@ class InventoryDetailPage extends StatefulWidget {
 
 class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsBindingObserver {
   final TextEditingController _itemController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _asset1Controller = TextEditingController();
   final TextEditingController _asset2Controller = TextEditingController();
+  String selectedLocation = "";
   late final InventoryDatabaseHelper dbHelper;
   late PhotoUploader _photoUploader;
 
@@ -77,7 +77,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
     return initialData["item"] != _itemController.text ||
         initialData["quantity"] != _quantityController.text ||
         initialData["price"] != _priceController.text ||
-        initialData["location"] != _locationController.text ||
+        initialData["location"] != selectedLocation ||
         initialData["asset1"] != _asset1Controller.text ||
         initialData["asset2"] != _asset2Controller.text ||
         initialData["notes"] != _notesController.text;
@@ -88,7 +88,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
       "item": _itemController.text,
       "quantity": _quantityController.text,
       "price": _priceController.text,
-      "location": _locationController.text,
+      "location": selectedLocation,
       "asset1": _asset1Controller.text,
       "asset2": _asset2Controller.text,
       "notes": _notesController.text,
@@ -100,7 +100,6 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
     _itemController.dispose();
     _quantityController.dispose();
     _priceController.dispose();
-    _locationController.dispose();
     _asset1Controller.dispose();
     _asset2Controller.dispose();
     _notesController.dispose();
@@ -111,7 +110,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
     if (_itemController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter the item name")));
-    } else if (_locationController.text.isEmpty) {
+    } else if (selectedLocation.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please enter a location")));
     } else {
@@ -129,7 +128,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
       "item": _itemController.text,
       "quantity": _quantityController.text,
       "price": "${_priceController.text}€",
-      "location": _locationController.text,
+      "location": selectedLocation,
       "asset1": _asset1Controller.text,
       "asset2": _asset2Controller.text,
       "notes": _notesController.text,
@@ -142,7 +141,6 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
     _itemController.clear();
     _quantityController.clear();
     _priceController.clear();
-    _locationController.clear();
     _asset1Controller.clear();
     _asset2Controller.clear();
     _notesController.clear();
@@ -167,7 +165,7 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
           _itemController.text = items[0]["item"] ?? "";
           _quantityController.text = items[0]["quantity"] ?? "";
           _priceController.text = items[0]["price"] != null ? items[0]["price"].replaceAll('€', '') : "";
-          _locationController.text = items[0]["location"] ?? "";
+          selectedLocation = items[0]["location"] ?? "";
           _asset1Controller.text = items[0]["asset1"] ?? "";
           _asset2Controller.text = items[0]["asset2"] ?? "";
           _notesController.text = items[0]["notes"] ?? "";
@@ -219,13 +217,16 @@ class _InventoryDetailPageState extends State<InventoryDetailPage> with WidgetsB
                         ),
                         const SizedBox(height: 10),
                         FieldAutocomplete(
-                          controller: _locationController,
                           label: "Location",
-                          dbHelper: InventoryDatabaseHelper(),
+                          initialValue: selectedLocation,
+                          onSelected: (String value) {
+                            setState(() {
+                              selectedLocation = value;
+                            });
+                          },
                           loadItemsFunction: () async {
                             return await InventoryDatabaseHelper().getLocations(MyApp.dbPassword!);
                           },
-                          widthMultiplier: 0.82,
                         ),
                         const SizedBox(height: 10),
                         Row(
