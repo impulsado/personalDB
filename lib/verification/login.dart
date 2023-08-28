@@ -43,8 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (authenticated) {
         MyApp.dbPassword = storedPassword;
+
+        await _createAssetsFolder();
+
         BackupToDrive.performBackup();
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, "/home");
       }
     }
@@ -168,10 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     await DatabaseHelper.db(password);
     MyApp.dbPassword = password;
+    await _createAssetsFolder();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? notificationPayload = prefs.getString("notificationPayload");
-
-
 
     if (notificationPayload != null) {
       // ignore: use_build_context_synchronously
@@ -185,7 +186,17 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       // ignore: use_build_context_synchronously
       BackupToDrive.performBackup();
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home");
+    }
+  }
+
+  Future<void> _createAssetsFolder() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String assetsFolderPath = "${appDocDir.path}/assets";
+    final assetsFolder = Directory(assetsFolderPath);
+    if (!await assetsFolder.exists()) {
+      await assetsFolder.create();
     }
   }
 
