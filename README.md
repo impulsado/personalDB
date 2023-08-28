@@ -1,4 +1,4 @@
-# PersonalDB
+# personalDB
 
 A **secure** application for storing your **personal database** on your phone, with data encryption.
 
@@ -39,7 +39,7 @@ A **secure** application for storing your **personal database** on your phone, w
 
 ## Team
 ⭐ CEO: [@impulsado](https://www.instagram.com/impulsado/)<br/>
-💻 Programmer: [@chatGPT](https://twitter.com/OpenAI)<br/>
+💻 Assistant: [@chatGPT](https://twitter.com/OpenAI)<br/>
 🛠 Tester: [@dam6](https://github.com/dam6)<br/>
 🖌 Digital Designer: [@challlsss_](https://www.instagram.com/challlsss_/)
 
