@@ -40,7 +40,10 @@ Future<void> _commonBackupProcedure() async {
 
   if (isLoggedIn && folderId != null) {
     try {
-      final GoogleSignInAccount? account = await googleSignIn.signInSilently();
+      GoogleSignInAccount? account = await googleSignIn.signInSilently();
+      // IF error with signInSilently
+      account ??= await googleSignIn.signIn();
+
       if (account != null) {
         final authHeaders = await account.authHeaders;
         final authenticateClient = AuthenticatedClient(http.Client(), () => Future.value(authHeaders));
